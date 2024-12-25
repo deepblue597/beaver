@@ -84,3 +84,80 @@ In other words, in a pipeline, learn_one updates the supervised parts, whilst pr
 In river, we can achieve this behavior using a dedicated context manager: compose.learn_during_predict.
 
 """
+model = (
+    preprocessing.StandardScaler() |
+    feature_extraction.PolynomialExtender() |
+    linear_model.LinearRegression()
+)
+# %%
+with compose.learn_during_predict():
+    for (x, y) in dataset.take(2):
+
+        print(f"{model.predict_one(x)=:.2f}, {y=:.2f}")
+        print(f"{model['StandardScaler'].means = }")
+# %%
+model.predict_one(x), model["LinearRegression"].weights
+# %%
+from contextlib import nullcontext
+from river import metrics
+
+import pandas as pd
+# %%
+def score_pipeline(learn_during_predict: bool, n_learning_samples: int | None = None) -> float:
+    """Scores a pipeline on the TrumpApproval dataset.
+
+    Parameters
+    ----------
+    learn_during_predict : bool
+        Whether or not to learn the unsupervided components during the prediction step.
+        If False it will only learn when `learn_one` is explicitly called.
+    n_learning_samples : int | None 
+        Number of samples used to `learn_one`.
+
+    Return
+    ------
+    MAE : float
+        Mean absolute error of the pipeline on the dataset
+    """
+
+    dataset = datasets.TrumpApproval()
+
+    model = (
+        preprocessing.StandardScaler() |
+        linear_model.LinearRegression()
+        )
+
+    metric = metrics.MAE()
+
+    ctx = compose.learn_during_predict if learn_during_predict else nullcontext
+    n_learning_samples = n_learning_samples or dataset.n_samples
+
+    with ctx():
+        for _idx, (x, y) in enumerate(dataset):
+            y_pred = model.predict_one(x)
+
+            metric.update(y, y_pred)
+
+            if _idx < n_learning_samples:
+                model.learn_one(x, y)
+
+    return metric.get()
+# %%
+max_samples = datasets.TrumpApproval().n_samples
+
+results = [
+    {
+        "learn_during_predict": learn_during_predict,
+        "pct_learning_samples": round(100*n_learning_samples/max_samples, 0),
+        "mae": score_pipeline(learn_during_predict=learn_during_predict, n_learning_samples=n_learning_samples)
+    }
+    for learn_during_predict in (True, False)
+    for n_learning_samples in range(max_samples, max_samples//10, -(max_samples//10))
+]
+# %%
+(pd.DataFrame(results)
+ .pivot(columns="learn_during_predict", index="pct_learning_samples", values="mae")
+ .sort_index(ascending=False)
+ .style.format_index('{0}%')
+)
+# %%
