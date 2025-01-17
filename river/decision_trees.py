@@ -1,4 +1,4 @@
-#%% 
+# %%
 import matplotlib.pyplot as plt
 import datetime as dt
 
@@ -8,11 +8,12 @@ from river import metrics
 from river import preprocessing  # we are going to use that later
 from river.datasets import synth  # we are going to use some synthetic datasets too
 from river import tree
+import graphviz
 # %%
 dataset = datasets.Phishing()
 dataset
 # %%
-#%%time
+# %%time
 
 model = tree.HoeffdingTreeClassifier(grace_period=50)
 
@@ -43,6 +44,7 @@ in the case of tree ensembles, individual trees can be accessed using the [index
 Then, the same set of inspection tools are available to play with!
 
 """
+
 
 def plot_performance(dataset, metric, models):
     metric_name = metric.__class__.__name__
@@ -89,6 +91,8 @@ def plot_performance(dataset, metric, models):
     plt.close()
 
     return fig
+
+
 # %%
 plot_performance(
     synth.Friedman(seed=42).take(10_000),
