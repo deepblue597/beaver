@@ -1,0 +1,22 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+132869769228176[ label="{HelloWorldModel|}"]
+
+132869769230624[ label="{Who|name: STRING\l}"]
+
+
+
+132869769228176 -> 132869769230624[arrowtail=diamond, dir=both, headlabel="to_greet 1..*"]
+
+}

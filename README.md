@@ -11,6 +11,7 @@ One of the technological areas that has experienced an explosion in recent years
 - River
 - Docker
 - Cassandra
+- Text-X
 
 A visual representation of the process that will be built is displayed below
 
