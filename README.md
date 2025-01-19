@@ -25,3 +25,41 @@ graph LR
 ```
 
 Below i will explain each tool and its usage for the project
+
+## Kafka
+
+### Purpose
+
+The kafka folder contains scripts and configurations for setting up and managing a Kafka environment. This includes producing and consuming messages, as well as administrative tasks such as creating and deleting topics. The folder also includes a Docker Compose file for setting up a Kafka cluster using Docker.
+
+### Files
+
+#### admin_kafka.py
+
+Contains functions for Kafka administrative tasks using the confluent_kafka library.
+Functions include creating and deleting topics.
+Example usage of AdminClient to manage Kafka topics.
+consumer2.py
+
+Script for consuming messages from a Kafka topic.
+Uses the confluent_kafka library to create a Kafka consumer.
+Includes logic for handling messages and closing the consumer gracefully.
+
+#### docker-compose.yml
+
+Docker Compose configuration file for setting up a Kafka cluster.
+Defines services for Kafka controllers and brokers.
+Includes environment variables and dependencies for each service.
+Also includes a Kafka UI service for managing the Kafka cluster.
+
+#### kafka_server_funcs.py
+
+Contains utility functions for parsing command-line arguments.
+Used by other scripts to standardize argument parsing.
+
+#### producer_v2.py
+
+Script for producing messages to a Kafka topic.
+Uses the confluent_kafka library to create a Kafka producer.
+Includes functions for constructing events and IDs, initializing namespaces, and handling delivery callbacks.
+Parses command-line arguments to configure the producer.
