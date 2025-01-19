@@ -1,0 +1,42 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+129499448847936 -> 129499448847840 [label="commands:0" arrowtail=diamond dir=both]
+129499448847840[label="{:InitialCommand|+x:int=3\l+y:int=1\l}"]
+129499448847936 -> 129499448847792 [label="commands:1" arrowtail=diamond dir=both]
+129499448847792[label="{:MoveCommand|+direction:str='straight'\l+steps:int=4\l}"]
+129499448847936 -> 129499448847744 [label="commands:2" arrowtail=diamond dir=both]
+129499448847744[label="{:MoveCommand|+direction:str='left'\l+steps:int=2\l}"]
+129499448847936 -> 129499448847696 [label="commands:3" arrowtail=diamond dir=both]
+129499448847696[label="{:MoveCommand|+direction:str='back'\l+steps:int=0\l}"]
+129499448847936 -> 129499448847648 [label="commands:4" arrowtail=diamond dir=both]
+129499448847648[label="{:MoveCommand|+direction:str='right'\l+steps:int=3\l}"]
+129499448847936 -> 129499448847552 [label="commands:5" arrowtail=diamond dir=both]
+129499448847552[label="{:InitialCommand|+x:int=4\l+y:int=5\l}"]
+129499448847936 -> 129499448847600 [label="commands:6" arrowtail=diamond dir=both]
+129499448847600[label="{:TurnCommand|+direction:str='left'\l}"]
+129499448847936 -> 129499448843568 [label="commands:7" arrowtail=diamond dir=both]
+129499448843568[label="{:MoveCommand|+direction:str='straight'\l+steps:int=0\l}"]
+129499448847936 -> 129499448847360 [label="commands:8" arrowtail=diamond dir=both]
+129499448847360[label="{:MoveCommand|+direction:str='right'\l+steps:int=0\l}"]
+129499448847936 -> 129499448846832 [label="commands:9" arrowtail=diamond dir=both]
+129499448846832[label="{:MoveCommand|+direction:str='back'\l+steps:int=0\l}"]
+129499448847936 -> 129499448842656 [label="commands:10" arrowtail=diamond dir=both]
+129499448842656[label="{:MoveCommand|+direction:str='left'\l+steps:int=0\l}"]
+129499448847936 -> 129499448847312 [label="commands:11" arrowtail=diamond dir=both]
+129499448847312[label="{:TurnCommand|+direction:str='right'\l}"]
+129499448847936 -> 129499448847264 [label="commands:12" arrowtail=diamond dir=both]
+129499448847264[label="{:MoveCommand|+direction:str='back'\l+steps:int=0\l}"]
+129499448847936[label="{:Program|}"]
+
+}

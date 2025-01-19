@@ -1,0 +1,37 @@
+Program: 
+    'begin' 
+    commands*=Command 
+    'end' 
+; 
+
+
+Command: 
+    InitialCommand | MoveCommand | TurnCommand 
+; 
+
+InitialCommand: 
+    'initial' x=INT ',' y=INT 
+; 
+
+MoveCommand:
+    direction=Direction steps=INT? 
+; 
+
+Direction: 
+
+    'straight' | 'back' | 'left' | 'right' 
+; 
+
+TurnCommand: 
+
+    'turn' direction=TurnDirection
+; 
+
+TurnDirection: 
+    'left' | 'right' 
+; 
+
+
+Comment:
+  /#.*$/
+;
