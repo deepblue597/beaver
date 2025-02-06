@@ -13,7 +13,7 @@ data = [
 ]
 
 # Initialize online KMeans with 3 clusters
-model = cluster.KMeans(n_clusters=2, halflife=0.1, sigma=5, seed=42)
+model = cluster.KMeans(n_clusters=2, halflife=0.1, sigma=1, seed=42)
 # Plot setup
 plt.figure(figsize=(8, 6))
 
