@@ -22,3 +22,6 @@ metric = metrics.Accuracy()
 evaluate.progressive_val_score(datasets[1], model, metric)
 
 # %%
+model
+
+# %%
