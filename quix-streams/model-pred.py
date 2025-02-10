@@ -24,9 +24,17 @@ for x, y_pred in zip(future, forecast):
 
 # %%
 future_dates = [x['month'] for x in future]
+# %%
+combined_df = pd.read_csv('../kafka/combined_file.csv')
+dates = combined_df['Datetime (UTC)']
+carbon_intensity = combined_df['Carbon Intensity gCO₂eq/kWh (direct)'].astype(
+    float)
 
+dates = pd.to_datetime(dates)
+
+# %%
 plt.figure(figsize=(10, 5))
-# plt.plot(dates, carbon_intensity, label='Carbon Intensity (his)')
+plt.plot(dates, carbon_intensity, label='Carbon Intensity (his)')
 plt.plot(future_dates, forecast, 'r--', label='Forecasted Carbon Intensity')
 
 
