@@ -1,4 +1,4 @@
 kafka_proj
 quix-streams-proj
-river
+river_proj
 text-X

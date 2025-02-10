@@ -1,6 +1,6 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from river import time_series
+from river_proj import time_series
 
 import pickle
 
