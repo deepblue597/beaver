@@ -1,0 +1,13 @@
+Datetime (UTC),Country,Zone Name,Zone Id,Carbon Intensity gCO₂eq/kWh (direct),Carbon Intensity gCO₂eq/kWh (LCA),Low Carbon Percentage,Renewable Percentage,Data Source
+2021-01-01 00:00:00,France,France,FR,56.15,79.45,88.47,23.27,opendata.reseaux-energies.fr
+2021-02-01 00:00:00,France,France,FR,40.64,62.10,90.71,27.39,opendata.reseaux-energies.fr
+2021-03-01 00:00:00,France,France,FR,41.07,62.84,90.59,24.45,opendata.reseaux-energies.fr
+2021-04-01 00:00:00,France,France,FR,43.15,65.77,90.70,23.84,opendata.reseaux-energies.fr
+2021-05-01 00:00:00,France,France,FR,15.87,32.10,96.55,30.11,opendata.reseaux-energies.fr
+2021-06-01 00:00:00,France,France,FR,17.55,33.88,95.93,25.36,opendata.reseaux-energies.fr
+2021-07-01 00:00:00,France,France,FR,17.10,34.14,96.03,25.95,opendata.reseaux-energies.fr
+2021-08-01 00:00:00,France,France,FR,10.78,25.47,97.72,23.00,opendata.reseaux-energies.fr
+2021-09-01 00:00:00,France,France,FR,29.46,47.36,94.29,19.10,opendata.reseaux-energies.fr
+2021-10-01 00:00:00,France,France,FR,33.79,52.27,93.54,20.57,Electricity Maps Estimation; opendata.reseaux-energies.fr
+2021-11-01 00:00:00,France,France,FR,68.29,95.99,85.35,19.69,opendata.reseaux-energies.fr
+2021-12-01 00:00:00,France,France,FR,65.44,92.30,86.06,23.74,opendata.reseaux-energies.fr
