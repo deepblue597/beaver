@@ -26,9 +26,9 @@ def create_kafka_consumer(server, offset, groupId):
 if __name__ == '__main__':
 
     consumer = create_kafka_consumer(
-        'localhost:39092', 'earliest', 'bot-alerts')
+        'localhost:39092', 'earliest', 'read-electricity')
     # Subscribe to topic
-    topic = "bot-alerts"
+    topic = "power-consumption"
     consumer.subscribe([topic])
 
     # Poll for new messages from Kafka and print them.
