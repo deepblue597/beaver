@@ -7,7 +7,7 @@ import datetime as dt
 
 # %%
 # Load the trained model from the file
-with open('SNARIMAX_model.pkl', 'rb') as model_file:
+with open('SNARIMAX_electricity.pkl', 'rb') as model_file:
     model = pickle.load(model_file)
 
 # %%
@@ -25,7 +25,7 @@ for x, y_pred in zip(future, forecast):
 # %%
 future_dates = [x['month'] for x in future]
 # %%
-combined_df = pd.read_csv('../kafka/combined_file.csv')
+combined_df = pd.read_csv('combined_file.csv')
 dates = combined_df['Datetime (UTC)']
 carbon_intensity = combined_df['Carbon Intensity gCO₂eq/kWh (direct)'].astype(
     float)

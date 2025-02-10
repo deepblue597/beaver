@@ -1,7 +1,7 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
 from river import time_series
-from river import metrics
+
 import pickle
 
 
@@ -12,7 +12,7 @@ import pickle
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="model-training-2",
+    consumer_group="model-electricity",
 )
 
 
@@ -38,7 +38,6 @@ model = time_series.SNARIMAX(
 )
 print('model created')
 
-metric = metrics.MAE()
 
 # learn and predict method
 
@@ -54,7 +53,7 @@ def train_and_predict(row):
 
     print('model updated')
 
-    with open('SNARIMAX_model.pkl', 'wb') as model_file:
+    with open('SNARIMAX_electricity.pkl', 'wb') as model_file:
         pickle.dump(model, model_file)
 
     print('model saved')

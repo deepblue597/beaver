@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-from producer_v2 import parse_command_line_arguments, create_kafka_producer, delivery_callback
+from kafka_proj.producer_v2 import parse_command_line_arguments, create_kafka_producer, delivery_callback
 
 
 if __name__ == "__main__":
