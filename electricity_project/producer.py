@@ -13,7 +13,7 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 
     # read the data from the combined file.
-    data = pd.read_csv('combined_file.csv')
+    data = pd.read_csv('FR_2024_hourly.csv')
 
     print('Messages are being published to Kafka topic')
     messages_count = 0
@@ -28,9 +28,9 @@ if __name__ == "__main__":
         producer.poll(0)
 
         messages_count += 1
-        if messages_count >= args.events_to_produce:
-            print('Producer will be killed as {} events were producted'.format(
-                args.events_to_produce))
-            break
+        # if messages_count >= args.events_to_produce:
+        #     print('Producer will be killed as {} events were producted'.format(
+        #         args.events_to_produce))
+        #     break
     # Flush to ensure all messages are sent before exit
     producer.flush()

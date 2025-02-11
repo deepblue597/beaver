@@ -1,7 +1,7 @@
 # %%
-from river_proj import utils
-from river_proj import time_series
-from river_proj import datasets
+from river import utils
+from river import time_series
+from river import datasets
 import datetime as dt
 import csv
 import requests

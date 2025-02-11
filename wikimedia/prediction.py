@@ -3,6 +3,8 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
+from river import metrics
+
 
 # %%
 # Load the trained model from the file
@@ -36,3 +38,5 @@ print(f"True label: {'bot' if true_label == 1 else 'human'}")
 print(f"Predicted: {'bot' if predicted_class == 1 else 'human'}")
 
 # %%
+metric = metrics.MAE()
+print(f"Current Accuracy: {metric}")

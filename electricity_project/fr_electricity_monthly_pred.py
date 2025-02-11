@@ -2,23 +2,23 @@
 
 import matplotlib.pyplot as plt
 import datetime as dt
-from river_proj import datasets
-from river_proj import time_series
-from river_proj import utils
+from river import datasets
+from river import time_series
+from river import utils
 import pandas as pd
 
 # %%
 
 # List of CSV files
-csv_files = ["FR_2021_monthly.csv", "FR_2022_monthly.csv",
-             "FR_2023_monthly.csv", "FR_2024_monthly.csv"]
+csv_files = ["FR_2021_hourly.csv", "FR_2022_hourly.csv",
+             "FR_2023_hourly.csv", "FR_2024_hourly.csv"]
 
 # Read and concatenate all CSVs
 combined_df = pd.concat([pd.read_csv(file)
                         for file in csv_files], ignore_index=True)
 # %%
 # Save the combined CSV
-combined_df.to_csv("combined_file.csv", index=False)
+combined_df.to_csv("combined_file_hourly.csv", index=False)
 
 print("Files successfully combined!")
 # %%

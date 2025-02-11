@@ -1,6 +1,6 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from river_proj import time_series
+from river import time_series
 
 import pickle
 
@@ -12,12 +12,12 @@ import pickle
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="model-electricity",
+    consumer_group="model-electricity-snarimax",
 )
 
 
-read_topic = app.topic("power-consumption", value_deserializer="json")
-write_topic = app.topic("filtered-power-consumption-2",
+read_topic = app.topic("electricity-24", value_deserializer="json")
+write_topic = app.topic("model-hist-var-24",
                         value_serializer="json")
 
 
@@ -30,11 +30,14 @@ sdf_filtered = sdf[['Datetime (UTC)', 'Carbon Intensity gCO₂eq/kWh (direct)']]
 
 # River model
 
-period = 12
+period = 24
 model = time_series.SNARIMAX(
-    p=period,
+    p=1,
     d=1,
-    q=period,
+    q=1,
+    m=24,
+    sd=1
+
 )
 print('model created')
 
@@ -51,9 +54,9 @@ def train_and_predict(row):
     # Train the model
     model.learn_one(y)
 
-    print('model updated')
+    # print('model updated')
 
-    with open('SNARIMAX_electricity.pkl', 'wb') as model_file:
+    with open('SNARIMAX_electricity_h.pkl', 'wb') as model_file:
         pickle.dump(model, model_file)
 
     print('model saved')
