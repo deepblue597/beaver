@@ -10,6 +10,9 @@ from sklearn.model_selection import train_test_split
 import neptune
 import os
 from dotenv import load_dotenv
+from river import tree
+from river import forest
+
 # %% Load the necessary tokens
 
 load_dotenv()
@@ -36,11 +39,27 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 
 # %%
-# Define the Passive-Aggressive Regressor model
+# Linear Regression
 model = (
     preprocessing.StandardScaler() |
-    linear_model.LinearRegression(intercept_lr=.1)
+    linear_model.LinearRegression(intercept_lr=.2)
 )
+# %% Tree
+model = (
+    preprocessing.StandardScaler() |
+    tree.HoeffdingAdaptiveTreeRegressor(
+        grace_period=50,
+        model_selector_decay=0.3,
+        seed=0
+    )
+)
+# %%  Random Forest
+model = (
+    preprocessing.StandardScaler() |
+    forest.ARFRegressor(seed=42)
+)
+
+# %%
 
 # Define the evaluation metric (e.g., Mean Absolute Error)
 metric = metrics.MAE()
@@ -50,13 +69,14 @@ metric = metrics.MAE()
 run = neptune.init_run(
     project="jason-k/boston-pricses",
     api_token=NEPTUNE_TOKEN,
+    monitoring_namespace="monitoring"
 )
 
 # %%
 # Log for LinearRegression in Neptune
 run['model/hyperparameters'] = {
-    'model': 'LinearRegression',  # Model type
-    'intercept_lr': 0.1,          # Learning rate for the intercept
+    'model': 'ARFRegressor',  # Model type
+    'seed': 42
 }
 
 # %%
@@ -80,7 +100,7 @@ plt.xlabel('Iterations')
 plt.ylabel('Mean Absolute Error (MAE)')
 plt.title('MAE over Training Iterations')
 plt.show()
-
+# %%
 # End the Neptune run when done
 run.stop()
 # %%
