@@ -1,8 +1,14 @@
 import time
 import requests
 import json
+from dotenv import load_dotenv
+import os
 
 from kafka_proj.producer_v2 import create_kafka_producer, delivery_callback, parse_command_line_arguments
+
+
+load_dotenv()
+ELEC_TOKEN = os.getenv("ELECTRICITY_TOKEN")
 
 
 def fetch_live_data(producer, url, headers, args, messages_count):
@@ -17,7 +23,6 @@ def fetch_live_data(producer, url, headers, args, messages_count):
             args.topic_name, value=json.dumps(data).encode('utf-8'), key=id, callback=delivery_callback)
 
         producer.poll(0)
-        # producer.flush()  # Ensure the producer sends the message before proceeding
 
         messages_count += 1
 
@@ -39,12 +44,14 @@ def main():
     producer = create_kafka_producer(bootstrap_server=args.bootstrap_server,
                                      acks='all', linger_ms=20, batch_size=32 * 1024, compression_type='snappy')
 
+    # URL to fetch live data
     url = "https://api.electricitymap.org/v3/carbon-intensity/latest?zone=FR"
-    headers = {"auth-token": "cVbydpxzZLhtoYbTsaaV"}
+    headers = {"auth-token": ELEC_TOKEN}
 
     try:
 
         while True:
+            # get data and send to kafka
             fetch_live_data(producer, url, headers, args, messages_count)
             messages_count += 1
             time.sleep(polling_interval)

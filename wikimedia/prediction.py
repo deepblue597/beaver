@@ -1,5 +1,5 @@
 # %%
-import pickle
+import dill
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime as dt
@@ -9,7 +9,7 @@ from river import metrics
 # %%
 # Load the trained model from the file
 with open('HoeffdingTreeClassifier.pkl', 'rb') as model_file:
-    model = pickle.load(model_file)
+    model = dill.load(model_file)
 
 # %%
 # New test data
@@ -39,4 +39,6 @@ print(f"Predicted: {'bot' if predicted_class == 1 else 'human'}")
 
 # %%
 metric = metrics.MAE()
-print(f"Current Accuracy: {metric}")
+print(metric)
+
+# %%

@@ -1,4 +1,5 @@
 # %%
+from datetime import datetime, timedelta
 from river import utils
 from river import time_series
 from river import datasets
@@ -6,21 +7,28 @@ import datetime as dt
 import csv
 import requests
 import matplotlib.pyplot as plt
+import os
+from dotenv import load_dotenv
+# %% Load the necessary tokens
 
-# %%
+load_dotenv()
+
+ELEC_TOKEN = os.getenv('ELECTRICITY_TOKEN')
+
+# %% Load latest data
 response = requests.get(
     "https://api.electricitymap.org/v3/carbon-intensity/latest?zone=FR",
     headers={
-        "auth-token": f"cVbydpxzZLhtoYbTsaaV"
+        "auth-token": ELEC_TOKEN
     }
 )
 print(response.json())
 
-# %%
+# %% Electricity breakdown of France ( Consumption and Production )
 response = requests.get(
     "https://api.electricitymap.org/v3/power-breakdown/latest?zone=FR",
     headers={
-        "auth-token": f"cVbydpxzZLhtoYbTsaaV"
+        "auth-token": ELEC_TOKEN
     }
 )
 print(response.json())
@@ -60,16 +68,19 @@ if response.status_code == 200:
     plt.tight_layout()
     plt.show()
 
-# %%
+# %% Load historical data
 
 response = requests.get(
     "https://api.electricitymap.org/v3/carbon-intensity/history?zone=FR",
     headers={
-        "auth-token": f"cVbydpxzZLhtoYbTsaaV"
+        "auth-token": ELEC_TOKEN
     }
 )
 print(response.json())
 # %%
+
+""" Predict the carbon intensity for the next X days """
+
 
 # Define the path to your CSV file
 csv_file_path = 'FR_2024_daily.csv'
@@ -127,15 +138,15 @@ for t, (x, y) in enumerate(carbon_intensity_dict.items()):
 last_date = dates[-1]
 
 # %%
-last_date
+last_date = datetime.strptime(last_date, "%Y-%m-%d %H:%M:%S")
+
+
 # %%
 
+horizon = 60
+future = [{'date': (last_date + timedelta(days=i)).date()}
+          for i in range(1, horizon + 1)]
 
-horizon = 30
-future = [
-    {'date': dt.date(year=2025, month=1,  day=m)}
-    for m in range(1, horizon + 1)
-]
 # %%
 # Forecast the next 30 days
 

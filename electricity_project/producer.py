@@ -20,17 +20,17 @@ if __name__ == "__main__":
 
     for idx, row in data.iterrows():
 
+        # convert to json format
         json_message = row.to_json()
+
+        # Produce the message to kafka
         producer.produce(
             args.topic_name, value=json_message, key=str(idx), callback=delivery_callback)
-        # Polling to handle responses
 
+        # Polling to handle responses
         producer.poll(0)
 
         messages_count += 1
-        # if messages_count >= args.events_to_produce:
-        #     print('Producer will be killed as {} events were producted'.format(
-        #         args.events_to_produce))
-        #     break
+
     # Flush to ensure all messages are sent before exit
     producer.flush()

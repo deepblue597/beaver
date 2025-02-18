@@ -21,6 +21,7 @@ cycler==0.12.1
 debugpy==1.8.12
 decorator==5.1.1
 defusedxml==0.7.1
+dill==0.3.9
 executing==2.1.0
 fastjsonschema==2.21.1
 fonttools==4.55.8
@@ -49,6 +50,7 @@ jupyter_server_terminals==0.5.3
 jupyterlab==4.3.4
 jupyterlab_pygments==0.3.0
 jupyterlab_server==2.27.3
+kafka-python==2.0.2
 kiwisolver==1.4.8
 MarkupSafe==3.0.2
 matplotlib==3.10.0

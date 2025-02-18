@@ -26,6 +26,7 @@ Requires-Dist: cycler==0.12.1
 Requires-Dist: debugpy==1.8.12
 Requires-Dist: decorator==5.1.1
 Requires-Dist: defusedxml==0.7.1
+Requires-Dist: dill==0.3.9
 Requires-Dist: executing==2.1.0
 Requires-Dist: fastjsonschema==2.21.1
 Requires-Dist: fonttools==4.55.8
@@ -54,6 +55,7 @@ Requires-Dist: jupyter_server_terminals==0.5.3
 Requires-Dist: jupyterlab==4.3.4
 Requires-Dist: jupyterlab_pygments==0.3.0
 Requires-Dist: jupyterlab_server==2.27.3
+Requires-Dist: kafka-python==2.0.2
 Requires-Dist: kiwisolver==1.4.8
 Requires-Dist: MarkupSafe==3.0.2
 Requires-Dist: matplotlib==3.10.0

@@ -4,7 +4,7 @@ from river.datasets import synth
 from river import evaluate
 from river import metrics
 from river import tree
-import pickle
+import dill
 
 # A minimal application reading temperature data in Celsius from the Kafka topic,
 # converting it to Fahrenheit and producing alerts to another topic.
@@ -61,7 +61,7 @@ def train_and_predict(event):
     print(f"Current Accuracy: {metric}")
 
     with open('HoeffdingTreeClassifier.pkl', 'wb') as model_file:
-        pickle.dump(model, model_file)
+        dill.dump(model, model_file)
 
     return event
 
