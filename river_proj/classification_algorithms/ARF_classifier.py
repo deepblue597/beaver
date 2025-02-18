@@ -1,7 +1,7 @@
 # %%
-from river_proj import evaluate
-from river_proj import forest
-from river_proj import metrics
+from river import evaluate
+from river import forest
+from river import metrics
 from river.datasets import synth
 
 dataset = synth.ConceptDriftStream(

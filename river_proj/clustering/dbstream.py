@@ -1,7 +1,7 @@
 # %%
 import matplotlib.pyplot as plt
-from river_proj import cluster
-from river_proj import stream
+from river import cluster
+from river import stream
 
 # Input data
 X = [

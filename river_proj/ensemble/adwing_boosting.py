@@ -1,11 +1,11 @@
 # %%
-from river_proj import datasets
-from river_proj import ensemble
-from river_proj import evaluate
-from river_proj import linear_model
-from river_proj import metrics
-from river_proj import preprocessing
-from river_proj import tree
+from river import datasets
+from river import ensemble
+from river import evaluate
+from river import linear_model
+from river import metrics
+from river import preprocessing
+from river import tree
 
 
 dataset = datasets.Phishing()

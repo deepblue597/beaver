@@ -1,7 +1,7 @@
 # %%
-from river_proj import metrics, datasets, tree
+from river import metrics, datasets, tree
 import matplotlib.pyplot as plt
-from river_proj import preprocessing
+from river import preprocessing
 
 # Load a regression dataset (e.g., Trump Approval dataset)
 dataset = datasets.TrumpApproval()

@@ -1,11 +1,11 @@
 # %%
 import functools
-from river_proj import datasets
-from river_proj import evaluate
-from river_proj import metrics
-from river_proj import neighbors
-from river_proj import preprocessing
-from river_proj import utils
+from river import datasets
+from river import evaluate
+from river import metrics
+from river import neighbors
+from river import preprocessing
+from river import utils
 
 dataset = datasets.Phishing()
 

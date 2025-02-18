@@ -1,6 +1,6 @@
 # %%
 import matplotlib.pyplot as plt
-from river_proj import cluster
+from river import cluster
 
 # Example 2D points
 data = [

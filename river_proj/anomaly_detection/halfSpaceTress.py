@@ -1,7 +1,7 @@
 # %%
 
-from river_proj import evaluate
-from river_proj import compose, datasets, metrics, preprocessing, anomaly, evaluate
+from river import evaluate
+from river import compose, datasets, metrics, preprocessing, anomaly, evaluate
 import matplotlib.pyplot as plt
 
 # Initialize the model pipeline

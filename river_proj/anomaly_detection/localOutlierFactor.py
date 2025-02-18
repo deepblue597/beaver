@@ -1,7 +1,7 @@
 # %%
 import pandas as pd
-from river_proj import anomaly
-from river_proj import datasets
+from river import anomaly
+from river import datasets
 
 cc_df = pd.DataFrame(datasets.CreditCard())
 

@@ -1,8 +1,8 @@
 # %%
 import pandas as pd
-from river_proj import compose
-from river_proj import feature_extraction
-from river_proj import naive_bayes
+from river import compose
+from river import feature_extraction
+from river import naive_bayes
 
 docs = [
     ("Chinese Beijing Chinese", "yes"),

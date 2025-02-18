@@ -1,6 +1,6 @@
 
 # %%
-from river_proj import datasets, preprocessing, linear_model, metrics, evaluate
+from river import datasets, preprocessing, linear_model, metrics, evaluate
 import matplotlib.pyplot as plt
 
 # Load the dataset

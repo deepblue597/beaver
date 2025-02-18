@@ -1,5 +1,5 @@
 # %%
-from river_proj import linear_model, metrics, datasets
+from river import linear_model, metrics, datasets
 import matplotlib.pyplot as plt
 
 # Load a regression dataset (e.g., Trump Approval dataset)

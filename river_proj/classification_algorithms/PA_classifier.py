@@ -1,5 +1,5 @@
 # %%
-from river_proj import linear_model, metrics, datasets
+from river import linear_model, metrics, datasets
 
 # Load the dataset
 dataset = datasets.Phishing()

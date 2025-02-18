@@ -63,3 +63,39 @@ Script for producing messages to a Kafka topic.
 Uses the confluent_kafka library to create a Kafka producer.
 Includes functions for constructing events and IDs, initializing namespaces, and handling delivery callbacks.
 Parses command-line arguments to configure the producer.
+
+## Quix Streams
+
+This directory contains various scripts and modules for processing and analyzing streaming data using Kafka and Quix Streams.
+
+#### **init**.py
+
+An empty file that indicates that the directory should be treated as a Python package.
+
+#### kafka_test.py
+
+A script for testing Kafka integration with Quix Streams. It reads data from a Kafka topic, processes it, and writes the results to different Kafka topics. The script includes examples of filtering, dropping columns, and producing alerts.
+
+#### windowing.py
+
+A script that demonstrates windowing operations on streaming data using Quix Streams. It reads data from a Kafka topic, applies tumbling windows, and computes aggregate functions such as sum and mean. The results are then written to another Kafka topic.
+
+## wikimedia
+
+This directory is a project for processing and analyzing Wikimedia streaming data using Kafka, Quix Streams and River.
+
+#### HoeffdingTreeClassifier.pkl
+
+A serialized file containing the trained `HoeffdingTreeClassifier` model. This model is used for predicting whether a user is a bot or a human based on Wikimedia event data.
+
+#### model.py
+
+A script for training a `HoeffdingTreeClassifier` model using streaming data from a Kafka topic. The script reads data from the `wikipedia-events` Kafka topic, processes it, trains the model, and writes the results to the `filtered-wikipedia-events` Kafka topic.
+
+#### prediction.py
+
+A script for loading the trained `HoeffdingTreeClassifier` model and using it to make predictions on new data. The script includes an example of predicting whether a user is a bot or a human based on a sample Wikimedia event.
+
+#### producer.py
+
+A script for producing Wikimedia event data to a Kafka topic. The script consumes data from the Wikimedia EventStreams API, processes it, and produces messages to the `wikipedia-events` Kafka topic.

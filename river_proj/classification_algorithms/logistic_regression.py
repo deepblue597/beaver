@@ -1,11 +1,11 @@
 # %%
 
-from river_proj import datasets
-from river_proj import evaluate
-from river_proj import linear_model
-from river_proj import metrics
-from river_proj import optim
-from river_proj import preprocessing
+from river import datasets
+from river import evaluate
+from river import linear_model
+from river import metrics
+from river import optim
+from river import preprocessing
 
 datasets = [datasets.Phishing(), datasets.CreditCard()]
 

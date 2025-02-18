@@ -1,5 +1,5 @@
 # %%
-from river_proj import time_series, datasets
+from river import time_series, datasets
 import datetime as dt
 import matplotlib.pyplot as plt
 

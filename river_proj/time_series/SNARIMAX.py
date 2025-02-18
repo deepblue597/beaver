@@ -2,9 +2,9 @@
 
 import matplotlib.pyplot as plt
 import datetime as dt
-from river_proj import datasets
-from river_proj import time_series
-from river_proj import utils
+from river import datasets
+from river import time_series
+from river import utils
 
 period = 12
 model = time_series.SNARIMAX(
