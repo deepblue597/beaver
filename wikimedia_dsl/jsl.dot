@@ -1,0 +1,37 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+127984930976208[ label="{Pipeline|name: ID\l}"]
+
+127984930976256[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+
+127984930968768[ label="{Model|name: STRING\l}"]
+
+127984930967328[ label="{Param|name: ID\lvalue: FLOAT\l}"]
+
+127984939710560[ label="{Feature|features: list[ID]\l}"]
+
+127984931080288[ label="{Target|name: STRING\l}"]
+
+127984939513664[ label="{Mapping|key: ID\lvalue: INT\l}"]
+
+
+
+127984930976208 -> 127984930976256[arrowtail=diamond, dir=both, headlabel="kafka "]
+127984930976208 -> 127984930968768[arrowtail=diamond, dir=both, headlabel="model "]
+127984930976208 -> 127984939710560[arrowtail=diamond, dir=both, headlabel="features "]
+127984930976208 -> 127984931080288[arrowtail=diamond, dir=both, headlabel="target "]
+127984930968768 -> 127984930967328[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+127984931080288 -> 127984939513664[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
+
+}

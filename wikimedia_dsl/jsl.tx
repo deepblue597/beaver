@@ -1,0 +1,75 @@
+Pipeline : 
+
+    'pipeline' name=ID '{' 
+
+        kafka=Kafka
+        model=Model
+        features=Feature
+        target=Target
+        
+
+    '}'
+;
+
+Kafka : 
+
+    'kafka' '{' 
+
+        'broker' ':' broker=STRING 
+        'input_topic' ':' input_topic=STRING 
+        'output_topic' ':' output_topic = STRING 
+        'consumer_group' ':' consumer_group = STRING 
+
+    '}'
+
+;
+
+Model : 
+
+    'model' '{' 
+    
+        
+        'name' ':'  name = STRING 
+        'params' ':' '{' 
+
+            params += Param
+        '}'
+    
+    
+    
+    
+    '}'
+; 
+
+Param : 
+
+    name = ID '=' value = FLOAT | INT
+
+; 
+
+Feature :
+    'features' ':' '{' features += ID+ '}'
+;
+   
+
+
+//    'raw_features' '{' raw_features += ID '}' 
+// 'new_features' '{' new_features *= Feature* '}'
+/*
+Feature : 
+    name= ID  'formula' '=' formula=STRING
+; 
+*/
+
+
+Target:
+    'target' '{'
+        'name' ':' name=STRING
+        'mapping' '{' mappings+=Mapping+ '}'
+    '}'
+;
+
+
+Mapping:
+    key=ID ':' value=INT;   
+
