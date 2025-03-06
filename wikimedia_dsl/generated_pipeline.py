@@ -26,7 +26,13 @@ output_topic = app.topic("filtered-wikipedia-events",
 sdf = app.dataframe(topic=input_topic)
 
 
-model =(preprocessing.StandardScaler()|tree.HoeffdingTreeClassifier(
+model =(
+    
+    
+    preprocessing.StandardScaler()|
+    
+     
+    tree.HoeffdingTreeClassifier(
     
 
         grace_period = 100.0, 

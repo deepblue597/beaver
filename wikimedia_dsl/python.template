@@ -26,7 +26,13 @@ output_topic = app.topic("{{pipeline.kafka.output_topic}}",
 sdf = app.dataframe(topic=input_topic)
 
 
-model =(preprocessing.{{ pipeline.model.preprocessing.name }}()|{{pipeline.model.name}}(
+model =(
+    {%if pipeline.model.preprocessing %}
+    
+    preprocessing.{{ pipeline.model.preprocessing.name }}()|
+    
+     {% endif %}
+    {{pipeline.model.name}}(
     {% for param in pipeline.model.params %}
 
         {{ param.name }} = {{param.value}}, 
