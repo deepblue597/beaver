@@ -6,15 +6,26 @@ pipeline MyPipeline {
         consumer_group: "wikipedia-model"
     }
     model {
+        preprocessing: {
+            StandardScaler
+            }
         name: "tree.HoeffdingTreeClassifier"
         params: {
             grace_period = 100
             delta = 1e-1
         }
     }
+
     features: {
-         domain namespace title comment user_name new_length old_length minor }
-    
+        domain
+        namespace
+        title
+        comment
+        user_name
+        new_length
+        old_length
+        minor
+    }
     target {
         name: "user_type"
         mapping {

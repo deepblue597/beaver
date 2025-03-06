@@ -5,7 +5,7 @@ Pipeline :
         kafka=Kafka
         model=Model
         features=Feature
-        target=Target
+        (target=Target)?
         
 
     '}'
@@ -28,7 +28,7 @@ Model :
 
     'model' '{' 
     
-        
+        ('preprocessing' ':' '{' preprocessing= Preprocessing '}')?
         'name' ':'  name = STRING 
         'params' ':' '{' 
 
@@ -40,6 +40,12 @@ Model :
     
     '}'
 ; 
+
+
+Preprocessing : 
+
+     name = ID
+;
 
 Param : 
 
@@ -53,13 +59,6 @@ Feature :
    
 
 
-//    'raw_features' '{' raw_features += ID '}' 
-// 'new_features' '{' new_features *= Feature* '}'
-/*
-Feature : 
-    name= ID  'formula' '=' formula=STRING
-; 
-*/
 
 
 Target:
@@ -72,4 +71,7 @@ Target:
 
 Mapping:
     key=ID ':' value=INT;   
+
+
+
 

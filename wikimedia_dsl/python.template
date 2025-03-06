@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 from river.datasets import synth
 from river import evaluate
-from river import metrics
+from river import metrics , preprocessing
 from river import tree
 import dill
 
@@ -26,12 +26,13 @@ output_topic = app.topic("{{pipeline.kafka.output_topic}}",
 sdf = app.dataframe(topic=input_topic)
 
 
-model = {{pipeline.model.name}}(
+model =(preprocessing.{{ pipeline.model.preprocessing.name }}()|{{pipeline.model.name}}(
     {% for param in pipeline.model.params %}
 
         {{ param.name }} = {{param.value}}, 
 
     {% endfor %}
+)
 )
 
 metric = metrics.MAE()
