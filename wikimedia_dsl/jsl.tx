@@ -28,7 +28,7 @@ Model :
 
     'model' '{' 
     
-        ('preprocessing' ':' '{' preprocessing= Preprocessing '}')?
+        ('preprocessing' ':' preprocessing= ID )?
         'name' ':'  name = STRING 
         'params' ':' '{' 
 

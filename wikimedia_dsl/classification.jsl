@@ -6,9 +6,7 @@ pipeline MyPipeline {
         consumer_group: "wikipedia-model"
     }
     model {
-        preprocessing: {
-            StandardScaler
-            }
+        preprocessing:  StandardScaler
         name: "tree.HoeffdingTreeClassifier"
         params: {
             grace_period = 100

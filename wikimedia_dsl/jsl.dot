@@ -11,30 +11,29 @@
     edge[dir=black,arrowtail=empty]
 
 
-132042995751616[ label="{Pipeline|name: ID\l}"]
+135714751273856[ label="{Pipeline|name: ID\l}"]
 
-132042995749408[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+135714751269248[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-132042995747344[ label="{Model|name: STRING\l}"]
+135714751280384[ label="{Model|preprocessing: ID\lname: STRING\l}"]
 
-132042995744992[ label="{Preprocessing|name: ID\l}"]
+135714751278896[ label="{Preprocessing|name: ID\l}"]
 
-132042995749072[ label="{Param|name: ID\lvalue: FLOAT\l}"]
+135714751271792[ label="{Param|name: ID\lvalue: FLOAT\l}"]
 
-132042995878080[ label="{Feature|features: list[ID]\l}"]
+135714751400992[ label="{Feature|features: list[ID]\l}"]
 
-132042995878320[ label="{Target|name: STRING\l}"]
+135714751400416[ label="{Target|name: STRING\l}"]
 
-132042995878656[ label="{Mapping|key: ID\lvalue: INT\l}"]
+135714751401712[ label="{Mapping|key: ID\lvalue: INT\l}"]
 
 
 
-132042995751616 -> 132042995749408[arrowtail=diamond, dir=both, headlabel="kafka "]
-132042995751616 -> 132042995747344[arrowtail=diamond, dir=both, headlabel="model "]
-132042995751616 -> 132042995878080[arrowtail=diamond, dir=both, headlabel="features "]
-132042995751616 -> 132042995878320[arrowtail=diamond, dir=both, headlabel="target "]
-132042995747344 -> 132042995744992[arrowtail=diamond, dir=both, headlabel="preprocessing "]
-132042995747344 -> 132042995749072[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-132042995878320 -> 132042995878656[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
+135714751273856 -> 135714751269248[arrowtail=diamond, dir=both, headlabel="kafka "]
+135714751273856 -> 135714751280384[arrowtail=diamond, dir=both, headlabel="model "]
+135714751273856 -> 135714751400992[arrowtail=diamond, dir=both, headlabel="features "]
+135714751273856 -> 135714751400416[arrowtail=diamond, dir=both, headlabel="target "]
+135714751280384 -> 135714751271792[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+135714751400416 -> 135714751401712[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
 
 }
