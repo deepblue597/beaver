@@ -5,6 +5,7 @@ Pipeline :
         kafka=Kafka
         model=Model
         features=Feature
+        metrics = Metric
         (target=Target)?
         
 
@@ -61,9 +62,11 @@ Feature :
 ;
    
 
+Metric : 
+    
+    'metrics' ':' '{' metrics += ID '}'
 
-
-
+;
 Target:
     'target' '{'
         'name' ':' name=STRING
@@ -78,3 +81,4 @@ Mapping:
 
 
 
+// TODO: Optimizers -> linear_model.LogisticRegression(optimizer=optimizers[0])

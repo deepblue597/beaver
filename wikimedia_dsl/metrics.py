@@ -15,58 +15,76 @@ import dill
 
 # Define an application that will connect to Kafka
 app = Application(
-    broker_address="{{pipeline.kafka.broker}}",  # Kafka broker address
+    broker_address="localhost:9092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="{{pipeline.kafka.consumer_group}}",
+    consumer_group="wikipedia-model",
 )
 
 # Define the Kafka topics
-input_topic = app.topic("{{pipeline.kafka.input_topic}}", value_deserializer="json")
-output_topic = app.topic("{{pipeline.kafka.output_topic}}",
+input_topic = app.topic("wikipedia-events", value_deserializer="json")
+output_topic = app.topic("filtered-wikipedia-events",
                         value_serializer="json")
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
 model =(
-    {%if pipeline.model.preprocessing %}
     
-    preprocessing.{{ pipeline.model.preprocessing }}()|
     
-     {% endif %}
-    {{pipeline.model.name}}(
-    {% for param in pipeline.model.params %}
-        {{ param.name }} = {{param.value.value}}, 
-    {% endfor %}
+    preprocessing.StandardScaler()|
+    
+     
+    tree.HoeffdingTreeClassifier(
+    
+        grace_period = 100, 
+    
+        delta = 1e-1, 
+    
+        nominal_attributes = ['elevel', 'car'], 
+    
 )
 )
 
-metric = {% for metric in pipeline.metrics.metrics %}  metrics.{{metric}}() {% if not loop.last %} + {% endif %} {% endfor %} 
+metric =   metrics.MAE()  +    metrics.Accuracy()   
    
 
 
 
 # Define target mapping
-{%if pipeline.target.mappings %}
+
 target_mapping = {
-    {% for mapping in pipeline.target.mappings %}
-    "{{ mapping.key }}": {{ mapping.value }},
-    {% endfor %}
+    
+    "bot": 1,
+    
+    "human": 0,
+    
 }
-{% endif %}
+
 def train_and_predict(event):
 
     X = { 
-        {% for feature in pipeline.features.features %}
-        "{{feature}}": event["{{feature}}"],
-        {% endfor %}
+        
+        "domain": event["domain"],
+        
+        "namespace": event["namespace"],
+        
+        "title": event["title"],
+        
+        "comment": event["comment"],
+        
+        "user_name": event["user_name"],
+        
+        "new_length": event["new_length"],
+        
+        "old_length": event["old_length"],
+        
+        "minor": event["minor"],
+        
     }
 
-    {% if pipeline.target.mappings %}
-    y = target_mapping[event["{{ pipeline.target.name }}"]]
-    {% else %}
-    y = event["{{ pipeline.target.name }}"]
-    {% endif %}
+    
+    y = target_mapping[event["user_type"]]
+    
     model.learn_one(X, y)
 
     predicted_class = model.predict_one(X)
@@ -74,12 +92,12 @@ def train_and_predict(event):
 
     # Update accuracy metric
     metric.update(y, predicted_class)
-    {% if pipeline.target.mappings %}
+    
     print(f"True Label: {y}, Predicted: {predicted_class}")
-    {% endif %}
+    
     print(metric)
 
-    with open('{{pipeline.model.name}}.pkl', 'wb') as model_file:
+    with open('tree.HoeffdingTreeClassifier.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
     return event

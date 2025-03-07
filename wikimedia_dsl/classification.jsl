@@ -25,6 +25,12 @@ pipeline MyPipeline {
         old_length
         minor
     }
+
+    metrics : {  
+        MAE
+        Accuracy
+    }
+
     target {
         name: "user_type"
         mapping {
