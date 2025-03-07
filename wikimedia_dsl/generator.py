@@ -24,9 +24,9 @@ template = env.get_template('python.template')
 generated_code = template.render(pipeline=config)
 
 # Save the generated code to a file
-with open('generated_pipeline.py', 'w') as f:
+with open('timeSeries_pipeline.py', 'w') as f:
     f.write(generated_code)
 
-print("Generated code saved to 'generated_pipeline.py'")
+print("Generated code saved to 'timeSeries_pipeline.py'")
 
 # %%

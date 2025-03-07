@@ -11,29 +11,48 @@
     edge[dir=black,arrowtail=empty]
 
 
-135714751273856[ label="{Pipeline|name: ID\l}"]
+131787765719712[ label="{Pipeline|name: ID\l}"]
 
-135714751269248[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+131787765724512[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-135714751280384[ label="{Model|preprocessing: ID\lname: STRING\l}"]
+131787765725424[ label="{Model|preprocessing: ID\lname: STRING\l}"]
 
-135714751278896[ label="{Preprocessing|name: ID\l}"]
+131787765724464[ label="{Param|name: ID\l}"]
 
-135714751271792[ label="{Param|name: ID\lvalue: FLOAT\l}"]
+131787765721680[ label="{*NumberValue|}"]
 
-135714751400992[ label="{Feature|features: list[ID]\l}"]
+131787765794864[ label="{StringValue|value: list[STRING]\l}"]
 
-135714751400416[ label="{Target|name: STRING\l}"]
+131787765793088[ label="{FloatValue|value: MYFLOAT\l}"]
 
-135714751401712[ label="{Mapping|key: ID\lvalue: INT\l}"]
+131787765792992[ label="{IntValue|value: MYINT\l}"]
+
+131787765794816[ label="{Feature|features: list[ID]\l}"]
+
+131787765799136[ label="{Target|name: STRING\l}"]
+
+131787765797888[ label="{Mapping|key: ID\lvalue: INT\l}"]
 
 
 
-135714751273856 -> 135714751269248[arrowtail=diamond, dir=both, headlabel="kafka "]
-135714751273856 -> 135714751280384[arrowtail=diamond, dir=both, headlabel="model "]
-135714751273856 -> 135714751400992[arrowtail=diamond, dir=both, headlabel="features "]
-135714751273856 -> 135714751400416[arrowtail=diamond, dir=both, headlabel="target "]
-135714751280384 -> 135714751271792[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-135714751400416 -> 135714751401712[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
+131787765719712 -> 131787765724512[arrowtail=diamond, dir=both, headlabel="kafka "]
+131787765719712 -> 131787765725424[arrowtail=diamond, dir=both, headlabel="model "]
+131787765719712 -> 131787765794816[arrowtail=diamond, dir=both, headlabel="features "]
+131787765719712 -> 131787765799136[arrowtail=diamond, dir=both, headlabel="target "]
+131787765725424 -> 131787765724464[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+131787765724464 -> 131787765721680[arrowtail=diamond, dir=both, headlabel="value "]
+131787765721680 -> 131787765793088 [dir=back]
+131787765721680 -> 131787765792992 [dir=back]
+131787765721680 -> 131787765794864 [dir=back]
+131787765799136 -> 131787765797888[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>
+	</tr>
+	<tr>
+		<td><b>MYINT</b></td><td>\-?\d+</td>
+	</tr>
+</table> >]
+
 
 }

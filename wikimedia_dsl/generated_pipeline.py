@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 from river.datasets import synth
 from river import evaluate
-from river import metrics , preprocessing
+from river import metrics, preprocessing
 from river import tree
 import dill
 
@@ -21,68 +21,70 @@ app = Application(
 # Define the Kafka topics
 input_topic = app.topic("wikipedia-events", value_deserializer="json")
 output_topic = app.topic("filtered-wikipedia-events",
-                        value_serializer="json")
+                         value_serializer="json")
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
-model =(
-    
-    
-    preprocessing.StandardScaler()|
-    
-     
+model = (
+
+
+    preprocessing.StandardScaler() |
+
+
     tree.HoeffdingTreeClassifier(
-    
 
-        grace_period = 100.0, 
 
-    
+        grace_period=100.0,
 
-        delta = 0.1, 
 
-    
-)
+
+        delta=0.1,
+
+
+    )
 )
 
 metric = metrics.MAE()
 
 # Define target mapping
+
 target_mapping = {
-    
+
     "bot": 1,
-    
+
     "human": 0,
-    
+
 }
+
 
 def train_and_predict(event):
 
-    X = { 
-        
+    X = {
+
         "domain": event["domain"],
-        
+
         "namespace": event["namespace"],
-        
+
         "title": event["title"],
-        
+
         "comment": event["comment"],
-        
+
         "user_name": event["user_name"],
-        
+
         "new_length": event["new_length"],
-        
+
         "old_length": event["old_length"],
-        
+
         "minor": event["minor"],
-        
+
     }
+
     y = target_mapping[event["user_type"]]
 
     model.learn_one(X, y)
 
     predicted_class = model.predict_one(X)
-    
 
     # Update accuracy metric
     metric.update(y, predicted_class)

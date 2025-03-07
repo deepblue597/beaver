@@ -11,6 +11,7 @@ pipeline MyPipeline {
         params: {
             grace_period = 100
             delta = 1e-1
+            nominal_attributes='elevel' 'car'
         }
     }
 

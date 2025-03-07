@@ -42,16 +42,19 @@ Model :
 ; 
 
 
-Preprocessing : 
-
-     name = ID
-;
 
 Param : 
 
-    name = ID '=' value = FLOAT | INT
+    name = ID '=' value =  NumberValue   ; 
 
-; 
+NumberValue : FloatValue | IntValue | StringValue;
+
+StringValue : value+=STRING;
+FloatValue: value=MYFLOAT;
+IntValue: value=MYINT;
+MYINT: /\-?\d+/;
+MYFLOAT: /\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+/;
+
 
 Feature :
     'features' ':' '{' features += ID+ '}'
@@ -64,7 +67,7 @@ Feature :
 Target:
     'target' '{'
         'name' ':' name=STRING
-        'mapping' '{' mappings+=Mapping+ '}'
+        ('mapping' '{' mappings+=Mapping+ '}')?
     '}'
 ;
 

@@ -10,9 +10,9 @@ from river.datasets import synth
 
 # %%
 from river.datasets import synth
-from river_proj import evaluate
-from river_proj import metrics
-from river_proj import tree
+from river import evaluate
+from river import metrics
+from river import tree
 
 gen = synth.Agrawal(classification_function=0, seed=42)
 dataset = iter(gen.take(1000))
