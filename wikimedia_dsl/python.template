@@ -6,6 +6,7 @@ from river.datasets import synth
 from river import evaluate
 from river import metrics , preprocessing
 from river import tree, time_series
+import matplotlib.pyplot as plt
 
 
 import dill
@@ -54,6 +55,11 @@ target_mapping = {
     {% endfor %}
 }
 {% endif %}
+{% if pipeline.plot %}
+x_axis = []
+y_true = []
+y_pred = []
+{% endif %}
 def train_and_predict(event):
 
     X = { 
@@ -64,23 +70,34 @@ def train_and_predict(event):
 
     {% if pipeline.target.mappings %}
     y = target_mapping[event["{{ pipeline.target.name }}"]]
-    {% else %}
+    {% elif pipeline.target %}
     y = event["{{ pipeline.target.name }}"]
-    {% endif %}
+    {% endif %} 
+    {% if pipeline.target %}
     model.learn_one(X, y)
-
-    predicted_class = model.predict_one(X)
+    {% else %}
+    model.learn_one(X)
+    {% endif %} 
+    
+    y_predicted = model.predict_one(X)
     
 
     # Update accuracy metric
-    metric.update(y, predicted_class)
+    metric.update(y, y_predicted)
     {% if pipeline.target.mappings %}
-    print(f"True Label: {y}, Predicted: {predicted_class}")
+    print(f"True Label: {y}, Predicted: {y_predicted}")
     {% endif %}
     print(metric)
 
     with open('{{pipeline.model.name}}.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
+
+    {% if pipeline.plot %}
+    x_axis.append(event["{{pipeline.plot.x_axis}}"])
+    y_true.append(y)
+    y_pred.append(y_predicted)
+    {% endif %}
+
 
     return event
 
@@ -93,3 +110,15 @@ sdf = sdf.to_topic(output_topic)
 
 # Run the streaming application (app automatically tracks the sdf!)
 app.run()
+
+{% if pipeline.plot %}
+# Plot the data
+plt.figure(figsize=(10, 5))
+plt.plot(x_axis, y_true, label='y')
+plt.plot(x_axis, y_predicted, label='Predicted y', linestyle='--')
+plt.xlabel("{{pipeline.plot.x_axis}}")
+plt.ylabel("{{ pipeline.target.name }}")
+plt.title("{{ pipeline.target.name }} over  {{pipeline.plot.x_axis}} ")
+plt.legend()
+plt.show()
+{% endif %}

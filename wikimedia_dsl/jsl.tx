@@ -7,6 +7,7 @@ Pipeline :
         features=Feature
         metrics = Metric
         (target=Target)?
+        (plot = Plot)?
         
 
     '}'
@@ -63,7 +64,7 @@ Feature :
    
 
 Metric : 
-    
+
     'metrics' ':' '{' metrics += ID '}'
 
 ;
@@ -79,6 +80,13 @@ Mapping:
     key=ID ':' value=INT;   
 
 
+Plot : 
+    'plot' ':' '{'
 
+        'type' ':' type = ID 
+        'x' ':' x_axis = STRING 
+    '}'
 
+;
 // TODO: Optimizers -> linear_model.LogisticRegression(optimizer=optimizers[0])
+// TODO: ensemble methods   
