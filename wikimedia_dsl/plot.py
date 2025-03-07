@@ -131,7 +131,7 @@ app.run()
 # Plot the data
 plt.figure(figsize=(10, 5))
 plt.plot(x_axis, y_true, label='y')
-plt.plot(x_axis, y_predicted, label='Predicted y', linestyle='--')
+plt.plot(x_axis, y_pred, label='Predicted y', linestyle='--')
 plt.xlabel("comment")
 plt.ylabel("user_type")
 plt.title("user_type over  comment ")
