@@ -26,6 +26,22 @@ graph LR
 
 Below i will explain each tool and its usage for the project
 
+## JSL (Jason Specific Language)
+
+The JSL (Jason Specific Language) is a domain-specific language designed to define and configure data processing pipelines. The language allows users to specify various components of a pipeline, including Kafka configurations, machine learning models, features, metrics, targets, and plotting options.
+
+### Grammar Overview
+
+The `jsl.tx` file defines the grammar for the JSL language. Below is an overview of the main components:
+
+- **Pipeline**: The top-level construct that defines a data processing pipeline.
+- **Kafka**: Configuration for Kafka, including broker address, input and output topics, and consumer group.
+- **Model**: Definition of the machine learning model, including preprocessing, model type, name, and parameters.
+- **Feature**: Specification of the features used in the model.
+- **Metric**: Definition of the evaluation metrics.
+- **Target**: Specification of the target variable and optional mappings.
+- **Plot**: Configuration for plotting the results.
+
 ## Kafka
 
 ### Purpose
