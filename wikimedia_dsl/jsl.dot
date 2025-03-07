@@ -11,46 +11,46 @@
     edge[dir=black,arrowtail=empty]
 
 
-130655181896352[ label="{Pipeline|name: ID\l}"]
+138603911434448[ label="{Pipeline|name: ID\l}"]
 
-130655181967616[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+138603911432480[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-130655181967520[ label="{Model|preprocessing: ID\lname: STRING\l}"]
+138603911516560[ label="{Model|preprocessing: ID\ltype: ID\lname: ID\l}"]
 
-130655181967568[ label="{Param|name: ID\l}"]
+138603911516464[ label="{Param|name: ID\l}"]
 
-130655181970736[ label="{*NumberValue|}"]
+138603911516512[ label="{*NumberValue|}"]
 
-130655181971888[ label="{StringValue|value: list[STRING]\l}"]
+138603911519200[ label="{StringValue|value: list[STRING]\l}"]
 
-130655181971312[ label="{FloatValue|value: MYFLOAT\l}"]
+138603911521408[ label="{FloatValue|value: MYFLOAT\l}"]
 
-130655181970688[ label="{IntValue|value: MYINT\l}"]
+138603911515216[ label="{IntValue|value: MYINT\l}"]
 
-130655185742512[ label="{Feature|features: list[ID]\l}"]
+138603911519584[ label="{Feature|features: list[ID]\l}"]
 
-130655181966608[ label="{Metric|metrics: list[ID]\l}"]
+138603911515888[ label="{Metric|metrics: list[ID]\l}"]
 
-130655181964928[ label="{Target|name: STRING\l}"]
+138603911521936[ label="{Target|name: STRING\l}"]
 
-130655181970352[ label="{Mapping|key: ID\lvalue: INT\l}"]
+138603911512192[ label="{Mapping|key: ID\lvalue: INT\l}"]
 
-130655181963872[ label="{Plot|type: ID\lx_axis: STRING\l}"]
+138603911513920[ label="{Plot|type: ID\lx_axis: STRING\l}"]
 
 
 
-130655181896352 -> 130655181967616[arrowtail=diamond, dir=both, headlabel="kafka "]
-130655181896352 -> 130655181967520[arrowtail=diamond, dir=both, headlabel="model "]
-130655181896352 -> 130655185742512[arrowtail=diamond, dir=both, headlabel="features "]
-130655181896352 -> 130655181966608[arrowtail=diamond, dir=both, headlabel="metrics "]
-130655181896352 -> 130655181964928[arrowtail=diamond, dir=both, headlabel="target "]
-130655181896352 -> 130655181963872[arrowtail=diamond, dir=both, headlabel="plot "]
-130655181967520 -> 130655181967568[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-130655181967568 -> 130655181970736[arrowtail=diamond, dir=both, headlabel="value "]
-130655181970736 -> 130655181971312 [dir=back]
-130655181970736 -> 130655181970688 [dir=back]
-130655181970736 -> 130655181971888 [dir=back]
-130655181964928 -> 130655181970352[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
+138603911434448 -> 138603911432480[arrowtail=diamond, dir=both, headlabel="kafka "]
+138603911434448 -> 138603911516560[arrowtail=diamond, dir=both, headlabel="model "]
+138603911434448 -> 138603911519584[arrowtail=diamond, dir=both, headlabel="features "]
+138603911434448 -> 138603911515888[arrowtail=diamond, dir=both, headlabel="metrics "]
+138603911434448 -> 138603911521936[arrowtail=diamond, dir=both, headlabel="target "]
+138603911434448 -> 138603911513920[arrowtail=diamond, dir=both, headlabel="plot "]
+138603911516560 -> 138603911516464[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+138603911516464 -> 138603911516512[arrowtail=diamond, dir=both, headlabel="value "]
+138603911516512 -> 138603911521408 [dir=back]
+138603911516512 -> 138603911515216 [dir=back]
+138603911516512 -> 138603911519200 [dir=back]
+138603911521936 -> 138603911512192[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>

@@ -2,10 +2,9 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from river.datasets import synth
-from river import evaluate
+
 from river import metrics , preprocessing
-from river import tree, time_series
+from river import {{pipeline.model.type}}
 import matplotlib.pyplot as plt
 
 
@@ -35,7 +34,7 @@ model =(
     preprocessing.{{ pipeline.model.preprocessing }}()|
     
      {% endif %}
-    {{pipeline.model.name}}(
+    {{pipeline.model.type}}.{{pipeline.model.name}}(
     {% for param in pipeline.model.params %}
         {{ param.name }} = {{param.value.value}}, 
     {% endfor %}

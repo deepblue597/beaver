@@ -31,7 +31,8 @@ Model :
     'model' '{' 
     
         ('preprocessing' ':' preprocessing= ID )?
-        'name' ':'  name = STRING 
+        'type' ':' type = ID 
+        'name' ':'  name = ID
         'params' ':' '{' 
 
             params += Param

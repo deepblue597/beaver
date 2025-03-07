@@ -2,10 +2,9 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from river.datasets import synth
-from river import evaluate
+
 from river import metrics , preprocessing
-from river import tree, time_series
+from river import tree
 import matplotlib.pyplot as plt
 
 
@@ -105,7 +104,7 @@ def train_and_predict(event):
     
     print(metric)
 
-    with open('tree.HoeffdingTreeClassifier.pkl', 'wb') as model_file:
+    with open('HoeffdingTreeClassifier.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
     
