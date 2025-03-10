@@ -10,8 +10,6 @@ import matplotlib.pyplot as plt
 
 import dill
 
-# A minimal application reading temperature data in Celsius from the Kafka topic,
-# converting it to Fahrenheit and producing alerts to another topic.
 
 # Define an application that will connect to Kafka
 app = Application(
@@ -104,7 +102,7 @@ def train_and_predict(event):
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-
+# Output topic 
 sdf = sdf.to_topic(output_topic)
 
 # Run the streaming application (app automatically tracks the sdf!)

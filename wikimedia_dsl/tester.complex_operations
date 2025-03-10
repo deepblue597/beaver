@@ -1,0 +1,2 @@
+len_diff = new_length - old_length;
+Celcius = (Fahrenheit - 32) * 5/9;

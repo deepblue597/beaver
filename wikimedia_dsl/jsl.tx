@@ -89,5 +89,7 @@ Plot :
     '}'
 
 ;
+
 // TODO: Optimizers -> linear_model.LogisticRegression(optimizer=optimizers[0])
 // TODO: ensemble methods   
+// TODO: Formulas for creation of new characteristics

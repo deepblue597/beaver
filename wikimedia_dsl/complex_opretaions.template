@@ -1,0 +1,3 @@
+{% for assignment in assignments %}
+sdf['{{ assignment.target }}'] = {{ assignment.expression }};
+{% endfor %}
