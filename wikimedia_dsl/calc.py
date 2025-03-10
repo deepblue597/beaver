@@ -111,6 +111,18 @@ def operand_action(operand):
         return operand.op_expr
 
 
+def flatten_nested_list(nested_list):
+    result = []
+    for item in nested_list:
+        if isinstance(item, list):  # If the item is a list, recursively flatten it
+            result.append('(')  # Add opening parenthesis
+            result.extend(flatten_nested_list(item))  # Flatten the nested list
+            result.append(')')  # Add closing parenthesis
+        else:  # If the item is not a list, add it directly
+            result.append(item)
+    return result
+
+
 def main(debug=False):
 
     processors = {
@@ -140,6 +152,19 @@ def main(debug=False):
     for result in results:
         print('result is ',  result.variable)
     print(tester)
+    flattened_list = flatten_nested_list(tester)
+    print(flattened_list)
+    output = []
+    for item in flattened_list:
+        if item == '(' or item == ')':
+            output.append(item)
+        elif type(item) == int:
+            output.append(item)
+        elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
+            output.append(item)
+        else:
+            output.append(f'sdf[{item}]')
+    print(output)
     # print(namespace)
 
 
