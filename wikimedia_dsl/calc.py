@@ -23,8 +23,11 @@ def assignment_action(assignment):
     # tester.append(assignment.variable)
     # print('the assignment', assignment.variable)
     namespace[assignment.variable] = assignment.expression
-    tester.append('=')
+    print('expression is ', assignment.expression)
     tester.append(assignment.variable)
+    tester.append('=')
+    for operand in assignment.expression:
+        tester.append(operand)
 
 
 # def calc_action(calc):
@@ -53,7 +56,7 @@ def expression_action(expression):
         #     ret -= operand
         pass
     # print(tester)
-    tester.extend(ret)
+    # tester.extend(ret)
     return ret
 
 
@@ -136,7 +139,7 @@ def main(debug=False):
     # assert (result - 6.93805555) < 0.0001
     for result in results:
         print('result is ',  result.variable)
-    print(tester[::-1])
+    print(tester)
     # print(namespace)
 
 
