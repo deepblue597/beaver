@@ -15,23 +15,14 @@ Factor: (sign=PlusOrMinus)?  op=Operand;
 Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');
 '''
 
-# Global variable namespace
-namespace = {}
-
 
 def assignment_action(assignment):
-    # tester.append(assignment.variable)
-    # print('the assignment', assignment.variable)
-    namespace[assignment.variable] = assignment.expression
-    print('expression is ', assignment.expression)
+
     tester.append(assignment.variable)
     tester.append('=')
-    for operand in assignment.expression:
-        tester.append(operand)
-
-
-# def calc_action(calc):
-#     return calc.expression
+    tester.append(assignment.expression)
+    # for operand in assignment.expression:
+    #     tester.append(operand)
 
 
 tester = []
@@ -40,23 +31,12 @@ tester = []
 def expression_action(expression):
 
     ret = [expression.operands[0]]
-    # print(ret)
-    # tester.append(ret)
-    print(expression.operands)
-    print(expression.operators)
+
     for operator, operand in zip(expression.operators,
                                  expression.operands[1:]):
         ret.append(operator)
         ret.append(operand)
-        # tester.append(operator)
-        # tester.append(operand)
-        # if operator == '+':
-        #     ret += operand
-        # else:
-        #     ret -= operand
-        pass
-    # print(tester)
-    # tester.extend(ret)
+
     return ret
 
 
@@ -66,23 +46,13 @@ def final_action(expression):
 
 def term_action(term):
     ret = [term.operands[0]]
-    print(term.operands)
-    print(term.operators)
-    # tester.append(ret)
+
     for operator, operand in zip(term.operators,
                                  term.operands[1:]):
 
         ret.append(operator)
         ret.append(operand)
-        # print(operator)
-        # tester.append(operator)
-        # print(operand)
-        # tester.append(operand)
-        # if operator == '*':
-        #     ret *= operand
-        # else:
-        #     ret /= operand
-        pass
+
     return ret
 
 
@@ -94,18 +64,11 @@ def factor_action(factor):
 def operand_action(operand):
 
     if operand.op_num is not None:
-        # print('operand is ', operand.op_num)
-        # tester.append(operand.op_num)
         return operand.op_num
     elif operand.op_id:
-        # print('variable is ', operand.op_id)
-        # tester.append(f'sdf[{operand.op_id}]')
+
         return operand.op_id
-        # if operand.op_id in namespace:
-        #     return namespace[operand.op_id]
-        # else:
-        #     raise Exception(f'Unknown variable "{operand.op_id}" '
-        #                     f'at position {operand._tx_position}')
+
     else:
 
         return operand.op_expr
@@ -148,12 +111,8 @@ def main(debug=False):
     calc = calc_mm.model_from_str(input_expr)
     results = calc.assignments
 
-    # assert (result - 6.93805555) < 0.0001
-    for result in results:
-        print('result is ',  result.variable)
-    print(tester)
     flattened_list = flatten_nested_list(tester)
-    print(flattened_list)
+
     output = []
     for item in flattened_list:
         if item == '(' or item == ')':
@@ -165,7 +124,6 @@ def main(debug=False):
         else:
             output.append(f'sdf[{item}]')
     print(output)
-    # print(namespace)
 
 
 if __name__ == '__main__':
