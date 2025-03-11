@@ -5,7 +5,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='thesis',
-    version='0.1',
+    version='0.6.0',
     packages=find_packages(),  # Automatically find packages in subdirectories
     install_requires=requirements,
     author='Iasonas Kakandris',

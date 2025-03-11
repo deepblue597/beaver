@@ -23,13 +23,11 @@ def parse_command_line_arguments():
 if __name__ == "__main__":
 
     processors = {
-        # 'Calc': calc_action,
         'Assignment': assignment_action,
         'Expression': expression_action,
         'Term': term_action,
         'Factor': factor_action,
         'Operand': operand_action,
-        # 'Final': final_action
     }
 
     args = parse_command_line_arguments()
@@ -47,7 +45,6 @@ if __name__ == "__main__":
     print(f"Kafka Broker: {config.kafka.broker}")
     print(f"Model Type: {config.model.name}")
     print(f"Features: {config.features.features}")
-    print(f"Features: {config}")
     print(f"Target: {config.target.name}")
 
     # %%
@@ -56,18 +53,6 @@ if __name__ == "__main__":
     template = env.get_template('python.template')
 
     flattened_list = flatten_nested_list(tester)
-
-    output = []
-    # for item in flattened_list:
-    #     if item == '(' or item == ')':
-    #         output.append(item)
-    #     elif type(item) == int:
-    #         output.append(item)
-    #     elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
-    #         output.append(item)
-    #     else:
-    #         output.append(f'sdf["{item}"]')
-    print(flattened_list)
 
     # Render template with parsed configuration
     generated_code = template.render(

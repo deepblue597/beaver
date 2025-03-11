@@ -22,71 +22,58 @@ app = Application(
 input_topic = app.topic("wikipedia-events", value_deserializer="json")
 output_topic = app.topic("filtered-wikipedia-events",
                         value_serializer="json")
+
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
-
+# Define River Model
 model =(
     
-    
     preprocessing.StandardScaler()|
-    
-     
     tree.HoeffdingTreeClassifier(
     
-        grace_period = 100, 
-    
-        delta = 1e-1, 
-    
-        nominal_attributes = ['elevel', 'car'], 
-    
-)
+        grace_period = 100,
+        delta = 1e-1,
+        nominal_attributes = ['elevel', 'car'],
+    )
 )
 
 
-
+# Define new features
 sdf["test"]=((16)-(sdf["q"]))
 sdf["len_diff"]=((sdf["new_length"])-(sdf["old_length"]))
 
 
-metric =   metrics.MAE()  +    metrics.Accuracy()   
+# Define metrics
+metric = metrics.MAE() +metrics.Accuracy() 
    
-
 
 
 # Define target mapping
 
 target_mapping = {
-    
     "bot": 1,
-    
     "human": 0,
     
 }
 
 
+
+
+
+# Function for training the model
 def train_and_predict(event):
 
     X = { 
-        
         "domain": event["domain"],
-        
         "namespace": event["namespace"],
-        
         "title": event["title"],
-        
         "comment": event["comment"],
-        
         "user_name": event["user_name"],
-        
         "new_length": event["new_length"],
-        
         "old_length": event["old_length"],
-        
         "minor": event["minor"],
-        
         "test": event["test"],
-        
         "len_diff": event["len_diff"],
         
     }

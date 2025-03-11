@@ -22,25 +22,25 @@ app = Application(
 input_topic = app.topic("{{pipeline.kafka.input_topic}}", value_deserializer="json")
 output_topic = app.topic("{{pipeline.kafka.output_topic}}",
                         value_serializer="json")
+
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
-
+# Define River Model
 model =(
-    {%if pipeline.model.preprocessing %}
+    {%-if pipeline.model.preprocessing %}
     
-    preprocessing.{{ pipeline.model.preprocessing }}()|
-    
-     {% endif %}
+    preprocessing.{{- pipeline.model.preprocessing }}()|
+    {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
     {% for param in pipeline.model.params %}
         {{ param.name }} = {{param.value.value}}, 
-    {% endfor %}
+    {%- endfor %}
+    )
 )
-)
 
 
-
+# Define new features
 {%for assignment in assignments -%}
 {% if assignment == ';' %}
 {% elif assignment == '(' or assignment == ')' -%}
@@ -54,32 +54,41 @@ model =(
 {%- endif %}
 {%-endfor%}
 
-metric = {% for metric in pipeline.metrics.metrics %}  metrics.{{metric}}() {% if not loop.last %} + {% endif %} {% endfor %} 
+# Define metrics
+metric = {% for metric in pipeline.metrics.metrics -%}  
+metrics.{{metric}}() 
+{%- if not loop.last %} + 
+{%- endif -%} 
+{% endfor %} 
    
-
 
 
 # Define target mapping
 {%if pipeline.target.mappings %}
 target_mapping = {
-    {% for mapping in pipeline.target.mappings %}
+    {% for mapping in pipeline.target.mappings -%}
     "{{ mapping.key }}": {{ mapping.value }},
     {% endfor %}
 }
 {% endif %}
+
+
 {% if pipeline.plot %}
+# Variables for plotting
 x_axis = []
 y_true = []
 y_pred = []
 {% endif %}
+
+# Function for training the model
 def train_and_predict(event):
 
     X = { 
-        {% for feature in pipeline.features.features %}
+        {% for feature in pipeline.features.features -%}
         "{{feature}}": event["{{feature}}"],
         {% endfor %}
         {%-for i in range(1, assignments|length)%}
-        {%-if assignments[i] == '='%}
+        {%-if assignments[i] == '='-%}
         "{{assignments[i-1]}}": event["{{assignments[i-1]}}"],
         {%endif-%}
         {%endfor%}
