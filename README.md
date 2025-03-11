@@ -1,6 +1,8 @@
-# Design and implementation of a textual domain language to produce machine learning applications on data streams
+# Penguin :penguin:
 
-![pinguin.logo](/pinguin_logo.webp)
+<p align="center">
+  <img src="pinguin_logo_2.png" />
+</p>
 
 ## Description
 
