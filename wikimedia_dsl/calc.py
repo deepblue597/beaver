@@ -3,6 +3,7 @@ This is a variant of calc example using object processors for on-the-fly
 evaluation.
 """
 from textx import metamodel_from_str
+from jinja2 import Template
 
 grammar = '''
 Calc: assignments*=Assignment ;
@@ -17,10 +18,12 @@ Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');
 
 
 def assignment_action(assignment):
-
+    print('Assignment:', assignment.variable)
     tester.append(assignment.variable)
     tester.append('=')
     tester.append(assignment.expression)
+    tester.append(';')
+    print(assignment.expression)
     # for operand in assignment.expression:
     #     tester.append(operand)
 
@@ -38,10 +41,6 @@ def expression_action(expression):
         ret.append(operand)
 
     return ret
-
-
-def final_action(expression):
-    namespace[expression.variable] = expression.expression
 
 
 def term_action(term):
@@ -62,11 +61,11 @@ def factor_action(factor):
 
 
 def operand_action(operand):
-
-    if operand.op_num is not None:
+    print(operand.op_num)
+    if operand.op_num is not None and operand.op_num != 0:
         return operand.op_num
     elif operand.op_id:
-
+        print(operand.op_id)
         return operand.op_id
 
     else:
@@ -104,12 +103,13 @@ def main(debug=False):
 
     input_expr = '''
         
-        b = 2 * a + 17;
+        len_diff = 2 * new_len + 17;
         c = a + (2 * b +3) ;
     '''
-
+    template_str = """
+{% for assignment in assignments %}{{assignment}}{% endfor %}
+        """
     calc = calc_mm.model_from_str(input_expr)
-    results = calc.assignments
 
     flattened_list = flatten_nested_list(tester)
 
@@ -122,8 +122,22 @@ def main(debug=False):
         elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
             output.append(item)
         else:
-            output.append(f'sdf[{item}]')
+            output.append(f'sdf["{item}"]')
     print(output)
+
+    template = Template(template_str)
+
+    # Render the template
+    output2 = template.render(assignments=output)
+
+    # Output the result
+    print(output2)
+
+    # Save the generated code to a file
+    with open('calc_result.py', 'w') as f:
+        f.write(output2)
+
+    print("Generated code saved to:", 'calc_result.py')
 
 
 if __name__ == '__main__':

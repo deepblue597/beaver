@@ -3,6 +3,8 @@ from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
 
+from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester
+
 # %%
 
 
@@ -20,10 +22,22 @@ def parse_command_line_arguments():
 # %%
 if __name__ == "__main__":
 
+    processors = {
+        # 'Calc': calc_action,
+        'Assignment': assignment_action,
+        'Expression': expression_action,
+        'Term': term_action,
+        'Factor': factor_action,
+        'Operand': operand_action,
+        # 'Final': final_action
+    }
+
     args = parse_command_line_arguments()
 
     # Load the DSL grammar
     ml_mm = metamodel_from_file('jsl.tx')
+
+    ml_mm.register_obj_processors(processors)
 
     # Parse the DSL configuration file
     config = ml_mm.model_from_file(args.metamodel)
@@ -33,6 +47,7 @@ if __name__ == "__main__":
     print(f"Kafka Broker: {config.kafka.broker}")
     print(f"Model Type: {config.model.name}")
     print(f"Features: {config.features.features}")
+    print(f"Features: {config}")
     print(f"Target: {config.target.name}")
 
     # %%
@@ -40,8 +55,22 @@ if __name__ == "__main__":
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('python.template')
 
+    flattened_list = flatten_nested_list(tester)
+
+    output = []
+    for item in flattened_list:
+        if item == '(' or item == ')':
+            output.append(item)
+        elif type(item) == int:
+            output.append(item)
+        elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
+            output.append(item)
+        else:
+            output.append(f'sdf["{item}"]')
+    print(output)
+
     # Render template with parsed configuration
-    generated_code = template.render(pipeline=config)
+    generated_code = template.render(pipeline=config, assignments=output)
 
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:

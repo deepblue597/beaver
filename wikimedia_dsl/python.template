@@ -39,6 +39,11 @@ model =(
 )
 )
 
+
+
+{%for assignment in assignments%}{% if assignment == 'sdf[";"]' %}
+{%else%}{{assignment}}{%endif%}{%endfor%}
+
 metric = {% for metric in pipeline.metrics.metrics %}  metrics.{{metric}}() {% if not loop.last %} + {% endif %} {% endfor %} 
    
 

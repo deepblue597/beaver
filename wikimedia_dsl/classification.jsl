@@ -7,7 +7,8 @@ pipeline MyPipeline {
     }
     model {
         preprocessing:  StandardScaler
-        name: "tree.HoeffdingTreeClassifier"
+        type : tree
+        name: HoeffdingTreeClassifier
         params: {
             grace_period = 100
             delta = 1e-1
@@ -15,8 +16,9 @@ pipeline MyPipeline {
         }
     }
 
-    features: {
-        domain
+    features {
+        
+        raw_featues : { domain
         namespace
         title
         comment
@@ -24,7 +26,17 @@ pipeline MyPipeline {
         new_length
         old_length
         minor
+        } 
+
+        generated_features: { 
+
+        len_diff = 16 - q;
+        len_diff = new_length - old_length;
     }
+
+    }
+
+   
 
     metrics : {  
         MAE

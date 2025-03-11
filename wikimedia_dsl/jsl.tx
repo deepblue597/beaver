@@ -60,9 +60,21 @@ MYFLOAT: /\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+/;
 
 
 Feature :
-    'features' ':' '{' features += ID+ '}'
+    'features' '{'
+        'raw_featues' ':' '{' features += ID+ '}'
+        ('generated_features'  ':' '{' assignments*= Assignment '}')? 
+    
+    '}' 
 ;
-   
+
+
+Assignment: variable=ID '=' expression=Expression ';';
+Expression: operands=Term (operators=PlusOrMinus operands=Term)*;
+PlusOrMinus: '+' | '-';
+Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
+MulOrDiv: '*' | '/' ;
+Factor: (sign=PlusOrMinus)?  op=Operand;
+Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');
 
 Metric : 
 
