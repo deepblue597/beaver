@@ -75,7 +75,7 @@ First of all we have the name of the pipeline ( in this case **MyPipeline** ). I
 
 **model** is the River model that we will use. The user has to define the type of the algorithm, the name of the model and can also modify the default parameters of the model. Furthermore, the user can define a preprocessing step.
 
-**features** are the characteristics that we will use from the data. You have to define at least one feature in **raw_features** which are the original characteristics that we get from the data. Additionaly the user can also define new features using the **generated_features** attribute. This is an optinal attribute.
+**features** are the characteristics that we will use from the data. You have to define at least one feature in **raw_features** which are the original characteristics that we get from the data. Additionaly the user can define new features using the **generated_features** attribute. This is an optinal attribute.
 
 **metrics** are the metrics that will be used to score the performance of the model. The user can add one or more metrics.
 
@@ -119,7 +119,7 @@ The `jsl.tx` file defines the grammar for the JSL language. Below is an overview
 - **Target**: Specification of the target variable and optional mappings.
 - **Plot**: Configuration for plotting the results.
 
-## Kafka
+## :open_file_folder: Kafka
 
 ### Purpose
 
@@ -173,23 +173,23 @@ A script for testing Kafka integration with Quix Streams. It reads data from a K
 
 A script that demonstrates windowing operations on streaming data using Quix Streams. It reads data from a Kafka topic, applies tumbling windows, and computes aggregate functions such as sum and mean. The results are then written to another Kafka topic.
 
-## wikimedia
+## :page_with_curl: wikimedia
 
 This directory is a project for processing and analyzing Wikimedia streaming data using Kafka, Quix Streams and River.
 
-#### HoeffdingTreeClassifier.pkl
+### HoeffdingTreeClassifier.pkl
 
 A serialized file containing the trained `HoeffdingTreeClassifier` model. This model is used for predicting whether a user is a bot or a human based on Wikimedia event data.
 
-#### model.py
+### model.py
 
 A script for training a `HoeffdingTreeClassifier` model using streaming data from a Kafka topic. The script reads data from the `wikipedia-events` Kafka topic, processes it, trains the model, and writes the results to the `filtered-wikipedia-events` Kafka topic.
 
-#### prediction.py
+### prediction.py
 
 A script for loading the trained `HoeffdingTreeClassifier` model and using it to make predictions on new data. The script includes an example of predicting whether a user is a bot or a human based on a sample Wikimedia event.
 
-#### producer.py
+### producer.py
 
 A script for producing Wikimedia event data to a Kafka topic. The script consumes data from the Wikimedia EventStreams API, processes it, and produces messages to the `wikipedia-events` Kafka topic.
 
