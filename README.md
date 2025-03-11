@@ -42,6 +42,79 @@ The `jsl.tx` file defines the grammar for the JSL language. Below is an overview
 - **Target**: Specification of the target variable and optional mappings.
 - **Plot**: Configuration for plotting the results.
 
+Lets walk through an example to better understand how it works
+
+```
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:9092"
+        input_topic: "wikipedia-events"
+        output_topic: "filtered-wikipedia-events"
+        consumer_group: "wikipedia-model"
+    }
+    model {
+        preprocessing:  StandardScaler
+        type : tree
+        name: HoeffdingTreeClassifier
+        params: {
+            grace_period = 100
+            delta = 1e-1
+            nominal_attributes='elevel' 'car'
+        }
+    }
+
+    features {
+
+        raw_featues : {
+            domain
+            namespace
+            title
+            comment
+            user_name
+            new_length
+            old_length
+            minor
+        }
+
+        generated_features: {
+
+            test = 16 - q;
+            len_diff = new_length - old_length;
+        }
+
+    }
+
+
+
+    metrics : {
+        MAE
+        Accuracy
+    }
+
+    target {
+        name: "user_type"
+        mapping {
+            bot: 1
+            human: 0
+        }
+    }
+}
+```
+
+this pipeline can be found in `classification.jsl`
+
+First of all we have the name of the pipeline ( in this case **MyPipeline** ). It is the ID of the pipeline so the `python.template` can identify it.
+
+**kafka** is the identifier for the kafka configuration. The user can define the broker from where the data will be retrieved, the input topic, the output topic and consumer group of the pipeline.
+
+**model** is the River model that we will use. The user has to define the type of the algorithm, the name of the model and can also modify the default parameters of the model. Furthermore, the user can define a preprocessing step.
+
+**features** are the characteristics that we will use from the data. You have to define at least one feature in **raw_features** which are the original characteristics that we get from the data. Additionaly the user can also define new features using the **generated_features** attribute. This is an optinal attribute.
+
+**metrics** are the metrics that will be used to score the performance of the model. The user can add one or more metrics.
+
+**target** the target attribute is used for classification purposes. The user will need to string values of the targets to some int values.
+
 ## Kafka
 
 ### Purpose

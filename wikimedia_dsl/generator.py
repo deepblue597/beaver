@@ -58,19 +58,20 @@ if __name__ == "__main__":
     flattened_list = flatten_nested_list(tester)
 
     output = []
-    for item in flattened_list:
-        if item == '(' or item == ')':
-            output.append(item)
-        elif type(item) == int:
-            output.append(item)
-        elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
-            output.append(item)
-        else:
-            output.append(f'sdf["{item}"]')
-    print(output)
+    # for item in flattened_list:
+    #     if item == '(' or item == ')':
+    #         output.append(item)
+    #     elif type(item) == int:
+    #         output.append(item)
+    #     elif item == '+' or item == '-' or item == '*' or item == '/' or item == '=':
+    #         output.append(item)
+    #     else:
+    #         output.append(f'sdf["{item}"]')
+    print(flattened_list)
 
     # Render template with parsed configuration
-    generated_code = template.render(pipeline=config, assignments=output)
+    generated_code = template.render(
+        pipeline=config, assignments=flattened_list)
 
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:
