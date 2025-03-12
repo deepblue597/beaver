@@ -3,7 +3,7 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import tree
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -15,7 +15,7 @@ import dill
 
 # Define an application that will connect to Kafka
 app = Application(
-    broker_address="localhost:9092",  # Kafka broker address
+    broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
     consumer_group="wikipedia-model",
 )
@@ -23,35 +23,32 @@ app = Application(
 # Define the Kafka topics
 input_topic = app.topic("wikipedia-events", value_deserializer="json")
 output_topic = app.topic("filtered-wikipedia-events",
-                         value_serializer="json")
+                        value_serializer="json")
 
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 # Define River Model
+model =(
+    tree.HoeffdingTreeClassifier(
+    
+        grace_period = 100,
+        delta = 1e-1,
 
-model = ensemble.BaggingClassifier(
-    model=(
-
-        preprocessing.StandardScaler() |
-        tree.HoeffdingTreeClassifier(
-            optim.AdaBound(),
-            grace_period=100,
-            delta=1e-1,
-            nominal_attributes=['elevel', 'car'],
-        )
-    ), n_models=3,
-    seed=42
+    )
 )
+    
+
+
 
 
 # Define new features
-sdf["test"] = ((16)-(sdf["q"]))
-sdf["len_diff"] = ((sdf["new_length"])-(sdf["old_length"]))
+sdf["len_diff"]=((sdf["new_length"])-(sdf["old_length"]))
 
 
 # Define metrics
-metric = metrics.MAE() + metrics.Accuracy()
+metric = metrics.MAE() 
+   
 
 
 # Define target mapping
@@ -59,14 +56,17 @@ metric = metrics.MAE() + metrics.Accuracy()
 target_mapping = {
     "bot": 1,
     "human": 0,
-
+    
 }
+
+
+
 
 
 # Function for training the model
 def train_and_predict(event):
 
-    X = {
+    X = { 
         "domain": event["domain"],
         "namespace": event["namespace"],
         "title": event["title"],
@@ -75,26 +75,32 @@ def train_and_predict(event):
         "new_length": event["new_length"],
         "old_length": event["old_length"],
         "minor": event["minor"],
-        "test": event["test"],
         "len_diff": event["len_diff"],
-
+        
     }
 
+    
     y = target_mapping[event["user_type"]]
-
+     
+    
     model.learn_one(X, y)
-
+     
+    
     y_predicted = model.predict_one(X)
+    
 
     # Update accuracy metric
     metric.update(y, y_predicted)
-
+    
     print(f"True Label: {y}, Predicted: {y_predicted}")
-
+    
     print(metric)
 
     with open('HoeffdingTreeClassifier.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
+
+    
+
 
     return event
 
@@ -102,8 +108,9 @@ def train_and_predict(event):
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Output topic
+# Output topic 
 sdf = sdf.to_topic(output_topic)
 
 # Run the streaming application (app automatically tracks the sdf!)
 app.run()
+

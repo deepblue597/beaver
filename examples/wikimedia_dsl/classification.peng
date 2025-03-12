@@ -1,25 +1,18 @@
 pipeline MyPipeline {
     kafka {
-        broker: "localhost:9092"
+        broker: "localhost:39092"
         input_topic: "wikipedia-events"
         output_topic: "filtered-wikipedia-events"
         consumer_group: "wikipedia-model"
     }
     model {
-        ensemble : { 
-            algorithm : BaggingClassifier
-            number_of_models : 3 
-            seed : 42
-        }
-        preprocessing:  StandardScaler
         type : tree
         name: HoeffdingTreeClassifier
         params: {
             grace_period = 100
             delta = 1e-1
-            nominal_attributes='elevel' 'car'
         }
-        optimizer : AdaBound
+        
     }
 
     features {
@@ -37,9 +30,9 @@ pipeline MyPipeline {
 
         generated_features: { 
 
-            test = 16 - q;
+            
             len_diff = new_length - old_length;
-    }
+        }
 
     }
 
@@ -47,7 +40,6 @@ pipeline MyPipeline {
 
     metrics : {  
         MAE
-        Accuracy
     }
 
     target {
