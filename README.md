@@ -304,7 +304,7 @@ A script for producing Wikimedia event data to a Kafka topic. The script consume
 `kafka_proj` folder contains all the necessary files to create your own kafka infrastructure. What you will need is run `docker-compose.yml` using
 
 ```bash
-docker compose up docker-compose.yml
+docker compose up
 ```
 
 This will create a Kafka infrastructure with 3 brokers and 3 controllers. You can check your configuration at `localhost:8080`

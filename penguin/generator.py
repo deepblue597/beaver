@@ -12,7 +12,7 @@ def parse_command_line_arguments():
     parser = argparse.ArgumentParser(description='Pipeline generator')
 
     parser.add_argument('--metamodel', default='general.jsl',
-                        help='metamodel text', type=str)
+                        help='the file in which your pipeline is configured', type=str)
     parser.add_argument('--generated_file_name', default='generated_pipeline.py',
                         help='Destination file name', type=str)
 
