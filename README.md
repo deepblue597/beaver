@@ -107,18 +107,123 @@ Penguin is a domain-specific language designed to define and configure data proc
 
 ### Grammar Overview
 
-The `penguin.tx` file defines the grammar for the JSL language. Below is an overview of the main components:
+The Penguin DSL grammar is defined in the `penguin.tx` file. Below is an overview of the main components of the language:
 
-- **Pipeline**: The top-level construct that defines a data processing pipeline.
-- **Kafka**: Configuration for Kafka, including broker address, input and output topics, and consumer group.
-- **Model**: Definition of the machine learning model, including preprocessing, model type, name, and parameters.
-- **Param**: The parameters for the model.
-- **Feature**: Specification of the features used in the model. They are 2 kinds of features:
-  - **raw_features**: features that already exist in the data.
-  - **generated_features**: features that the user can create e.g to turn Fahrenheit to Celsius
-- **Metric**: Definition of the evaluation metrics.
-- **Target**: Specification of the target variable and optional mappings.
-- **Plot**: Configuration for plotting the results.
+#### Pipeline
+
+A `Pipeline` is the top-level construct that contains all the components of a machine learning pipeline.
+
+```plaintext
+pipeline <name> {
+    kafka { ... }
+    model { ... }
+    features { ... }
+    metrics { ... }
+    target { ... }?
+    plot { ... }?
+}
+```
+
+#### Kafka
+
+The `Kafka` component specifies the Kafka configuration for the pipeline.
+
+```plaintext
+kafka {
+    broker: "<broker>"
+    input_topic: "<input_topic>"
+    output_topic: "<output_topic>"
+    consumer_group: "<consumer_group>"
+}
+```
+
+#### Model
+
+The `Model` component defines the machine learning model used in the pipeline. It can optionally include an ensemble configuration and preprocessing steps.
+
+```plaintext
+model {
+    ensemble: {
+        algorithm: <algorithm>
+        number_of_models: <num>
+        seed: <seed>
+    }?
+    preprocessing: <preprocessing>?
+    type: <type>
+    name: <name>
+    params: {
+        <param_name> = <param_value>
+    }
+    optimizer: <optimizer>?
+}
+```
+
+#### Feature
+
+The `Feature` component specifies the raw and generated features used in the model.
+
+```plaintext
+features {
+    raw_features: {
+        <feature1> <feature2> ...
+    }
+    generated_features: {
+        <assignment1>
+        <assignment2>
+        ...
+    }?
+}
+```
+
+#### Assignment
+
+An `Assignment` defines a generated feature using an expression.
+
+```plaintext
+<variable> = <expression>;
+```
+
+#### Expression
+
+An `Expression` is used in assignments to define the value of a generated feature.
+
+```plaintext
+<term> (<operator> <term>)*
+```
+
+#### Metric
+
+The `Metric` component specifies the metrics used to evaluate the model.
+
+```plaintext
+metrics: {
+    <metric1> <metric2> ...
+}
+```
+
+#### Target
+
+The `Target` component defines the target variable for the model and optionally includes mappings.
+
+```plaintext
+target {
+    name: "<name>"
+    mapping {
+        <key>: <value>
+    }?
+}
+```
+
+#### Plot
+
+The `Plot` component specifies the plot configuration for visualizing the results.
+
+```plaintext
+plot: {
+    type: <type>
+    x: "<x_axis>"
+}
+```
 
 ## :open_file_folder: Kafka
 
