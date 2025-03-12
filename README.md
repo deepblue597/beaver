@@ -4,15 +4,63 @@
   <img src="pinguin_logo_2.png" />
 </p>
 
+## Table of Contents
+
+- [Description](#memo-description)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Quickstart](#ocean-quickstart)
+- [Detailed Explanation](#detailed-explanation)
+  - [Pipeline](#pipeline)
+  - [Kafka](#kafka)
+  - [Model](#model)
+  - [Features](#features)
+  - [Metrics](#metrics)
+  - [Target](#target)
+  - [Plot](#plot)
+- [Usage](#usage)
+- [Tools and Technologies](#tools-and-technologies)
+- [Visual Representation](#visual-representation)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## :memo: Description
 
-Penguin is a DSL language designed for machine learning in live data. It is designed to make the the process of retrieving, storing, filtering data as well as training models easy and accessible to everybody.
+Penguin is a DSL language designed for machine learning in live data. It is designed to make the process of retrieving, storing, filtering data as well as training models easy and accessible to everybody.
+
+## Prerequisites
+
+- Python 3.x
+- Docker
+- Apache Kafka
+- Other dependencies as required
+
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd thesis
+   ```
+
+2. Install the required Python packages:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Set up Kafka infrastructure:
+   ```bash
+   cd kafka_proj
+   docker compose up
+   ```
 
 ## :ocean: Quickstart
 
-To create your first pipeline we will start with a classification example which can be found in `classification.jsl`
+To create your first pipeline we will start with a classification example which can be found in `classification.peng`
 
-```
+```plaintext
 pipeline MyPipeline {
     kafka {
         broker: "localhost:9092"
@@ -29,10 +77,8 @@ pipeline MyPipeline {
             delta = 1e-1
         }
     }
-
     features {
-
-        raw_featues : {
+        raw_features: {
             domain
             namespace
             title
@@ -42,21 +88,14 @@ pipeline MyPipeline {
             old_length
             minor
         }
-
         generated_features: {
-
             len_diff = new_length - old_length;
         }
-
     }
-
-
-
-    metrics : {
+    metrics: {
         MAE
         Accuracy
     }
-
     target {
         name: "user_type"
         mapping {
@@ -67,49 +106,29 @@ pipeline MyPipeline {
 }
 ```
 
-First of all we have the name of the pipeline ( in this case **MyPipeline** ). It is the ID of the pipeline so the `python.template` can identify it.
+To run this code, save it as `<name>.peng`, go to the penguin folder by typing:
 
-**kafka** is the identifier for the kafka configuration. The user can define the broker from where the data will be retrieved, the input topic, the output topic and consumer group of the pipeline. We assume that Kafka is already configured. Below we will have instructions on how to setup your own kafka infrastructure
-
-**model** is the River model that we will use. The user has to define the type of the algorithm, the name of the model and can also modify the default parameters of the model. Furthermore, the user can define a preprocessing step.
-
-**features** are the characteristics that we will use from the data. You have to define at least one feature in **raw_features** which are the original characteristics that we get from the data. Additionaly the user can define new features using the **generated_features** attribute. This is an optinal attribute.
-
-**metrics** are the metrics that will be used to score the performance of the model. The user can add one or more metrics.
-
-**target** the target attribute is used for classification purposes. The user will need to string values of the targets to some int values.
-
-## Tools that are being used
-
-- Apache Kafka
-- Quix streams
-- River
-- Docker
-- Cassandra
-- Text-X
-
-A visual representation of the process that will be built is displayed below
-
-```mermaid
-graph LR
-    IOT[IOT Devices] -->|Data| Kafka
-    Kafka -->|Stream Data| Quix[Quix Streams]
-    Quix -->|Filtered Data| River
-	River -->|ML Results| Cassandra
-    Kafka --> |Aggregated Data| Cassandra
+```bash
+cd penguin
 ```
 
-Below i will explain each tool and its usage for the project
+and then type in your terminal:
 
-## :books: Penguin language
+```bash
+python3 generator.py --metamodel <name>.peng --generated_file_name <pipeline>.py
+```
 
-Penguin is a domain-specific language designed to define and configure data processing pipelines. The language allows users to specify various components of a pipeline, including Kafka configurations, machine learning models, features, metrics, targets, and plotting options.
+This will create your pipeline at `<pipeline>.py`. Then you can type:
 
-### Grammar Overview
+```bash
+python3 <pipeline>.py
+```
 
-The Penguin DSL grammar is defined in the `penguin.tx` file. Below is an overview of the main components of the language:
+and your model will be created.
 
-#### Pipeline
+## :memo: Detailed Explanation
+
+### Pipeline
 
 A `Pipeline` is the top-level construct that contains all the components of a machine learning pipeline.
 
@@ -124,7 +143,7 @@ pipeline <name> {
 }
 ```
 
-#### Kafka
+### Kafka
 
 The `Kafka` component specifies the Kafka configuration for the pipeline.
 
@@ -137,7 +156,7 @@ kafka {
 }
 ```
 
-#### Model
+### Model
 
 The `Model` component defines the machine learning model used in the pipeline. It can optionally include an ensemble configuration and preprocessing steps.
 
@@ -158,7 +177,7 @@ model {
 }
 ```
 
-#### Feature
+### Features
 
 The `Feature` component specifies the raw and generated features used in the model.
 
@@ -175,23 +194,7 @@ features {
 }
 ```
 
-#### Assignment
-
-An `Assignment` defines a generated feature using an expression.
-
-```plaintext
-<variable> = <expression>;
-```
-
-#### Expression
-
-An `Expression` is used in assignments to define the value of a generated feature.
-
-```plaintext
-<term> (<operator> <term>)*
-```
-
-#### Metric
+### Metrics
 
 The `Metric` component specifies the metrics used to evaluate the model.
 
@@ -201,7 +204,7 @@ metrics: {
 }
 ```
 
-#### Target
+### Target
 
 The `Target` component defines the target variable for the model and optionally includes mappings.
 
@@ -214,7 +217,7 @@ target {
 }
 ```
 
-#### Plot
+### Plot
 
 The `Plot` component specifies the plot configuration for visualizing the results.
 
@@ -225,86 +228,59 @@ plot: {
 }
 ```
 
-## :open_file_folder: Kafka
+## Usage
 
-### Purpose
+The `examples` folder contains several projects that demonstrate how to use the Penguin DSL for different machine learning tasks. Below is a brief description of each project:
 
-The kafka folder contains scripts and configurations for setting up and managing a Kafka environment. This includes producing and consuming messages, as well as administrative tasks such as creating and deleting topics. The folder also includes a Docker Compose file for setting up a Kafka cluster using Docker.
+### Wikimedia Project
 
-### Files
+The Wikimedia project demonstrates how to use the Penguin DSL to create a machine learning pipeline for classifying Wikipedia events. The project includes the following files:
 
-#### admin_kafka.py
+- `HoeffdingTreeClassifier.pkl`: A pre-trained model file.
+- `model.py`: Script for defining and training the model.
+- `prediction.py`: Script for making predictions using the trained model.
+- `producer.py`: Script for producing data to Kafka topics.
 
-Contains functions for Kafka administrative tasks using the confluent_kafka library.
-Functions include creating and deleting topics.
-Example usage of AdminClient to manage Kafka topics.
-consumer2.py
+### Electricity Project
 
-Script for consuming messages from a Kafka topic.
-Uses the confluent_kafka library to create a Kafka consumer.
-Includes logic for handling messages and closing the consumer gracefully.
+The Electricity project showcases how to use the Penguin DSL for predicting electricity consumption. The project includes the following files:
 
-#### docker-compose.yml
+- `combined_file_hourly.csv`: Combined hourly electricity consumption data.
+- `combined_file.csv`: Combined electricity consumption data.
+- `consumer.py`: Script for consuming data from Kafka topics.
+- `data_test.py`: Script for testing data processing.
+- `FR_2024_hourly.csv`: Hourly electricity consumption data for France.
+- `live_producer.py`: Script for live data production.
+- `playground.py`: Script for experimenting with data and models.
+- `prediction.py`: Script for making predictions using the trained model.
+- `producer.py`: Script for producing data to Kafka topics.
+- `SNARIMAX_electricity_h.pkl`: A pre-trained model file for electricity consumption prediction.
 
-Docker Compose configuration file for setting up a Kafka cluster.
-Defines services for Kafka controllers and brokers.
-Includes environment variables and dependencies for each service.
-Also includes a Kafka UI service for managing the Kafka cluster.
+### House Prices Project
 
-#### kafka_server_funcs.py
+The House Prices project demonstrates how to use the Penguin DSL for predicting house prices. The project includes the following file:
 
-Contains utility functions for parsing command-line arguments.
-Used by other scripts to standardize argument parsing.
+- `house-prices.py`: Script for defining, training, and evaluating the house prices prediction model using the Penguin DSL.
 
-#### producer_v2.py
+## Tools and Technologies
 
-Script for producing messages to a Kafka topic.
-Uses the confluent_kafka library to create a Kafka producer.
-Includes functions for constructing events and IDs, initializing namespaces, and handling delivery callbacks.
-Parses command-line arguments to configure the producer.
+- Apache Kafka
+- Quix streams
+- River
+- Docker
+- Text-X
 
-## Quix Streams
+## Visual Representation
 
-This directory contains various scripts and modules for processing and analyzing streaming data using Kafka and Quix Streams.
+A visual representation of the process that will be built is displayed below:
 
-#### **init**.py
-
-An empty file that indicates that the directory should be treated as a Python package.
-
-#### kafka_test.py
-
-A script for testing Kafka integration with Quix Streams. It reads data from a Kafka topic, processes it, and writes the results to different Kafka topics. The script includes examples of filtering, dropping columns, and producing alerts.
-
-#### windowing.py
-
-A script that demonstrates windowing operations on streaming data using Quix Streams. It reads data from a Kafka topic, applies tumbling windows, and computes aggregate functions such as sum and mean. The results are then written to another Kafka topic.
-
-## :page_with_curl: wikimedia
-
-This directory is a project for processing and analyzing Wikimedia streaming data using Kafka, Quix Streams and River.
-
-### HoeffdingTreeClassifier.pkl
-
-A serialized file containing the trained `HoeffdingTreeClassifier` model. This model is used for predicting whether a user is a bot or a human based on Wikimedia event data.
-
-### model.py
-
-A script for training a `HoeffdingTreeClassifier` model using streaming data from a Kafka topic. The script reads data from the `wikipedia-events` Kafka topic, processes it, trains the model, and writes the results to the `filtered-wikipedia-events` Kafka topic.
-
-### prediction.py
-
-A script for loading the trained `HoeffdingTreeClassifier` model and using it to make predictions on new data. The script includes an example of predicting whether a user is a bot or a human based on a sample Wikimedia event.
-
-### producer.py
-
-A script for producing Wikimedia event data to a Kafka topic. The script consumes data from the Wikimedia EventStreams API, processes it, and produces messages to the `wikipedia-events` Kafka topic.
-
-## :hammer: Setup your Kafka infrastructure
-
-`kafka_proj` folder contains all the necessary files to create your own kafka infrastructure. What you will need is run `docker-compose.yml` using
-
-```bash
-docker compose up
+```mermaid
+graph LR
+    IOT[IOT Devices] -->|Data| Kafka
+    Kafka -->|Stream Data| Quix[Quix Streams]
+    Quix -->|Filtered Data| River
 ```
 
-This will create a Kafka infrastructure with 3 brokers and 3 controllers. You can check your configuration at `localhost:8080`
+## 🤝 Affiliations
+
+![auth_logo](auth_logo.png)
