@@ -27,7 +27,6 @@ pipeline MyPipeline {
         params: {
             grace_period = 100
             delta = 1e-1
-            nominal_attributes='elevel' 'car'
         }
     }
 
@@ -46,7 +45,6 @@ pipeline MyPipeline {
 
         generated_features: {
 
-            test = 16 - q;
             len_diff = new_length - old_length;
         }
 
@@ -109,12 +107,15 @@ Penguin is a domain-specific language designed to define and configure data proc
 
 ### Grammar Overview
 
-The `jsl.tx` file defines the grammar for the JSL language. Below is an overview of the main components:
+The `penguin.tx` file defines the grammar for the JSL language. Below is an overview of the main components:
 
 - **Pipeline**: The top-level construct that defines a data processing pipeline.
 - **Kafka**: Configuration for Kafka, including broker address, input and output topics, and consumer group.
 - **Model**: Definition of the machine learning model, including preprocessing, model type, name, and parameters.
-- **Feature**: Specification of the features used in the model.
+- **Param**: The parameters for the model.
+- **Feature**: Specification of the features used in the model. They are 2 kinds of features:
+  - **raw_features**: features that already exist in the data.
+  - **generated_features**: features that the user can create e.g to turn Fahrenheit to Celsius
 - **Metric**: Definition of the evaluation metrics.
 - **Target**: Specification of the target variable and optional mappings.
 - **Plot**: Configuration for plotting the results.

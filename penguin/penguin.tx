@@ -29,7 +29,12 @@ Kafka :
 Model : 
 
     'model' '{' 
-    
+
+        ('ensemble' ':' '{'
+            ensemble= Ensemble
+            
+            '}'
+        )?
         ('preprocessing' ':' preprocessing= ID )?
         'type' ':' type = ID 
         'name' ':'  name = ID
@@ -37,6 +42,7 @@ Model :
 
             params += Param
         '}'
+        ('optimizer' ':' optimizer = ID )?
     
     
     
@@ -44,7 +50,13 @@ Model :
     '}'
 ; 
 
-
+Ensemble : 
+    
+        'algorithm' ':' algorithm = ID 
+        'number_of_models' ':' num = INT 
+        'seed' ':' seed = INT
+    
+; 
 
 Param : 
 
@@ -103,5 +115,3 @@ Plot :
 ;
 
 // TODO: Optimizers -> linear_model.LogisticRegression(optimizer=optimizers[0])
-// TODO: ensemble methods   
-// TODO: Formulas for creation of new characteristics

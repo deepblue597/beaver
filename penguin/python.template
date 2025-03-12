@@ -6,6 +6,8 @@ from quixstreams.models import TopicConfig
 from river import metrics , preprocessing
 from river import {{pipeline.model.type}}
 import matplotlib.pyplot as plt
+from river import ensemble
+from river import optim
 
 
 import dill
@@ -27,17 +29,34 @@ output_topic = app.topic("{{pipeline.kafka.output_topic}}",
 sdf = app.dataframe(topic=input_topic)
 
 # Define River Model
+
+{%-if pipeline.model.ensemble %}
+
+model = ensemble.{{pipeline.model.ensemble.algorithm}}(
+{%-endif%}
 model =(
     {%-if pipeline.model.preprocessing %}
     
     preprocessing.{{- pipeline.model.preprocessing }}()|
     {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
+    {%-if pipeline.model.optimizer-%}
+        optim.{{pipeline.model.optimizer}}()
+    {%-endif%}
     {% for param in pipeline.model.params %}
         {{ param.name }} = {{param.value.value}}, 
+
     {%- endfor %}
+
     )
 )
+    {%if pipeline.model.ensemble %}
+    ,n_models =  {{pipeline.model.ensemble.num}}, 
+    seed= {{pipeline.model.ensemble.seed}}
+)
+    {%-endif%}
+
+
 
 
 # Define new features

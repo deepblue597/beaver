@@ -6,6 +6,11 @@ pipeline MyPipeline {
         consumer_group: "wikipedia-model"
     }
     model {
+        ensemble : { 
+            algorithm : BaggingClassifier
+            number_of_models : 3 
+            seed : 42
+        }
         preprocessing:  StandardScaler
         type : tree
         name: HoeffdingTreeClassifier
@@ -14,6 +19,7 @@ pipeline MyPipeline {
             delta = 1e-1
             nominal_attributes='elevel' 'car'
         }
+        optimizer : AdaBound
     }
 
     features {

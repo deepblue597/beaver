@@ -33,7 +33,7 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Load the DSL grammar
-    ml_mm = metamodel_from_file('jsl.tx')
+    ml_mm = metamodel_from_file('penguin.tx')
 
     ml_mm.register_obj_processors(processors)
 
@@ -63,5 +63,3 @@ if __name__ == "__main__":
         f.write(generated_code)
 
     print("Generated code saved to:", args.generated_file_name)
-
-# %%
