@@ -35,7 +35,7 @@ Penguin is a DSL language designed for machine learning in live data. It is desi
 - Apache Kafka
 - Other dependencies as required
 
-## Installation
+## :wrench: Installation
 
 1. Clone the repository:
 
@@ -228,7 +228,7 @@ plot: {
 }
 ```
 
-## Usage
+## :computer: Usage
 
 The `examples` folder contains several projects that demonstrate how to use the Penguin DSL for different machine learning tasks. Below is a brief description of each project:
 
@@ -262,7 +262,7 @@ The House Prices project demonstrates how to use the Penguin DSL for predicting 
 
 - `house-prices.py`: Script for defining, training, and evaluating the house prices prediction model using the Penguin DSL.
 
-## Tools and Technologies
+## 🛠 Tools and Technologies
 
 - Apache Kafka
 - Quix streams
@@ -270,7 +270,7 @@ The House Prices project demonstrates how to use the Penguin DSL for predicting 
 - Docker
 - Text-X
 
-## Visual Representation
+## :eyes: Visual Representation
 
 A visual representation of the process that will be built is displayed below:
 
