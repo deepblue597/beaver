@@ -1,7 +1,7 @@
 # :penguin: Penguin
 
 <p align="center">
-  <img src="pinguin_logo_2.png" />
+  <img src="logos/pinguin_logo_2.png" />
 </p>
 
 ## Table of Contents
@@ -283,4 +283,4 @@ graph LR
 
 ## 🤝 Affiliations
 
-![auth_logo](auth_logo.png)
+![auth_logo](logos/auth_logo.png)
