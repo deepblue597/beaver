@@ -38,10 +38,10 @@ Model :
         ('preprocessing' ':' preprocessing= ID )?
         'type' ':' type = ID 
         'name' ':'  name = ID
-        'params' ':' '{' 
+        ('params' ':' '{' 
 
             params += Param
-        '}'
+        '}')?
         ('optimizer' ':' optimizer = ID )?
     
     
@@ -109,8 +109,11 @@ Plot :
     'plot' ':' '{'
 
         'type' ':' type = ID 
-        'x' ':' x_axis = STRING 
+        ('x' ':' x_axis = STRING)? 
     '}'
 
 ;
 
+
+// TODO: multiple preprocessing methods 
+// TODO: parameters on optimizers  

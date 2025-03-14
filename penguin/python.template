@@ -2,13 +2,14 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
+import seaborn as sns
 
 from river import metrics , preprocessing
 from river import {{pipeline.model.type}}
 import matplotlib.pyplot as plt
 from river import ensemble
 from river import optim
-
+from sklearn.metrics import confusion_matrix
 
 import dill
 
@@ -59,9 +60,9 @@ model =(
     {%-endif%}
 
 
-
-{%for assignment in assignments -%}
 # Define new features
+{%for assignment in assignments -%}
+
 {% if assignment == ';' %}
 {% elif assignment == '(' or assignment == ')' -%}
     {{ assignment }}
@@ -98,7 +99,9 @@ target_mapping = {
 
 {% if pipeline.plot %}
 # Variables for plotting
+{%- if pipeline.plot.type == 'graph'-%}
 x_axis = []
+{% endif %}
 y_true = []
 y_pred = []
 {% endif %}
@@ -137,17 +140,23 @@ def train_and_predict(event):
     print(f"True Label: {y}, Predicted: {y_predicted}")
     {% endif %}
     print(metric)
-
+    {%-if pipeline.metrics.metrics|length > 1%}
     {% for metric in pipeline.metrics.metrics -%}  
     {{metric}}.append(metric.get()[{{loop.index0}}])
-    
     {% endfor %} 
+    {%else%}
+    {{pipeline.metrics.metrics[0]}}.append(metric) 
+    {%endif%}
+    
+
 
     with open('{{pipeline.model.name}}.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
     {% if pipeline.plot %}
+    {%- if pipeline.plot.type == 'graph'-%}
     x_axis.append(event["{{pipeline.plot.x_axis}}"])
+    {%- endif %}
     y_true.append(y)
     y_pred.append(y_predicted)
     {% endif %}
@@ -166,7 +175,7 @@ sdf = sdf.to_topic(output_topic)
 # Run the streaming application (app automatically tracks the sdf!)
 app.run()
 
-{% if pipeline.plot %}
+{% if pipeline.plot.type == 'graph' %}
 # Plot the data
 plt.figure(figsize=(10, 5))
 plt.plot(x_axis, y_true, label='y')
@@ -176,6 +185,30 @@ plt.ylabel("{{ pipeline.target.name }}")
 plt.title("{{ pipeline.target.name }} over  {{pipeline.plot.x_axis}} ")
 plt.legend()
 plt.show()
+
+{%elif pipeline.plot.type == 'scatter' %}
+
+plt.figure(figsize=(8, 6))
+plt.scatter(y_true, y_pred, alpha=0.5)
+plt.plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], 'r--')  # Ideal line
+plt.xlabel("Real Values {{(pipeline.target.name)}}")
+plt.ylabel("Predicted Values {{pipeline.target.name}} ")
+plt.title("Real vs Predicted {{pipeline.target.name}}")
+plt.show()
+
+{%elif pipeline.plot.type == 'heatmap'%}
+
+# Generate the confusion matrix
+cm = confusion_matrix(y_true, y_pred)
+
+# Create a heatmap of the confusion matrix
+plt.figure(figsize=(6, 5))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix Heatmap')
+plt.show()
+
 {% endif %}
 
 

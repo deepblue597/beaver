@@ -50,8 +50,7 @@ pipeline MyPipeline {
     }
 
     plot: { 
-        type: graph 
-        x : "CRIM"
+        type: scatter 
     }
 
 }

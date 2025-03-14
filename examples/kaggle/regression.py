@@ -23,7 +23,8 @@ app = Application(
 # Define the Kafka topics
 input_topic = app.topic("boston-house-prices", value_deserializer="json")
 
-# Create a Streaming DataFrame connected to the input Kafka topic
+output_topic = app.topic("filtered-boston-house-prices",
+                        value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 # Define River Model
@@ -57,7 +58,6 @@ MSE = []
 
 
 # Variables for plotting
-x_axis = []
 y_true = []
 y_pred = []
 
@@ -108,7 +108,6 @@ def train_and_predict(event):
         dill.dump(model, model_file)
 
     
-    x_axis.append(event["CRIM"])
     y_true.append(y)
     y_pred.append(y_predicted)
     
@@ -120,19 +119,20 @@ def train_and_predict(event):
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Run the streaming application (app automatically tracks the sdf!)
+# Output topic 
+sdf = sdf.to_topic(output_topic)# Run the streaming application (app automatically tracks the sdf!)
 app.run()
 
 
-# Plot the data
-plt.figure(figsize=(10, 5))
-plt.plot(x_axis, y_true, label='y')
-plt.plot(x_axis, y_pred, label='Predicted y', linestyle='--')
-plt.xlabel("CRIM")
-plt.ylabel("MEDV")
-plt.title("MEDV over  CRIM ")
-plt.legend()
+
+plt.figure(figsize=(8, 6))
+plt.scatter(y_true, y_pred, alpha=0.5)
+plt.plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], 'r--')  # Ideal line
+plt.xlabel("Real Values MEDV")
+plt.ylabel("Predicted Values MEDV ")
+plt.title("Real vs Predicted MEDV")
 plt.show()
+
 
 
 
