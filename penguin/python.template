@@ -58,9 +58,8 @@ model =(
 
 
 
-
-# Define new features
 {%for assignment in assignments -%}
+# Define new features
 {% if assignment == ';' %}
 {% elif assignment == '(' or assignment == ')' -%}
     {{ assignment }}
@@ -80,10 +79,13 @@ metrics.{{metric}}()
 {%- endif -%} 
 {% endfor %} 
    
+{% for metric in pipeline.metrics.metrics -%}  
+{{metric}} = [] 
+{% endfor %} 
 
 
-# Define target mapping
 {%if pipeline.target.mappings %}
+# Define target mapping
 target_mapping = {
     {% for mapping in pipeline.target.mappings -%}
     "{{ mapping.key }}": {{ mapping.value }},
@@ -134,6 +136,11 @@ def train_and_predict(event):
     {% endif %}
     print(metric)
 
+    {% for metric in pipeline.metrics.metrics -%}  
+    {{metric}}.append(metric.get()[{{loop.index0}}])
+    
+    {% endfor %} 
+
     with open('{{pipeline.model.name}}.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
@@ -167,3 +174,12 @@ plt.title("{{ pipeline.target.name }} over  {{pipeline.plot.x_axis}} ")
 plt.legend()
 plt.show()
 {% endif %}
+
+
+{% for metric in pipeline.metrics.metrics -%}  
+plt.plot({{metric}})
+plt.xlabel('Iterations')
+plt.ylabel('{{metric}}')
+plt.title('{{metric}} over Training Iterations')
+plt.show()
+{% endfor %} 

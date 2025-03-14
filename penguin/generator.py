@@ -45,7 +45,7 @@ if __name__ == "__main__":
     print(f"Kafka Broker: {config.kafka.broker}")
     print(f"Model Type: {config.model.name}")
     print(f"Features: {config.features.features}")
-    print(f"Target: {config.target.name}")
+    # print(f"Target: {config.target.name}")
 
     # %%
     # Load Jinja2 template
