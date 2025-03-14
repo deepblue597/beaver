@@ -19,7 +19,7 @@ Kafka :
 
         'broker' ':' broker=STRING 
         'input_topic' ':' input_topic=STRING 
-        'output_topic' ':' output_topic = STRING 
+        ('output_topic' ':' output_topic = STRING)? 
         'consumer_group' ':' consumer_group = STRING 
 
     '}'
@@ -94,7 +94,7 @@ Metric :
 
 ;
 Target:
-    'target' '{'
+    'target' ':' '{'
         'name' ':' name=STRING
         ('mapping' '{' mappings+=Mapping+ '}')?
     '}'

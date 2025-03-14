@@ -3,7 +3,7 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import tree
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -17,36 +17,43 @@ import dill
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="boston-model-8",
+    consumer_group="boston-model-2",
 )
 
 # Define the Kafka topics
 input_topic = app.topic("boston-house-prices", value_deserializer="json")
-output_topic = app.topic("filtered-boston-house-prices",
-                         value_serializer="json")
 
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 # Define River Model
-model = (
-
-    preprocessing.StandardScaler() |
+model =(
+    
+    preprocessing.StandardScaler()|
     tree.HoeffdingAdaptiveTreeRegressor(
-
-        grace_period=50,
-        model_selector_decay=0.3,
-        seed=0,
+    
+        grace_period = 50,
+        model_selector_decay = 0.3,
+        seed = 0,
 
     )
 )
+    
+
+
+
 
 
 # Define metrics
-metric = metrics.MAE() + metrics.MSE()
+metric = metrics.MAE() +metrics.MSE() 
+   
+MAE = [] 
+MSE = [] 
+ 
 
-MAE = []
-MSE = []
+
+
+
 
 
 # Variables for plotting
@@ -58,7 +65,7 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-    X = {
+    X = { 
         "CRIM": event["CRIM"],
         "ZN": event["ZN"],
         "INDUS": event["INDUS"],
@@ -73,39 +80,45 @@ def train_and_predict(event):
         "B": event["B"],
         "LSTAT": event["LSTAT"],
         "MEDV": event["MEDV"],
-
+        
     }
 
+    
     y = event["MEDV"]
-
+     
+    
     model.learn_one(X, y)
-
+     
+    
     y_predicted = model.predict_one(X)
+    
 
     # Update accuracy metric
     metric.update(y, y_predicted)
-
+    
     print(metric)
 
     MAE.append(metric.get()[0])
-
+    
     MSE.append(metric.get()[1])
+    
+     
 
     with open('HoeffdingAdaptiveTreeRegressor.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
+    
     x_axis.append(event["CRIM"])
     y_true.append(y)
     y_pred.append(y_predicted)
+    
+
 
     return event
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
-
-# Output topic
-sdf = sdf.to_topic(output_topic)
 
 # Run the streaming application (app automatically tracks the sdf!)
 app.run()
@@ -122,6 +135,7 @@ plt.legend()
 plt.show()
 
 
+
 plt.plot(MAE)
 plt.xlabel('Iterations')
 plt.ylabel('MAE')
@@ -132,3 +146,4 @@ plt.xlabel('Iterations')
 plt.ylabel('MSE')
 plt.title('MSE over Training Iterations')
 plt.show()
+ 
