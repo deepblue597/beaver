@@ -279,6 +279,7 @@ graph LR
     IOT[IOT Devices] -->|Data| Kafka
     Kafka -->|Stream Data| Quix[Quix Streams]
     Quix -->|Filtered Data| River
+    River -->|Output Data| Kafka
 ```
 
 ## 🤝 Affiliations
