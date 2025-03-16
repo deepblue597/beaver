@@ -130,3 +130,6 @@ Plot :
 
 
 // TODO: multiple preprocessing methods 
+// TODO: Check stats and utils River 
+// TODO: Add encoders for string data 
+// TODO: Check TransformerUnion for multiple preprocessing
