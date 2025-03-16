@@ -35,7 +35,9 @@ Model :
             
             '}'
         )?
-        ('preprocessing' ':' preprocessing= ID )?
+        ('preprocessing' ':''{' 
+            preprocessors+= Preprocessing  
+        '}')?
         'type' ':' type = ID 
         'name' ':'  name = ID
         ('params' ':' '{' 
@@ -49,6 +51,21 @@ Model :
     
     '}'
 ; 
+
+Preprocessing : 
+
+    'preprocesor' '{'
+
+        'name' ':' name = ID  
+        ('feature_for_process' ':' process_feature  = STRING ) ?
+        ('feature_type' ':' feature_type = ID )?
+        ('params' ':' '{' 
+
+            params += Param
+        '}')?
+
+    '}'
+;
 
 Optimizer : 
 

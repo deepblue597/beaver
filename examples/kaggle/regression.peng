@@ -6,7 +6,19 @@ pipeline MyPipeline {
         consumer_group: "boston-model-2"
     }
     model {
-        preprocessing : StandardScaler
+        preprocessing : { 
+            
+            preprocesor { 
+                name : OneHotEncoder
+                feature_type : str 
+            }
+
+            preprocesor { 
+                name : StandardScaler
+                feature_type : int 
+            }
+            
+        }
         type : tree
         name: HoeffdingAdaptiveTreeRegressor
         params: {

@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 from river import ensemble
 from river import optim
 from sklearn.metrics import confusion_matrix
+from river import compose
+from river import preprocessing
 
 import dill
 
@@ -31,6 +33,25 @@ output_topic = app.topic("{{pipeline.kafka.output_topic}}",
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
+
+{%if pipeline.model.preprocessors %}
+#Define preprocessing  
+{%- for  preprocessor in pipeline.model.preprocessors%}
+
+preprocessor_{{loop.index0}} = {% if preprocessor.feature_type -%} 
+    compose.SelectType({{preprocessor.feature_type}}) |
+{%- endif -%}
+preprocessing.{{preprocessor.name}}(
+    {%- if preprocessor.params-%}
+    {%- for param in preprocessor.params -%}
+     {{ param.name }} = {{param.value.value}},
+    {%endfor%}
+    {%- endif -%}
+)
+
+{%- endfor %}
+{%- endif %}
+
 # Define River Model
 
 {%-if pipeline.model.ensemble %}
@@ -38,9 +59,13 @@ sdf = app.dataframe(topic=input_topic)
 model = ensemble.{{pipeline.model.ensemble.algorithm}}(
 {%-endif%}
 model =(
-    {%-if pipeline.model.preprocessing %}
-    
-    preprocessing.{{- pipeline.model.preprocessing }}()|
+    {%-if pipeline.model.preprocessors %}
+    (
+    {% for  preprocessor in pipeline.model.preprocessors%}
+    preprocessor_{{loop.index0}}
+    {%- if not loop.last %} + 
+    {%- endif -%} 
+    {%endfor%})|
     {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
     {%-if pipeline.model.optimizer-%}
