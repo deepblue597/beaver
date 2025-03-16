@@ -44,7 +44,11 @@ model =(
     {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
     {%-if pipeline.model.optimizer-%}
-        optim.{{pipeline.model.optimizer}}()
+        optim.{{pipeline.model.optimizer.name}}(
+            {%-for param in pipeline.model.optimizer.params %}
+            {{ param.name }} = {{param.value.value}}, 
+            {%-endfor%}
+            ),
     {%-endif%}
     {% for param in pipeline.model.params %}
         {{ param.name }} = {{param.value.value}}, 

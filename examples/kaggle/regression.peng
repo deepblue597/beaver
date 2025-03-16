@@ -14,6 +14,15 @@ pipeline MyPipeline {
             model_selector_decay=0.3
             seed=0
         }
+
+        optimizer { 
+
+        name : AdaBound
+        params : { 
+            lr = 0.01
+        }
+    }
+        
         
     }
 

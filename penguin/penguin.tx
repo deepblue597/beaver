@@ -42,13 +42,27 @@ Model :
 
             params += Param
         '}')?
-        ('optimizer' ':' optimizer = ID )?
+        (optimizer = Optimizer)?
     
     
     
     
     '}'
 ; 
+
+Optimizer : 
+
+    'optimizer' '{'
+
+        'name' ':' name=ID 
+        ('params' ':' '{' 
+
+            params += Param
+        '}')?
+
+    '}'
+
+;
 
 Ensemble : 
     
@@ -116,4 +130,3 @@ Plot :
 
 
 // TODO: multiple preprocessing methods 
-// TODO: parameters on optimizers  
