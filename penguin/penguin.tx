@@ -4,7 +4,7 @@ Pipeline :
 
         kafka=Kafka
         model=Model
-        features=Feature
+        (features=Feature)?
         metrics = Metric
         (target=Target)?
         (plot = Plot)?
@@ -104,7 +104,7 @@ MYFLOAT: /\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+/;
 
 Feature :
     'features' '{'
-        'raw_featues' ':' '{' features += ID+ '}'
+        ('drop_features' ':' '{' features += ID+ '}')?
         ('generated_features'  ':' '{' assignments*= Assignment '}')? 
     
     '}' 

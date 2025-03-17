@@ -15,9 +15,9 @@ import dill
 
 # Define an application that will connect to Kafka
 app = Application(
-    broker_address="localhost:39092",  # Kafka broker address
+    broker_address="192.168.1.249:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="wikipedia-model",
+    consumer_group="wikipedia-model-test",
 )
 
 # Define the Kafka topics
@@ -45,7 +45,7 @@ model =(
 # Define new features
 sdf["len_diff"]=((sdf["new_length"])-(sdf["old_length"]))
 
-
+#Drop feature 
 # Define metrics
 metric = metrics.MAE() 
    

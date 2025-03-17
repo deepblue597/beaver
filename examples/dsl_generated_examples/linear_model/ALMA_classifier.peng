@@ -1,0 +1,30 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "phishing"
+        consumer_group: "ALMA"
+    }
+    model {
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: ALMAClassifier
+    }
+   
+    metrics : {  
+        MAE
+        
+    }
+
+    target : {
+        name: "CLASS_LABEL"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

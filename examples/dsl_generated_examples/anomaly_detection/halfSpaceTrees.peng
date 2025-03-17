@@ -1,0 +1,39 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "credit-card-fraud"
+        consumer_group: "halfSpaceTree"
+    }
+    model {
+        preprocessing : { 
+            
+            preprocesor { 
+                name : MinMaxScaler
+                 
+            }
+        }
+        type : anomaly
+        name: HalfSpaceTrees
+        params : { 
+            n_trees = 5
+            height = 3
+            window_size=3
+            seed=42
+         }
+
+    }
+
+   
+    metrics : {  
+        MAE
+    }
+
+    target : {
+        name: "Class"
+
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

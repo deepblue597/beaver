@@ -30,14 +30,9 @@ pipeline MyPipeline {
 
     features {
         
-        raw_featues : { 
-            domain
+        drop_features : { 
+            
             namespace
-            title
-            comment
-            user_name
-            new_length
-            old_length
             minor
         } 
 

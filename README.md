@@ -276,7 +276,7 @@ A table of the supported functionalities the DSL has for River
 | Feature            | Supported? |
 | ------------------ | ---------- |
 | active             | ⬜         |
-| anomaly            | ⬜         |
+| anomaly            | 🚧         |
 | bandit             | ⬜         |
 | base               | ⬜         |
 | cluster            | ⬜         |
@@ -294,7 +294,7 @@ A table of the supported functionalities the DSL has for River
 | feature_selection  | ⬜         |
 | forest             | ⬜         |
 | imblearn           | ⬜         |
-| linear_model       | ⬜         |
+| linear_model       | 🚧         |
 | metrics            | ⬜         |
 | misc               | ⬜         |
 | model_selection    | ⬜         |
