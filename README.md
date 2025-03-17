@@ -40,7 +40,7 @@ Penguin is a DSL language designed for machine learning in live data. It is desi
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/deepblue597/thesis.git
    cd thesis
    ```
 
@@ -63,22 +63,37 @@ To create your first pipeline we will start with a classification example which 
 ```plaintext
 pipeline MyPipeline {
     kafka {
-        broker: "localhost:9092"
+        broker: "localhost:39092"
         input_topic: "wikipedia-events"
         output_topic: "filtered-wikipedia-events"
         consumer_group: "wikipedia-model"
     }
     model {
-        preprocessing:  StandardScaler
-        type : tree
-        name: HoeffdingTreeClassifier
-        params: {
-            grace_period = 100
-            delta = 1e-1
+        preprocessing : {
+
+            preprocesor {
+                name : OneHotEncoder
+                feature_type : str
+            }
+
+            preprocesor {
+                name : StandardScaler
+                feature_type : int
+            }
+        }
+        type : linear_model
+        name: LogisticRegression
+
+        optimizer {
+
+        name : Adam
+
         }
     }
+
     features {
-        raw_features: {
+
+        raw_featues : {
             domain
             namespace
             title
@@ -88,20 +103,32 @@ pipeline MyPipeline {
             old_length
             minor
         }
+
         generated_features: {
+
+
             len_diff = new_length - old_length;
         }
+
     }
-    metrics: {
+
+
+
+    metrics : {
         MAE
-        Accuracy
+        MSE
     }
-    target {
+
+    target : {
         name: "user_type"
         mapping {
             bot: 1
             human: 0
         }
+    }
+
+    plot: {
+        type: heatmap
     }
 }
 ```
@@ -167,13 +194,27 @@ model {
         number_of_models: <num>
         seed: <seed>
     }?
-    preprocessing: <preprocessing>?
+    preprocessing: {
+        preprocessor {
+            name: <name>
+            feature_for_process: <process_feature>?
+            feature_type: <feature_type>?
+            params: {
+                <param_name> = <param_value>
+            }?
+        }+
+    }?
     type: <type>
     name: <name>
     params: {
         <param_name> = <param_value>
-    }
-    optimizer: <optimizer>?
+    }?
+    optimizer: {
+        name: <name>
+        params: {
+            <param_name> = <param_value>
+        }?
+    }?
 }
 ```
 
@@ -227,6 +268,52 @@ plot: {
     x: "<x_axis>"
 }
 ```
+
+## :droplet: River support
+
+A table of the supported functionalities the DSL has for River
+
+| Feature            | Supported? |
+| ------------------ | ---------- |
+| active             | ⬜         |
+| anomaly            | ⬜         |
+| bandit             | ⬜         |
+| base               | ⬜         |
+| cluster            | ⬜         |
+| compat             | ⬜         |
+| compose            | ⬜         |
+| conf               | ⬜         |
+| covariance         | ⬜         |
+| datasets           | ⬜         |
+| drift              | ⬜         |
+| dummy              | ⬜         |
+| ensemble           | ⬜         |
+| evaluate           | ⬜         |
+| facto              | ⬜         |
+| feature_extraction | ⬜         |
+| feature_selection  | ⬜         |
+| forest             | ⬜         |
+| imblearn           | ⬜         |
+| linear_model       | ⬜         |
+| metrics            | ⬜         |
+| misc               | ⬜         |
+| model_selection    | ⬜         |
+| multiclass         | ⬜         |
+| multioutput        | ⬜         |
+| naive_bayes        | ⬜         |
+| neighbors          | ⬜         |
+| neural_net         | ⬜         |
+| optim              | ⬜         |
+| preprocessing      | ⬜         |
+| proba              | ⬜         |
+| reco               | ⬜         |
+| rules              | ⬜         |
+| sketch             | ⬜         |
+| stats              | ⬜         |
+| stream             | ⬜         |
+| time_series        | ⬜         |
+| tree               | ⬜         |
+| utils              | ⬜         |
 
 ## :computer: Usage
 

@@ -3,15 +3,29 @@ pipeline MyPipeline {
         broker: "localhost:39092"
         input_topic: "wikipedia-events"
         output_topic: "filtered-wikipedia-events"
-        consumer_group: "wikipedia-model-1"
+        consumer_group: "wikipedia-model-4"
     }
     model {
-        preprocessing : OrdinalEncoder
+        preprocessing : { 
+            
+            preprocesor { 
+                name : OneHotEncoder
+                feature_type : str 
+            }
+
+            preprocesor { 
+                name : StandardScaler
+                feature_type : int 
+            }
+        }
         type : linear_model
         name: LogisticRegression
 
-        optimizer : Adam
+        optimizer { 
+
+        name : Adam
         
+        }
     }
 
     features {
@@ -39,6 +53,7 @@ pipeline MyPipeline {
 
     metrics : {  
         MAE
+        MSE
     }
 
     target : {

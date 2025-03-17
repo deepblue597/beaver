@@ -4,12 +4,14 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 import seaborn as sns
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import linear_model
 import matplotlib.pyplot as plt
 from river import ensemble
 from river import optim
 from sklearn.metrics import confusion_matrix
+from river import compose
+from river import preprocessing
 
 import dill
 
@@ -18,44 +20,60 @@ import dill
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="wikipedia-model-2",
+    consumer_group="wikipedia-model-4",
 )
 
 # Define the Kafka topics
 input_topic = app.topic("wikipedia-events", value_deserializer="json")
 
 output_topic = app.topic("filtered-wikipedia-events",
-                         # Create a Streaming DataFrame connected to the input Kafka topic
-                         value_serializer="json")
+                        value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
+
+
+#Define preprocessing
+
+preprocessor_0 = compose.SelectType(str) |preprocessing.OneHotEncoder()
+
+preprocessor_1 = compose.SelectType(int) |preprocessing.StandardScaler()
+
 # Define River Model
-model = (
+model =(
+    (
+    
+    preprocessor_0 +
+    preprocessor_1)|
+    linear_model.LogisticRegression(optim.Adam(
+            ),
+    
 
-    preprocessing.OrdinalEncoder() |
-    linear_model.LogisticRegression(optim.Adam()
-
-
-                                    )
+    )
 )
+    
 
 
 # Define new features
-sdf["len_diff"] = ((sdf["new_length"])-(sdf["old_length"]))
+sdf["len_diff"]=((sdf["new_length"])-(sdf["old_length"]))
 
 
 # Define metrics
-metric = metrics.MAE()
+metric = metrics.MAE() +metrics.MSE() 
+   
+MAE = [] 
+MSE = [] 
+ 
 
-MAE = []
 
 
 # Define target mapping
 target_mapping = {
     "bot": 1,
     "human": 0,
-
+    
 }
+
+
 
 
 # Variables for plotting
@@ -66,7 +84,7 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-    X = {
+    X = { 
         "domain": event["domain"],
         "namespace": event["namespace"],
         "title": event["title"],
@@ -76,28 +94,40 @@ def train_and_predict(event):
         "old_length": event["old_length"],
         "minor": event["minor"],
         "len_diff": event["len_diff"],
-
+        
     }
 
+    
     y = target_mapping[event["user_type"]]
-
+     
+    
     model.learn_one(X, y)
-
+     
+    
     y_predicted = model.predict_one(X)
+    
 
     # Update accuracy metric
     metric.update(y, y_predicted)
-
+    
     print(f"True Label: {y}, Predicted: {y_predicted}")
-
+    
     print(metric)
-    MAE.append(metric)
+    MAE.append(metric.get()[0])
+    MSE.append(metric.get()[1])
+     
+    
+    
+
 
     with open('LogisticRegression.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
+    
     y_true.append(y)
     y_pred.append(y_predicted)
+    
+
 
     return event
 
@@ -105,10 +135,10 @@ def train_and_predict(event):
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Output topic
-# Run the streaming application (app automatically tracks the sdf!)
-sdf = sdf.to_topic(output_topic)
+# Output topic 
+sdf = sdf.to_topic(output_topic)# Run the streaming application (app automatically tracks the sdf!)
 app.run()
+
 
 
 # Generate the confusion matrix
@@ -116,12 +146,13 @@ cm = confusion_matrix(y_true, y_pred)
 
 # Create a heatmap of the confusion matrix
 plt.figure(figsize=(6, 5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=[
-            'Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.title('Confusion Matrix Heatmap')
 plt.show()
+
+
 
 
 plt.plot(MAE)
@@ -129,3 +160,9 @@ plt.xlabel('Iterations')
 plt.ylabel('MAE')
 plt.title('MAE over Training Iterations')
 plt.show()
+plt.plot(MSE)
+plt.xlabel('Iterations')
+plt.ylabel('MSE')
+plt.title('MSE over Training Iterations')
+plt.show()
+ 
