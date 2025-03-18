@@ -149,16 +149,6 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-#    X = { 
-#        {% for feature in pipeline.features.features -%}
-#        "{{feature}}": event["{{feature}}"],
-#        {% endfor %}
-#        {%-for i in range(1, assignments|length)%}
-#        {%-if assignments[i] == '='-%}
-#        "{{assignments[i-1]}}": event["{{assignments[i-1]}}"],
-#        {%endif-%}
-#        {%endfor%}
-#    }
 
     {% if pipeline.target %}
     X = {key: value for key, value in event.items() if key != "{{ pipeline.target.name }}"}  
@@ -177,7 +167,7 @@ def train_and_predict(event):
     y_predicted = model.predict_one(X)
     
 
-    # Update accuracy metric
+    # Update metric
     metric.update(y, y_predicted)
     {% if pipeline.target.mappings %}
     print(f"True Label: {y}, Predicted: {y_predicted}")
@@ -205,7 +195,24 @@ def train_and_predict(event):
     {% endif %}
 
 
-    return event
+    return {% if pipeline.kafka.output_topic -%}
+            {
+                **event,
+                "Prediction": y_predicted,
+                {%-if pipeline.metrics.metrics|length > 1-%}
+                {% for metric in pipeline.metrics.metrics %}  
+                "{{metric}}": metric.get()[{{loop.index0}}]
+                {%- if not loop.last %} ,
+                {%- endif -%} 
+                {% endfor %} 
+                {%else%}
+                "{{pipeline.metrics.metrics[0]}}": metric.get()
+                {%endif%}
+            }   
+
+            {%- else -%}
+            event
+            {%- endif %}
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame

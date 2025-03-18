@@ -1,0 +1,27 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "trump-approval"
+        output_topic: "BayesianLinearRegression results"
+        consumer_group: "BayesianLinearRegression"
+    }
+    model {
+
+        type : linear_model
+        name: BayesianLinearRegression
+    }
+   
+    metrics : {  
+        MAE
+        MSE
+        
+    }
+
+    target : {
+        name: "five_thirty_eight"
+    }
+
+    plot: { 
+        type: scatter 
+    }
+}

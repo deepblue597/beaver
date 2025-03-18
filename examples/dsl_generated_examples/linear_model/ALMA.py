@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 import seaborn as sns
 
-from river import metrics , preprocessing
+from river import metrics, preprocessing
 from river import linear_model
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -24,45 +24,38 @@ app = Application(
 )
 
 # Define the Kafka topics
-input_topic = app.topic("phishing", value_deserializer="json")
+input_topic = app.topic("phising", value_deserializer="json")
 
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
-
-#Define preprocessing
+# Define preprocessing
 
 preprocessor_0 = preprocessing.StandardScaler()
 
 # Define River Model
-model =(
+model = (
     (
-    
-    preprocessor_0)|
+
+        preprocessor_0) |
     linear_model.ALMAClassifier(
-    
+
 
     )
 )
-    
 
 
 # Define new features
 
 
-# Drop features 
+# Drop features
 
 
 # Define metrics
-metric = metrics.MAE() 
-   
-MAE = [] 
- 
+metric = metrics.MAE()
 
-
-
-
+MAE = []
 
 
 # Variables for plotting
@@ -73,41 +66,30 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-#    X = { 
-#        
-#
-#    }
+    #    X = {
+    #
+    #
+    #    }
 
-    
-    X = {key: value for key, value in event.items() if key != "CLASS_LABEL"}  
-    
-    
-    y = event["CLASS_LABEL"]
-     
-    
+    X = {key: value for key, value in event.items() if key != "is_phishing"}
+
+    y = event["is_phishing"]
+
     model.learn_one(X, y)
-     
-    
+
     y_predicted = model.predict_one(X)
-    
 
     # Update accuracy metric
     metric.update(y, y_predicted)
-    
-    print(metric)
-    MAE.append(metric.get()) 
-    
-    
 
+    print(metric)
+    MAE.append(metric.get())
 
     with open('ALMAClassifier.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
-    
     y_true.append(y)
     y_pred.append(y_predicted)
-    
-
 
     return event
 
@@ -119,19 +101,17 @@ sdf = sdf.apply(train_and_predict)
 app.run()
 
 
-
 # Generate the confusion matrix
 cm = confusion_matrix(y_true, y_pred)
 
 # Create a heatmap of the confusion matrix
 plt.figure(figsize=(6, 5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=[
+            'Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.title('Confusion Matrix Heatmap')
 plt.show()
-
-
 
 
 plt.plot(MAE)
@@ -139,4 +119,3 @@ plt.xlabel('Iterations')
 plt.ylabel('MAE')
 plt.title('MAE over Training Iterations')
 plt.show()
- 

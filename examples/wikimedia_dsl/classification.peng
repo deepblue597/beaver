@@ -3,7 +3,7 @@ pipeline MyPipeline {
         broker: "localhost:39092"
         input_topic: "wikipedia-events"
         output_topic: "filtered-wikipedia-events"
-        consumer_group: "wikipedia-model-4"
+        consumer_group: "wikipedia-model-2"
     }
     model {
         preprocessing : { 
@@ -32,7 +32,6 @@ pipeline MyPipeline {
         
         drop_features : { 
             
-            namespace
             minor
         } 
 

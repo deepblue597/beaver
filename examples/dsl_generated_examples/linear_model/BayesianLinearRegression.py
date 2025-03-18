@@ -20,32 +20,21 @@ import dill
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="wikipedia-model-4",
+    consumer_group="BayesianLinearRegression",
 )
 
 # Define the Kafka topics
-input_topic = app.topic("wikipedia-events", value_deserializer="json")
+input_topic = app.topic("trump-approval", value_deserializer="json")
 
-output_topic = app.topic("filtered-wikipedia-events",
+output_topic = app.topic("BayesianLinearRegression-results",
                          # Create a Streaming DataFrame connected to the input Kafka topic
                          value_serializer="json")
 sdf = app.dataframe(topic=input_topic)
 
 
-# Define preprocessing
-
-preprocessor_0 = compose.SelectType(str) | preprocessing.OneHotEncoder()
-
-preprocessor_1 = compose.SelectType(int) | preprocessing.StandardScaler()
-
 # Define River Model
 model = (
-    (
-
-        preprocessor_0 +
-        preprocessor_1) |
-    linear_model.LogisticRegression(optim.Adam(
-    ),
+    linear_model.BayesianLinearRegression(
 
 
     )
@@ -53,12 +42,9 @@ model = (
 
 
 # Define new features
-sdf["len_diff"] = ((sdf["new_length"])-(sdf["old_length"]))
 
 
 # Drop features
-
-sdf.drop(["namespace", "minor"])
 
 
 # Define metrics
@@ -66,14 +52,6 @@ metric = metrics.MAE() + metrics.MSE()
 
 MAE = []
 MSE = []
-
-
-# Define target mapping
-target_mapping = {
-    "bot": 1,
-    "human": 0,
-
-}
 
 
 # Variables for plotting
@@ -84,49 +62,35 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-    #    X = {
-    #        #        "namespace": event["namespace"],
-    #        #        "minor": event["minor"],
-    #
-    #
-    # "len_diff": event["len_diff"],
-    #        #
-    ##
-    ##
-    ##
-    ##
-    ##
-    ##
-    ##
-    ##
-    ##
-    ##
-    #    }
+    X = {key: value for key, value in event.items() if key !=
+         "five_thirty_eight"}
 
-    X = {key: value for key, value in event.items() if key != "user_type"}
-
-    y = target_mapping[event["user_type"]]
+    y = event["five_thirty_eight"]
 
     model.learn_one(X, y)
 
     y_predicted = model.predict_one(X)
 
-    # Update accuracy metric
+    # Update metric
     metric.update(y, y_predicted)
-
-    print(f"True Label: {y}, Predicted: {y_predicted}")
 
     print(metric)
     MAE.append(metric.get()[0])
     MSE.append(metric.get()[1])
 
-    with open('LogisticRegression.pkl', 'wb') as model_file:
+    with open('BayesianLinearRegression.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
     y_true.append(y)
     y_pred.append(y_predicted)
 
-    return event
+    return {
+        **event,
+        "Prediction": y_predicted,
+        "MAE": metric.get()[0],
+        "MSE": metric.get()[1]
+
+    }
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
@@ -138,16 +102,13 @@ sdf = sdf.to_topic(output_topic)
 app.run()
 
 
-# Generate the confusion matrix
-cm = confusion_matrix(y_true, y_pred)
-
-# Create a heatmap of the confusion matrix
-plt.figure(figsize=(6, 5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=[
-            'Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix Heatmap')
+plt.figure(figsize=(8, 6))
+plt.scatter(y_true, y_pred, alpha=0.5)
+plt.plot([min(y_true), max(y_true)], [
+         min(y_true), max(y_true)], 'r--')  # Ideal line
+plt.xlabel("Real Values five_thirty_eight")
+plt.ylabel("Predicted Values five_thirty_eight ")
+plt.title("Real vs Predicted five_thirty_eight")
 plt.show()
 
 

@@ -1,7 +1,7 @@
 pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
-        input_topic: "phishing"
+        input_topic: "phising"
         consumer_group: "ALMA"
     }
     model {
@@ -21,7 +21,7 @@ pipeline MyPipeline {
     }
 
     target : {
-        name: "CLASS_LABEL"
+        name: "is_phishing"
     }
 
     plot: { 
