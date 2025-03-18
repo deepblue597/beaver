@@ -1,0 +1,36 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "phising"
+        output_topic: "PAClassifier-results"
+        consumer_group: "PAClassifier"
+    }
+    model {
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: PAClassifier
+        params : {
+            C=0.01
+            mode=1
+         }
+    }
+   
+    metrics : {  
+        Accuracy
+        LogLoss
+        
+    }
+
+    target : {
+        name: "is_phishing"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

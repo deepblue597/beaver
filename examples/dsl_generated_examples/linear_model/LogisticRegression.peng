@@ -1,0 +1,40 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "phising"
+        output_topic: "LogisticRegression-results"
+        consumer_group: "LogisticRegression"
+    }
+    model {
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: LogisticRegression
+
+        optimizer {
+
+            name : SGD
+            params : { 
+                lr = 0.1
+            } 
+
+        }
+    }
+   
+    metrics : {  
+        Accuracy
+        
+    }
+
+    target : {
+        name: "is_phishing"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

@@ -2,18 +2,22 @@ pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
         input_topic: "trump-approval"
-        output_topic: "BayesianLinearRegression-results"
-        consumer_group: "BayesianLinearRegression"
+        output_topic: "LinearRegression-results"
+        consumer_group: "LinearRegression"
     }
     model {
+        preprocessing : { 
 
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
         type : linear_model
-        name: BayesianLinearRegression
+        name: LinearRegression
     }
    
     metrics : {  
         MAE
-        MSE
         
     }
 
