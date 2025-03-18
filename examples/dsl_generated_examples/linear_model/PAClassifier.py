@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 import seaborn as sns
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import linear_model
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -12,7 +12,7 @@ from river import optim
 from sklearn.metrics import confusion_matrix
 from river import compose
 from river import preprocessing
-
+import json
 import dill
 
 
@@ -27,40 +27,46 @@ app = Application(
 input_topic = app.topic("phising", value_deserializer="json")
 
 output_topic = app.topic("PAClassifier-results",
-                         # Create a Streaming DataFrame connected to the input Kafka topic
-                         value_serializer="json")
+                        value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
-# Define preprocessing
+
+#Define preprocessing
 
 preprocessor_0 = preprocessing.StandardScaler()
 
 # Define River Model
-model = (
+model =(
     (
-
-        preprocessor_0) |
+    
+    preprocessor_0)|
     linear_model.PAClassifier(
-
-        C=0.01,
-        mode=1,
+    
+        C = 0.01,
+        mode = 1,
 
     )
 )
+    
 
 
 # Define new features
 
 
-# Drop features
+# Drop features 
 
 
 # Define metrics
-metric = metrics.Accuracy() + metrics.LogLoss()
+metric = metrics.Accuracy() +metrics.LogLoss() 
+   
+Accuracy = [] 
+LogLoss = [] 
+ 
 
-Accuracy = []
-LogLoss = []
+
+
+
 
 
 # Variables for plotting
@@ -71,43 +77,59 @@ y_pred = []
 # Function for training the model
 def train_and_predict(event):
 
-    X = {key: value for key, value in event.items() if key != "is_phishing"}
 
+    
+    X = {key: value for key, value in event.items() if key != "is_phishing"}  
+    
+    
     y = event["is_phishing"]
-
+     
+    
     model.learn_one(X, y)
-
-    y_predicted = model.predict_one(X)
+     
+    
+    y_predicted = model.predict_proba_one(X)
+    
+    
 
     # Update metric
     metric.update(y, y_predicted)
-
+    
+    print(f"True Label: {y}, Predicted: {y_predicted}")
+    
     print(metric)
     Accuracy.append(metric.get()[0])
     LogLoss.append(metric.get()[1])
+     
+    
+    
+
 
     with open('PAClassifier.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
+    
     y_true.append(y)
-    y_pred.append(y_predicted)
+    y_pred.append(max(y_predicted, key=y_predicted.get))
+    
+
 
     return {
-        **event,
-        "Prediction": y_predicted,
-        "Accuracy": metric.get()[0],
-        "LogLoss": metric.get()[1]
-
-    }
+                **event, 
+                "predicted probabilities": json.dumps(y_predicted) ,  
+                "Accuracy": metric.get()[0] ,  
+                "LogLoss": metric.get()[1] 
+                
+            }
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Output topic
-# Run the streaming application (app automatically tracks the sdf!)
-sdf = sdf.to_topic(output_topic)
+# Output topic 
+sdf = sdf.to_topic(output_topic)# Run the streaming application (app automatically tracks the sdf!)
 app.run()
+
 
 
 # Generate the confusion matrix
@@ -115,12 +137,13 @@ cm = confusion_matrix(y_true, y_pred)
 
 # Create a heatmap of the confusion matrix
 plt.figure(figsize=(6, 5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=[
-            'Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
 plt.xlabel('Predicted')
 plt.ylabel('Actual')
 plt.title('Confusion Matrix Heatmap')
 plt.show()
+
+
 
 
 plt.plot(Accuracy)
@@ -133,3 +156,4 @@ plt.xlabel('Iterations')
 plt.ylabel('LogLoss')
 plt.title('LogLoss over Training Iterations')
 plt.show()
+ 

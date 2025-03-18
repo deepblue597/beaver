@@ -87,11 +87,15 @@ def train_and_predict(event):
     model.learn_one(X, y)
      
     
+    
     y_predicted = model.predict_one(X)
+    
     
 
     # Update metric
     metric.update(y, y_predicted)
+    
+    print(f"True Label: {y}, Predicted: {y_predicted}")
     
     print(metric)
     Accuracy.append(metric.get()) 

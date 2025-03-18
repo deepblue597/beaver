@@ -14,6 +14,7 @@ pipeline MyPipeline {
         }
         type : linear_model
         name: PAClassifier
+        probabilistic : true
         params : {
             C=0.01
             mode=1

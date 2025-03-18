@@ -12,7 +12,7 @@ from river import optim
 from sklearn.metrics import confusion_matrix
 from river import compose
 from river import preprocessing
-
+import json
 import dill
 
 
@@ -164,12 +164,17 @@ def train_and_predict(event):
     model.learn_one(event)
     {% endif %} 
     
+    {% if pipeline.model.proba -%}
+    y_predicted = model.predict_proba_one(X)
+    {%- else%}
     y_predicted = model.predict_one(X)
+    {%- endif %}
+    
     
 
     # Update metric
     metric.update(y, y_predicted)
-    {% if pipeline.target.mappings %}
+    {% if pipeline.target %}
     print(f"True Label: {y}, Predicted: {y_predicted}")
     {% endif %}
     print(metric)
@@ -191,14 +196,22 @@ def train_and_predict(event):
     x_axis.append(event["{{pipeline.plot.x_axis}}"])
     {%- endif %}
     y_true.append(y)
-    y_pred.append(y_predicted)
+    y_pred.append({%-if pipeline.model.proba-%}
+                    max(y_predicted, key=y_predicted.get)
+                    {%-else-%}y_predicted
+                    {%-endif-%}
+                 )
     {% endif %}
 
 
     return {% if pipeline.kafka.output_topic -%}
             {
-                **event,
+                **event, 
+                {% if pipeline.model.proba -%}
+                "predicted probabilities": json.dumps(y_predicted) , 
+                {%- else%}
                 "Prediction": y_predicted,
+                {%- endif %}   
                 {%-if pipeline.metrics.metrics|length > 1-%}
                 {% for metric in pipeline.metrics.metrics %}  
                 "{{metric}}": metric.get()[{{loop.index0}}]
