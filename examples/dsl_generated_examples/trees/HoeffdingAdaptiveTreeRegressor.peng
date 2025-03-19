@@ -1,0 +1,36 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "trump-approval"
+        output_topic: "HoeffdingAdaptiveTreeRegressor-results"
+        consumer_group: "HoeffdingAdaptiveTreeRegressor"
+    }
+    model {
+        preprocessing : { 
+            preprocesor  {
+                name : StandardScaler
+            }
+        }
+        type : tree
+        name: HoeffdingAdaptiveTreeRegressor
+        params : {
+            grace_period=50
+            model_selector_decay=0.3
+            seed=0
+         }
+    }
+   
+    metrics : {  
+        MAE
+
+        
+    }
+
+    target : {
+        name: "five_thirty_eight"
+    }
+
+    plot: { 
+        type: scatter 
+    }
+}

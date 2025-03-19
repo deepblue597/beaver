@@ -1,0 +1,26 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "SEA"
+        output_topic: "LASTClassifier-results"
+        consumer_group: "LASTClassifier"
+    }
+    model {
+        type : tree
+        name: LASTClassifier
+    }
+   
+    metrics : {  
+        Accuracy
+
+        
+    }
+
+    target : {
+        name: "class"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

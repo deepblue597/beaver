@@ -358,7 +358,7 @@ A table of the supported functionalities the DSL has for River
 | stats              | ⬜         |
 | stream             | ⬜         |
 | time_series        | ⬜         |
-| tree               | 🚧         |
+| tree               | 🚧 \*4     |
 | utils              | ⬜         |
 
 ✅ : Full support \
@@ -366,8 +366,9 @@ A table of the supported functionalities the DSL has for River
 ⬜ : Not yet supported
 
 \*PARegressor is not yet supported \
-\*\* Some metrics are not compatible with the plots and the kafka configuration
-\*\*\* Averager not supported
+\*\* Some metrics are not compatible with the plots and the kafka configuration \
+\*\*\* Averager not supported \
+\*4 iSOUPTreeRegressor partial support (leaf_model)
 
 ## :computer: Usage
 

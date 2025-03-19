@@ -74,6 +74,15 @@ model =(
     multiclass.{{pipeline.model.multiclass.name}}(
     {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
+
+    {%-if pipeline.model.splitter-%}
+    feature_quantizer=tree.splitter.{{pipeline.model.splitter.name}}(
+            {%-for param in pipeline.model.splitter.params %}
+            {{ param.name }} = {{param.value.value}}, 
+            {%-endfor%}
+    ),
+    {%-endif%}
+
     {%-if pipeline.model.optimizer-%}
         optim.{{pipeline.model.optimizer.name}}(
             {%-for param in pipeline.model.optimizer.params %}
@@ -191,7 +200,7 @@ def train_and_predict(event):
     # Update metric
     metric.update(y, y_predicted)
     {% if pipeline.target %}
-    print(f"True Label: {y}, Predicted: {y_predicted}")
+    print(f"True y: {y}, Predicted: {y_predicted}")
     {% endif %}
     print(metric)
     {%-if pipeline.metrics.metrics|length > 1%}

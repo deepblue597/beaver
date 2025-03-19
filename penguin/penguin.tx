@@ -43,6 +43,7 @@ Model :
         'type' ':' type = ID 
         'name' ':'  name = ID
         ('probabilistic' ':' proba?= BOOL)?
+        (splitter = Splitter )? 
         ('params' ':' '{' 
 
             params += Param
@@ -79,7 +80,7 @@ Multiclass :
 
             params += Param
         '}')?
-        ('coding_method' ':'coding_method = STRING )?
+        ('coding_method' ':' coding_method = STRING )?
 
     '}'
 
@@ -88,6 +89,20 @@ Multiclass :
 Optimizer : 
 
     'optimizer' '{'
+
+        'name' ':' name=ID 
+        ('params' ':' '{' 
+
+            params += Param
+        '}')?
+
+    '}'
+
+;
+
+Splitter : 
+
+    'splitter' '{'
 
         'name' ':' name=ID 
         ('params' ':' '{' 

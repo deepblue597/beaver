@@ -1,8 +1,10 @@
 # %%
+import json
 import pandas as pd
 from river import datasets, preprocessing
 import kagglehub
 import pandas as pd
+from river.datasets import synth
 
 from kafka_proj.producer_v2 import parse_command_line_arguments, create_kafka_producer, delivery_callback
 import os
@@ -16,17 +18,22 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    dataset = datasets.Phishing()
+    # dataset = datasets.Phishing()
     # dataset = datasets.TrumpApproval()
-    dataset = datasets.ImageSegments()
+    # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
+    # gen = synth.Agrawal(classification_function=0, seed=42)
+    gen = synth.ConceptDriftStream(stream=synth.SEA(seed=42, variant=0),
+                                   drift_stream=synth.SEA(seed=42, variant=1),
+                                   seed=1, position=500, width=50)
+    dataset = iter(gen.take(1000))
 # %%
     dataset
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
-    df = pd.read_csv(dataset.path)
-
+    # df = pd.read_csv(dataset.path)
+    df = pd.DataFrame(dataset)
 # %%
     df
 # %%
@@ -35,8 +42,11 @@ if __name__ == "__main__":
 
     for idx, row in df.iterrows():
 
+        sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
-        json_message = row.to_json()
+
+        # json_message = row.to_json()
+        json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

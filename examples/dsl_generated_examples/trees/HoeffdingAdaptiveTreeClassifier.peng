@@ -1,0 +1,33 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "SEA"
+        output_topic: "HoeffdingAdaptiveTreeClassifier-results"
+        consumer_group: "HoeffdingAdaptiveTreeClassifier"
+    }
+    model {
+        type : tree
+        name: HoeffdingAdaptiveTreeClassifier
+        params : {
+            grace_period=100
+            delta=1e-5
+            leaf_prediction='nb'
+            nb_threshold=10
+            seed=0
+         }
+    }
+   
+    metrics : {  
+        Accuracy
+
+        
+    }
+
+    target : {
+        name: "class"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}
