@@ -16,7 +16,6 @@ import json
 {%if pipeline.model.multiclass-%}
 from river import multiclass
 {%-endif %}
-from river import multiclass
 import dill
 
 
