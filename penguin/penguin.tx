@@ -35,6 +35,8 @@ Model :
             
             '}'
         )?
+        ('multiclass' ':' multiclass= ID)?
+                
         ('preprocessing' ':''{' 
             preprocessors+= Preprocessing  
         '}')?

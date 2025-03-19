@@ -13,6 +13,10 @@ from sklearn.metrics import confusion_matrix
 from river import compose
 from river import preprocessing
 import json
+{%if pipeline.model.multiclass-%}
+from river import multiclass
+{%-endif %}
+from river import multiclass
 import dill
 
 
@@ -67,6 +71,9 @@ model =(
     {%- endif -%} 
     {%endfor%})|
     {%- endif %}
+    {% if pipeline.model.multiclass-%}
+    multiclass.{{pipeline.model.multiclass}}(
+    {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
     {%-if pipeline.model.optimizer-%}
         optim.{{pipeline.model.optimizer.name}}(
@@ -81,6 +88,9 @@ model =(
     {%- endfor %}
 
     )
+    {%- if pipeline.model.multiclass-%}
+    )
+    {%- endif -%}
 )
     {%if pipeline.model.ensemble %}
     ,n_models =  {{pipeline.model.ensemble.num}}, 
@@ -195,13 +205,16 @@ def train_and_predict(event):
     {%- if pipeline.plot.type == 'graph'-%}
     x_axis.append(event["{{pipeline.plot.x_axis}}"])
     {%- endif %}
-    y_true.append(y)
-    y_pred.append({%-if pipeline.model.proba-%}
-                    max(y_predicted, key=y_predicted.get)
-                    {%-else-%}y_predicted
-                    {%-endif-%}
-                 )
-    {% endif %}
+    # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
+    # so we check if y_pred is not None to add to the lists
+    if y_predicted is not None:
+        y_true.append(y)
+        y_pred.append({%-if pipeline.model.proba-%}
+                        max(y_predicted, key=y_predicted.get)
+                        {%-else-%}y_predicted
+                        {%-endif-%}
+                    )
+        {% endif %}
 
 
     return {% if pipeline.kafka.output_topic -%}

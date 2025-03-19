@@ -1,0 +1,33 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "ImageSegments"
+        output_topic: "OneVsOneClassifier-results"
+        consumer_group: "OneVsOneClassifier"
+    }
+    model {
+        multiclass : OneVsOneClassifier
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: LogisticRegression
+
+    }
+   
+    metrics : {  
+        MacroF1
+        
+    }
+
+    target : {
+        name: "category"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

@@ -287,15 +287,15 @@ A table of the supported functionalities the DSL has for River
 | datasets           | ⬜         |
 | drift              | ⬜         |
 | dummy              | ⬜         |
-| ensemble           | ⬜         |
+| ensemble           | 🚧         |
 | evaluate           | ⬜         |
 | facto              | ⬜         |
 | feature_extraction | ⬜         |
 | feature_selection  | ⬜         |
-| forest             | ⬜         |
+| forest             | 🚧         |
 | imblearn           | ⬜         |
-| linear_model       | 🚧         |
-| metrics            | ⬜         |
+| linear_model       | ✅\*       |
+| metrics            | 🚧\*\*     |
 | misc               | ⬜         |
 | model_selection    | ⬜         |
 | multiclass         | ⬜         |
@@ -304,7 +304,7 @@ A table of the supported functionalities the DSL has for River
 | neighbors          | ⬜         |
 | neural_net         | ⬜         |
 | optim              | ⬜         |
-| preprocessing      | ⬜         |
+| preprocessing      | 🚧         |
 | proba              | ⬜         |
 | reco               | ⬜         |
 | rules              | ⬜         |
@@ -312,8 +312,11 @@ A table of the supported functionalities the DSL has for River
 | stats              | ⬜         |
 | stream             | ⬜         |
 | time_series        | ⬜         |
-| tree               | ⬜         |
+| tree               | 🚧         |
 | utils              | ⬜         |
+
+\*PARegressor is not yet supported
+\*\* Some metrics are not compatible with the plots and the kafka configuration
 
 ## :computer: Usage
 
