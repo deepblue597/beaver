@@ -263,3 +263,11 @@ Passive-Aggressive (PA) classifiers benefit from feature scaling, though they do
    - Scaled features allow the model to adapt efficiently.
 3. Reduces numerical instability
    - Helps avoid exploding weight values.
+
+# SoftmaxRegression
+
+Softmax regression is a generalization of logistic regression to multiple classes.
+
+Softmax regression is also known as "multinomial logistic regression". There are a set weights for each class, hence the weights attribute is a nested collections.defaultdict. The main advantage of using this instead of a one-vs-all logistic regression is that the probabilities will be calibrated. Moreover softmax regression is more robust to outliers.
+
+**Note** : although in River library the function which is being initialized is `predict_proba_one` the function that needs to be used in order for the model to work correctly is `predict_one`.That is why in `SoftmaxRegression.peng` file we don't add `probabilistic : yes` as a parameter.

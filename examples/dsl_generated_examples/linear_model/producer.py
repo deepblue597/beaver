@@ -18,6 +18,7 @@ if __name__ == "__main__":
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
     dataset = datasets.Phishing()
     # dataset = datasets.TrumpApproval()
+    dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
 # %%
     dataset

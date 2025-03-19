@@ -1,0 +1,32 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "phising"
+        output_topic: "Perceptron-results"
+        consumer_group: "Perceptron"
+    }
+    model {
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: Perceptron
+
+    }
+   
+    metrics : {  
+        Accuracy
+        
+    }
+
+    target : {
+        name: "is_phishing"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}

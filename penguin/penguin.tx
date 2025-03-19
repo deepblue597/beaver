@@ -94,8 +94,9 @@ Param :
 
     name = ID '=' value =  NumberValue   ; 
 
-NumberValue : FloatValue | IntValue | StringValue;
+NumberValue : FloatValue | IntValue | StringValue | BoolValue;
 
+BoolValue : value = BOOL ; 
 StringValue : value+=STRING;
 FloatValue: value=MYFLOAT;
 IntValue: value=MYINT;

@@ -1,0 +1,32 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "ImageSegments"
+        output_topic: "SoftmaxRegression-results"
+        consumer_group: "SoftmaxRegression"
+    }
+    model {
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : linear_model
+        name: SoftmaxRegression
+        
+    }
+   
+    metrics : {  
+        MacroF1
+        
+    }
+
+    target : {
+        name: "category"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}
