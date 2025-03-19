@@ -93,17 +93,6 @@ pipeline MyPipeline {
 
     features {
 
-        raw_featues : {
-            domain
-            namespace
-            title
-            comment
-            user_name
-            new_length
-            old_length
-            minor
-        }
-
         generated_features: {
 
 
@@ -194,8 +183,15 @@ model {
         number_of_models: <num>
         seed: <seed>
     }?
+    multiclass: {
+        name: <name>
+        params: {
+            <param_name> = <param_value>
+        }?
+        coding_method: <coding_method>?
+    }?
     preprocessing: {
-        preprocessor {
+        preprocesor {
             name: <name>
             feature_for_process: <process_feature>?
             feature_type: <feature_type>?
@@ -206,6 +202,7 @@ model {
     }?
     type: <type>
     name: <name>
+    probabilistic: <proba>?
     params: {
         <param_name> = <param_value>
     }?
@@ -242,6 +239,55 @@ The `Metric` component specifies the metrics used to evaluate the model.
 ```plaintext
 metrics: {
     <metric1> <metric2> ...
+}
+```
+
+### Metrics
+
+The Metric component specifies the metrics used to evaluate the model.
+
+```
+metrics: {
+    <metric1> <metric2> ...
+}
+```
+
+### Optimizer
+
+The Optimizer component specifies the optimizer used for training the model.
+
+```
+optimizer: {
+    name: <name>
+    params: {
+        <param_name> = <param_value>
+    }?
+}
+```
+
+### Ensemble
+
+The Ensemble component specifies the configuration for an ensemble model.
+
+```
+ensemble: {
+    algorithm: <algorithm>
+    number_of_models: <num>
+    seed: <seed>
+}
+```
+
+### Multiclass
+
+The Multiclass component specifies the configuration for a multiclass classification model.
+
+```
+multiclass: {
+    name: <name>
+    params: {
+        <param_name> = <param_value>
+    }?
+    coding_method: <coding_method>?
 }
 ```
 
