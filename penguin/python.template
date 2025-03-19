@@ -72,7 +72,7 @@ model =(
     {%endfor%})|
     {%- endif %}
     {% if pipeline.model.multiclass-%}
-    multiclass.{{pipeline.model.multiclass}}(
+    multiclass.{{pipeline.model.multiclass.name}}(
     {%- endif %}
     {{pipeline.model.type}}.{{pipeline.model.name}}(
     {%-if pipeline.model.optimizer-%}
@@ -89,7 +89,14 @@ model =(
 
     )
     {%- if pipeline.model.multiclass-%}
+    ,{% for param in pipeline.model.multiclass.params %}
+        {{ param.name }} = {{param.value.value}},
+     
+    {%- endfor %}
+    {% if pipeline.model.multiclass.coding_method%}
+        coding_method = "{{pipeline.model.multiclass.coding_method}}"
     )
+    {%-endif-%}
     {%- endif -%}
 )
     {%if pipeline.model.ensemble %}

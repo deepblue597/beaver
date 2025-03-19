@@ -35,7 +35,7 @@ Model :
             
             '}'
         )?
-        ('multiclass' ':' multiclass= ID)?
+        (multiclass = Multiclass)?
                 
         ('preprocessing' ':''{' 
             preprocessors+= Preprocessing  
@@ -68,6 +68,21 @@ Preprocessing :
         '}')?
 
     '}'
+;
+
+Multiclass : 
+
+    'multiclass' '{'
+
+        'name' ':' name=ID 
+        ('params' ':' '{' 
+
+            params += Param
+        '}')?
+        ('coding_method' ':'coding_method = STRING )?
+
+    '}'
+
 ;
 
 Optimizer : 

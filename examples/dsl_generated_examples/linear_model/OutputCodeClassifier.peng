@@ -2,13 +2,18 @@ pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
         input_topic: "ImageSegments"
-        output_topic: "OneVsOneClassifier-results"
-        consumer_group: "OneVsOneClassifier"
+        output_topic: "OutputCodeClassifier-results"
+        consumer_group: "OutputCodeClassifier"
     }
     model {
         
         multiclass { 
-            name : OneVsOneClassifier
+            name : OutputCodeClassifier
+            params : { 
+                code_size=10
+                seed=1
+            }
+            coding_method: 'random'
         
         }
         preprocessing : { 

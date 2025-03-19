@@ -22,13 +22,13 @@ import dill
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="OneVsOneClassifier5",
+    consumer_group="OneVsRestClassifier",
 )
 
 # Define the Kafka topics
 input_topic = app.topic("ImageSegments", value_deserializer="json")
 
-output_topic = app.topic("OneVsOneClassifier-results",
+output_topic = app.topic("OneVsRestClassifier-results",
                          # Create a Streaming DataFrame connected to the input Kafka topic
                          value_serializer="json")
 sdf = app.dataframe(topic=input_topic)
@@ -43,7 +43,7 @@ model = (
     (
 
         preprocessor_0) |
-    multiclass.OneVsOneClassifier(
+    multiclass.OneVsRestClassifier(
         linear_model.LogisticRegression(
 
 

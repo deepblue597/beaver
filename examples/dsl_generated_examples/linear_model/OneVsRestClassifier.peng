@@ -2,13 +2,13 @@ pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
         input_topic: "ImageSegments"
-        output_topic: "OneVsOneClassifier-results"
-        consumer_group: "OneVsOneClassifier"
+        output_topic: "OneVsRestClassifier-results"
+        consumer_group: "OneVsRestClassifier"
     }
     model {
         
         multiclass { 
-            name : OneVsOneClassifier
+            name : OneVsRestClassifier
         
         }
         preprocessing : { 
