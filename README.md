@@ -358,12 +358,12 @@ A table of the supported functionalities the DSL has for River
 | stats              | ⬜         |
 | stream             | ⬜         |
 | time_series        | ⬜         |
-| tree               | 🚧 \*4     |
+| tree               | ✅ \*4     |
 | utils              | ⬜         |
 
 ✅ : Full support \
 🚧: Partial support \
-⬜ : Not yet supported
+⬜ : Not supported
 
 \*PARegressor is not yet supported \
 \*\* Some metrics are not compatible with the plots and the kafka configuration \
