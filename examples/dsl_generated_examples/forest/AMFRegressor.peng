@@ -1,0 +1,30 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "trump-approval"
+        output_topic: "AMFRegressor-results"
+        consumer_group: "AMFRegressor"
+    }
+    model {
+
+        type : forest
+        name: AMFRegressor
+        params : {
+            seed=42
+         }
+    }
+   
+    metrics : {  
+        MAE
+
+        
+    }
+
+    target : {
+        name: "five_thirty_eight"
+    }
+
+    plot: { 
+        type: scatter 
+    }
+}

@@ -1,0 +1,32 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "Bananas"
+        output_topic: "AMFClassifier-results"
+        consumer_group: "AMFClassifier"
+    }
+    model {
+        type : forest
+        name: AMFClassifier
+        params : {
+            n_estimators=10
+            use_aggregation=True
+            dirichlet=0.5
+            seed=1
+         }
+    }
+   
+    metrics : {  
+        Accuracy
+
+        
+    }
+
+    target : {
+        name: "class"
+    }
+
+    plot: { 
+        type: heatmap 
+    }
+}
