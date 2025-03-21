@@ -19,13 +19,13 @@ import dill
 
 # Define an application that will connect to Kafka
 app = Application(
-    broker_address="localhost:39092",  # Kafka broker address
+    broker_address="192.168.1.125:9094",  # Kafka broker address
     auto_offset_reset="earliest",
     consumer_group="ARFClassifier",
 )
 
 # Define the Kafka topics
-input_topic = app.topic("Bananas", value_deserializer="json")
+input_topic = app.topic("tester", value_deserializer="json")
 
 output_topic = app.topic("ARFClassifier-results",
                          # Create a Streaming DataFrame connected to the input Kafka topic
