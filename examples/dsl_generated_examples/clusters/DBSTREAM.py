@@ -5,7 +5,7 @@ from quixstreams.models import TopicConfig
 import seaborn as sns
 
 from river import metrics, preprocessing
-from river import forest
+from river import cluster
 import matplotlib.pyplot as plt
 from river import ensemble
 from river import optim
@@ -22,13 +22,13 @@ import numpy as np
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="ARFClassifier54",
+    consumer_group="DenStream",
 )
 
 # Define the Kafka topics
-input_topic = app.topic("Bananass", value_deserializer="json")
+input_topic = app.topic("clusters", value_deserializer="json")
 
-output_topic = app.topic("ARFClassifier-results",
+output_topic = app.topic("DenStream-results",
                          # Create a Streaming DataFrame connected to the input Kafka topic
                          value_serializer="json")
 sdf = app.dataframe(topic=input_topic)
@@ -37,10 +37,13 @@ sdf = app.dataframe(topic=input_topic)
 # Define River Model
 model = (
 
-    forest.ARFClassifier(
+    cluster.DenStream(
 
-        seed=8,
-        leaf_prediction=['mc'],
+        decaying_factor=0.01,
+        beta=0.5,
+        mu=2.5,
+        epsilon=0.5,
+        n_samples_init=10,
 
     ))
 
@@ -52,12 +55,14 @@ model = (
 
 
 # Define metrics
-metric = metrics.Accuracy()
+metric = metrics.MicroPrecision()
 
-Accuracy = []
+Silhouette = []
 
 
 # Variables for plotting
+x_axis = []
+y_axis = []
 
 y_true = []
 y_pred = []
@@ -66,37 +71,33 @@ y_pred = []
 # Function for training the model
 def train_and_predict(X):
 
-    y = X["class"]
-
-    X = {key: value for key, value in X.items() if key != "class"}
-
-    model.learn_one(X, y)
+    model.learn_one(X)
 
     y_predicted = model.predict_one(X)
 
     # Update metric
-
-    metric.update(y, y_predicted)
-
-    print(f"True y: {y}, Predicted: {y_predicted}")
+    metric.update(X, y_predicted,  model.centers)
 
     print(metric)
-    Accuracy.append(metric.get())
+    Silhouette.append(metric.get())
 
-    with open('ARFClassifier.pkl', 'wb') as model_file:
+    with open('DenStream.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
+
+    x_axis.append(X["0"])
+    y_axis.append(X["1"])
 
     # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
     # so we check if y_pred is not None to add to the lists
     if y_predicted is not None:
-        y_true.append(y)
+
         y_pred.append(y_predicted)
 
     return {
         **X,
 
         "Prediction": y_predicted,
-        "Accuracy": metric.get()
+        "Silhouette": metric.get()
 
     }
 
@@ -110,21 +111,29 @@ sdf = sdf.to_topic(output_topic)
 app.run()
 
 
-# Generate the confusion matrix
-cm = confusion_matrix(y_true, y_pred)
+centers = np.array([list(model.centers[i].values()) for i in model.centers])
+x_axis = np.array(x_axis)
+y_axis = np.array(y_axis)
+center_colors = [plt.cm.viridis(i / (len(centers) - 1))
+                 for i in range(len(centers))]
 
-# Create a heatmap of the confusion matrix
-plt.figure(figsize=(6, 5))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=[
-            'Class 0', 'Class 1'], yticklabels=['Class 0', 'Class 1'])
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix Heatmap')
+# Scatter plot: Data points with cluster colors
+plt.scatter(x_axis, y_axis, c=y_pred,
+            cmap="viridis", alpha=0.6, edgecolors="k", label="Points")
+
+
+for i, center in enumerate(centers):
+    plt.scatter(center[0], center[1], c=[center_colors[i]],
+                marker='x', s=200, label=f"Cluster {i} Center")
+plt.title('Cluster Centers')
+plt.xlabel("0")
+plt.ylabel("1")
+plt.legend()
 plt.show()
 
 
-plt.plot(Accuracy)
+plt.plot(Silhouette)
 plt.xlabel('Iterations')
-plt.ylabel('Accuracy')
-plt.title('Accuracy over Training Iterations')
+plt.ylabel('Silhouette')
+plt.title('Silhouette over Training Iterations')
 plt.show()

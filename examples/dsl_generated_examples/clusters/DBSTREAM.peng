@@ -1,0 +1,30 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "clusters"
+        output_topic: "DenStream-results"
+        consumer_group: "DenStream"
+    }
+    model {
+        type : cluster
+        name: DenStream
+        params : {
+                decaying_factor=0.01
+                beta=0.5
+                mu=2.5
+                epsilon=0.5
+                n_samples_init=10
+
+         }
+    }
+   
+    metrics : {  
+        Silhouette
+
+        
+    }
+
+
+
+
+}

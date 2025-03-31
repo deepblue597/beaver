@@ -178,15 +178,15 @@ y_pred = []
 # Function for training the model
 def train_and_predict(X):
 
-
-    {% if pipeline.target %}
-    X = {key: value for key, value in X.items() if key != "{{ pipeline.target.name }}"}  
-    {% endif %}
     {% if pipeline.target.mappings %}
     y = target_mapping[X["{{ pipeline.target.name }}"]]
     {% elif pipeline.target %}
     y = X["{{ pipeline.target.name }}"]
     {% endif %} 
+    {% if pipeline.target %}
+    X = {key: value for key, value in X.items() if key != "{{ pipeline.target.name }}"}  
+    {% endif %}
+
     {% if pipeline.target %}
     model.learn_one(X, y)
     {% else %}
@@ -237,7 +237,7 @@ def train_and_predict(X):
     # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
     # so we check if y_pred is not None to add to the lists
     if y_predicted is not None:
-        {% if pipeline.target.mappings -%}
+        {% if pipeline.target -%}
         y_true.append(y)
         {%- endif %}
         y_pred.append({%-if pipeline.model.proba-%}

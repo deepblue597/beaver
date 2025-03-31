@@ -325,7 +325,7 @@ A table of the supported functionalities the DSL has for River
 | anomaly            | 🚧         |
 | bandit             | ⬜         |
 | base               | ⬜         |
-| cluster            | 🚧         |
+| cluster            | 🚧\*5      |
 | compat             | ❌         |
 | compose            | 🚧         |
 | conf               | ⬜         |
@@ -370,6 +370,7 @@ A table of the supported functionalities the DSL has for River
 \*\* Some metrics are not compatible with the plots and the kafka configuration \
 \*\*\* Averager not supported \
 \*4 iSOUPTreeRegressor partial support (leaf_model)
+\*5 Only support KMeans ( others don't support metrics )
 
 ## :computer: Usage
 
