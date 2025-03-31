@@ -1,0 +1,35 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "clusters"
+        output_topic: "KMeans-results"
+        consumer_group: "KMeans"
+    }
+    model {
+        type : cluster
+        name: KMeans
+        params : {
+            n_clusters=2 
+            halflife=0.1
+            sigma=3 
+            seed=42
+
+         }
+    }
+   
+    metrics : {  
+        Silhouette
+
+        
+    }
+
+    plot : { 
+
+        type : cluster 
+        x : "0" 
+        y : "1" 
+    }
+
+
+
+}

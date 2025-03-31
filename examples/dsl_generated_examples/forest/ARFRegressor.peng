@@ -1,0 +1,36 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "TrumpApproval"
+        output_topic: "ARFRegressor-results"
+        consumer_group: "ARFRegressor2"
+    }
+    model {
+        
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : forest
+        name: ARFRegressor
+        params : {
+            seed=42
+         }
+    }
+   
+    metrics : {  
+        MAE
+
+        
+    }
+
+    target : {
+        name: "class"
+    }
+
+    plot: { 
+        type: scatter 
+    }
+}

@@ -1,0 +1,37 @@
+pipeline MyPipeline {
+    kafka {
+        broker: "localhost:39092"
+        input_topic: "TrumpApproval"
+        output_topic: "OXTRegressor-results"
+        consumer_group: "OXTRegressor"
+    }
+    model {
+        
+        preprocessing : { 
+
+            preprocesor { 
+                name : StandardScaler
+            }
+        }
+        type : forest
+        name: OXTRegressor
+        params : {
+            n_models = 3
+            seed=42
+         }
+    }
+   
+    metrics : {  
+        RMSE
+
+        
+    }
+
+    target : {
+        name: "class"
+    }
+
+    plot: { 
+        type: scatter 
+    }
+}

@@ -175,6 +175,7 @@ Plot :
 
         'type' ':' type = ID 
         ('x' ':' x_axis = STRING)? 
+        ('y' ':' y_axis = STRING)? 
     '}'
 
 ;

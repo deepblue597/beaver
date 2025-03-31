@@ -19,7 +19,7 @@ if __name__ == "__main__":
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
     # dataset = datasets.Phishing()
-    # dataset = datasets.TrumpApproval()
+    dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
     # gen = synth.Agrawal(classification_function=0, seed=42)
@@ -27,11 +27,22 @@ if __name__ == "__main__":
     #                                drift_stream=synth.SEA(seed=42, variant=1),
     #                                seed=1, position=500, width=50)
     # dataset = iter(gen.take(1000))
-    dataset = synth.ConceptDriftStream(
-        seed=42,
-        position=500,
-        width=40).take(1000)
+    # dataset = synth.ConceptDriftStream(
+    #    seed=42,
+    #    position=500,
+    #    width=40).take(1000)
     # dataset = datasets.Bananas().take(500)
+    dataset = [
+        [1, 2],
+        [1, 4],
+        [1, 0],
+        [-4, 2],
+        [-4, 4],
+        [-4, 0],
+        [5, 0],
+        [5, 2],
+        [5, 4]
+    ]
 
 # %%
     dataset
@@ -48,11 +59,11 @@ if __name__ == "__main__":
 
     for idx, row in df.iterrows():
 
-        sample_dict = {**row[0], 'class': row[1]}
+        # sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
 
-        # json_message = row.to_json()
-        json_message = json.dumps(sample_dict)
+        json_message = row.to_json()
+        # json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

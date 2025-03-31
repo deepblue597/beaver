@@ -338,7 +338,7 @@ A table of the supported functionalities the DSL has for River
 | facto              | ⬜         |
 | feature_extraction | ⬜         |
 | feature_selection  | ⬜         |
-| forest             | 🚧         |
+| forest             | ✅         |
 | imblearn           | ⬜         |
 | linear_model       | ✅\*       |
 | metrics            | 🚧\*\*     |
