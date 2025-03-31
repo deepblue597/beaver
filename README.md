@@ -325,14 +325,14 @@ A table of the supported functionalities the DSL has for River
 | anomaly            | 🚧         |
 | bandit             | ⬜         |
 | base               | ⬜         |
-| cluster            | ⬜         |
-| compat             | ⬜         |
-| compose            | ⬜         |
+| cluster            | 🚧         |
+| compat             | ❌         |
+| compose            | 🚧         |
 | conf               | ⬜         |
 | covariance         | ⬜         |
 | datasets           | ✅         |
 | drift              | ⬜         |
-| dummy              | ⬜         |
+| dummy              | ✅         |
 | ensemble           | 🚧         |
 | evaluate           | ⬜         |
 | facto              | ⬜         |
@@ -363,7 +363,8 @@ A table of the supported functionalities the DSL has for River
 
 ✅ : Full support \
 🚧: Partial support \
-⬜ : Not supported
+⬜ : Not supported yet \
+❌ : Will not get support
 
 \*PARegressor is not yet supported \
 \*\* Some metrics are not compatible with the plots and the kafka configuration \
