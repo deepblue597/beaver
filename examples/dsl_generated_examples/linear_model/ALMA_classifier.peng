@@ -1,7 +1,7 @@
 pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
-        input_topic: "phising"
+        input_topic: "Phishing"
         consumer_group: "ALMA"
     }
     model {

@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 import seaborn as sns
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import forest
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -15,106 +15,134 @@ from river import preprocessing
 import json
 
 import dill
+import numpy as np 
 
 
 # Define an application that will connect to Kafka
 app = Application(
     broker_address="localhost:39092",  # Kafka broker address
     auto_offset_reset="earliest",
-    consumer_group="AMFRegressor12",
+    consumer_group="AMFRegressor",
 )
 
 # Define the Kafka topics
-input_topic = app.topic("trump-approval", value_deserializer="json")
+input_topic = app.topic("TrumpApproval", value_deserializer="json")
 
-output_topic = app.topic("AMFRegressor-results1",
-                         # Create a Streaming DataFrame connected to the input Kafka topic
-                         value_serializer="json")
+output_topic = app.topic("AMFRegressor-results",
+                        value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
+
+
 # Define River Model
-model = (
-
+model =(
+    
     forest.AMFRegressor(
-
-        seed=42,
+    
+        seed = 42,
 
     ))
+    
 
 
 # Define new features
 
 
-# Drop features
+# Drop features 
 
 
 # Define metrics
-metric = metrics.MAE()
+metric = metrics.MAE() 
+   
+MAE = [] 
+ 
 
-MAE = []
+
+
+
 
 
 # Variables for plotting
+
 y_true = []
 y_pred = []
 
 
 # Function for training the model
-def train_and_predict(event):
+def train_and_predict(X):
 
-    X = {key: value for key, value in event.items() if key !=
-         "five_thirty_eight"}
+    
+    y = X["class"]
+     
+    
+    X = {key: value for key, value in X.items() if key != "class"}  
+    
 
-    y = event["five_thirty_eight"]
-
+    
     model.learn_one(X, y)
-
+     
+    
+    
     y_predicted = model.predict_one(X)
-
+    
+    
     # Update metric
-    metric.update(y, y_predicted)
+    
+    metric.update(y, y_predicted )
 
+    
     print(f"True y: {y}, Predicted: {y_predicted}")
-
+    
     print(metric)
-    MAE.append(metric.get())
+    MAE.append(metric.get()) 
+    
+    
+
 
     with open('AMFRegressor.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
+
+    
+    
+
+
 
     # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
     # so we check if y_pred is not None to add to the lists
     if y_predicted is not None:
         y_true.append(y)
         y_pred.append(y_predicted)
+        
+
 
     return {
-        **event,
-
-        "Prediction": y_predicted,
-        "MAE": metric.get()
-
-    }
+                **X, 
+                
+                "Prediction": y_predicted,
+                "MAE": metric.get()
+                
+            }
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Output topic
-# Run the streaming application (app automatically tracks the sdf!)
-sdf = sdf.to_topic(output_topic)
+# Output topic 
+sdf = sdf.to_topic(output_topic)# Run the streaming application (app automatically tracks the sdf!)
 app.run()
+
 
 
 plt.figure(figsize=(8, 6))
 plt.scatter(y_true, y_pred, alpha=0.5)
-plt.plot([min(y_true), max(y_true)], [
-         min(y_true), max(y_true)], 'r--')  # Ideal line
-plt.xlabel("Real Values five_thirty_eight")
-plt.ylabel("Predicted Values five_thirty_eight ")
-plt.title("Real vs Predicted five_thirty_eight")
+plt.plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], 'r--')  # Ideal line
+plt.xlabel("Real Values class")
+plt.ylabel("Predicted Values class ")
+plt.title("Real vs Predicted class")
 plt.show()
+
+
 
 
 plt.plot(MAE)
@@ -122,3 +150,4 @@ plt.xlabel('Iterations')
 plt.ylabel('MAE')
 plt.title('MAE over Training Iterations')
 plt.show()
+ 

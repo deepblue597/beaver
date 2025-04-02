@@ -12,8 +12,10 @@ from river import optim
 from sklearn.metrics import confusion_matrix
 from river import compose
 from river import preprocessing
+import json
 
 import dill
+import numpy as np 
 
 
 # Define an application that will connect to Kafka
@@ -24,7 +26,7 @@ app = Application(
 )
 
 # Define the Kafka topics
-input_topic = app.topic("credit-card-fraud", value_deserializer="json")
+input_topic = app.topic("CreditCard", value_deserializer="json")
 
 # Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
@@ -40,6 +42,7 @@ model =(
     (
     
     preprocessor_0)|
+    
     anomaly.HalfSpaceTrees(
     
         n_trees = 5,
@@ -47,8 +50,7 @@ model =(
         window_size = 3,
         seed = 42,
 
-    )
-)
+    ))
     
 
 
@@ -70,33 +72,35 @@ MAE = []
 
 
 # Variables for plotting
+
 y_true = []
 y_pred = []
 
 
 # Function for training the model
-def train_and_predict(event):
-
-#    X = { 
-#        
-#
-#    }
+def train_and_predict(X):
 
     
-    X = {key: value for key, value in event.items() if key != "Class"}  
-    
-    
-    y = event["Class"]
+    y = X["class"]
      
+    
+    X = {key: value for key, value in X.items() if key != "class"}  
+    
+
     
     model.learn_one(X, y)
      
     
+    
     y_predicted = model.predict_one(X)
     
+    
+    # Update metric
+    
+    metric.update(y, y_predicted )
 
-    # Update accuracy metric
-    metric.update(y, y_predicted)
+    
+    print(f"True y: {y}, Predicted: {y_predicted}")
     
     print(metric)
     MAE.append(metric.get()) 
@@ -108,12 +112,19 @@ def train_and_predict(event):
         dill.dump(model, model_file)
 
     
-    y_true.append(y)
-    y_pred.append(y_predicted)
     
 
 
-    return event
+
+    # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
+    # so we check if y_pred is not None to add to the lists
+    if y_predicted is not None:
+        y_true.append(y)
+        y_pred.append(y_predicted)
+        
+
+
+    return X
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
@@ -143,3 +154,4 @@ plt.xlabel('Iterations')
 plt.ylabel('MAE')
 plt.title('MAE over Training Iterations')
 plt.show()
+ 

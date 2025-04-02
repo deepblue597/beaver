@@ -15,6 +15,7 @@ from river import preprocessing
 import json
 
 import dill
+import numpy as np 
 
 
 # Define an application that will connect to Kafka
@@ -66,20 +67,21 @@ Accuracy = []
 
 
 # Variables for plotting
+
 y_true = []
 y_pred = []
 
 
 # Function for training the model
-def train_and_predict(event):
+def train_and_predict(X):
 
-
     
-    X = {key: value for key, value in event.items() if key != "class"}  
-    
-    
-    y = event["class"]
+    y = X["class"]
      
+    
+    X = {key: value for key, value in X.items() if key != "class"}  
+    
+
     
     model.learn_one(X, y)
      
@@ -88,11 +90,12 @@ def train_and_predict(event):
     y_predicted = model.predict_one(X)
     
     
-
     # Update metric
-    metric.update(y, y_predicted)
     
-    print(f"True Label: {y}, Predicted: {y_predicted}")
+    metric.update(y, y_predicted )
+
+    
+    print(f"True y: {y}, Predicted: {y_predicted}")
     
     print(metric)
     Accuracy.append(metric.get()) 
@@ -104,6 +107,10 @@ def train_and_predict(event):
         dill.dump(model, model_file)
 
     
+    
+
+
+
     # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
     # so we check if y_pred is not None to add to the lists
     if y_predicted is not None:
@@ -113,7 +120,7 @@ def train_and_predict(event):
 
 
     return {
-                **event, 
+                **X, 
                 
                 "Prediction": y_predicted,
                 "Accuracy": metric.get()
