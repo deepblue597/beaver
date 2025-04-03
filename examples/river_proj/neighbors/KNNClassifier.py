@@ -24,7 +24,7 @@ model = (
 
 metric_proba = metrics.CrossEntropy()
 metric = metrics.Accuracy()
-
+# %%
 CrossEntropy = []
 Accuracy = []
 for x, y in dataset:
@@ -43,3 +43,4 @@ CrossEntropy
 Accuracy
 
 # %%
+metric_proba.requires_labels
