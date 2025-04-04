@@ -1,26 +1,21 @@
 # %%
-from river import neighbors
 from river import metrics
-from river import linear_model
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-y_true = [True, False, True, True, True]
-y_pred = [True, True, False, True, True]
 
-metric = metrics.Accuracy()
+y_true = ['pear', 'apple', 'banana', 'banana', 'banana']
+y_pred = ['apple', 'pear', 'banana', 'banana', 'apple']
+
+report = metrics.ClassificationReport()
+
 for yt, yp in zip(y_true, y_pred):
-    metric.update(yt, yp)
+    report.update(yt, yp)
 
-metric
+print(report)
+
 # %%
 
-model = linear_model.LogisticRegression()
-
-metric.works_with(model)
-# %%
-metric.cm
-# %%
 classes = sorted(metric.cm.classes)
 data = [[metric.cm.data[true][pred] for pred in classes]
         for true in classes]  # Convert to 2D list
@@ -33,3 +28,5 @@ plt.xlabel("Predicted")
 plt.ylabel("True")
 plt.title("Confusion Matrix Heatmap")
 plt.show()
+
+# %%

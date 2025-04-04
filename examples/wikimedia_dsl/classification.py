@@ -63,6 +63,7 @@ sdf.drop(["minor"])
 
 # Define metrics
 metric = metrics.MAE() + metrics.MSE()
+metric_2 = metrics.Accuracy()
 
 MAE = []
 MSE = []
