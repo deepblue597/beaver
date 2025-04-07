@@ -1,30 +1,49 @@
-ModelFile :
-    kafka=Kafka  
-    model = Model  
-    (optimizers=Optimizers)?
-    algorithms=Algorithms
+
+ModelFile : 
+
+    algorithms = Algorithms
+    preproccessors = Preprocessors
+    optimizers *= Optimizers 
+
 ;
 
+Algorithms : 
 
-Kafka : 
+    'algorithms' '{'
+    
+        model += Model 
+    
+    '}'
+;
 
-    'kafka' name=ID '{' 
+Preprocessors : 
 
-        'broker' ':' broker=STRING 
-        'input_topic' ':' input_topic=STRING 
-        ('output_topic' ':' output_topic = STRING)? 
-        'consumer_group' ':' consumer_group = STRING 
+    'preproccessors' '{'
+    
+        model += Model 
 
     '}'
 
 ;
+
+Optimizers : 
+
+    'optimizers' '{'
+    
+        model += Model 
+
+    '}'
+
+;
+
+
 
 Model : 
 
     'model' name=ID '{' 
 
         'type' ':' type = ID 
-        'name' ':'  name = ID
+        'name' ':'  nameR = ID
         ('params' ':' '{' 
 
             params += Param
@@ -33,102 +52,17 @@ Model :
     '}'
 ; 
 
-Algorithms : 
-
-    'algorithms' '{'
-    
-        algorithms += Model
-    
-    '}'
-
-;
-
-Preprocessors : 
-
-    'preprocesors' '{' 
-
-        preprocesors += Model
-    
-    '}'
-;
-
-Optimizers :
-
-    'optimizers' '{'
-
-        optimizers += Model
-
-    '}'
-;
-
-Metrics : 
-
-    'metrics' '{' 
-        
-        metrics += Model 
-    
-    '}'
-
-;
-
-
-Target:
-    'target' ':' '{'
-        'name' ':' name=STRING
-        ('mapping' '{' mappings+=Mapping+ '}')?
-    '}'
-;
-
-
-Mapping:
-    key=ID ':' value=INT;   
-
-
 
 Param : 
 
-    name = ID '=' value =  Value   ; 
+    name = ID '=' value =  NumberValue   ; 
 
-Value : RefValue|  FloatValue | IntValue | StringValue | BoolValue   ;
+NumberValue : FloatValue | IntValue | StringValue | BoolValue | RefValue;
 
-RefValue : ref=[Model:FQN]  ;
-IDValue : value = ID ; 
+RefValue : value = [Model] ;
 BoolValue : value = BOOL ; 
 StringValue : value+=STRING;
 FloatValue: value=MYFLOAT;
 IntValue: value=MYINT;
 MYINT: /\-?\d+/;
 MYFLOAT: /\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+/;
-
-
-
-Features :
-    'features' '{'
-        ('drop_features' ':' '{' features += ID+ '}')?
-        ('generated_features'  ':' '{' assignments*= Assignment '}')? 
-    
-    '}' 
-;
-// TODO: keep_features functionality
-
-
-Assignment: variable=ID '=' expression=Expression ';';
-Expression: operands=Term (operators=PlusOrMinus operands=Term)*;
-PlusOrMinus: '+' | '-';
-Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
-MulOrDiv: '*' | '/' ;
-Factor: (sign=PlusOrMinus)?  op=Operand;
-Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');
-
-
-Plot : 
-    'plot' ':' '{'
-
-        'type' ':' type = ID 
-        ('x' ':' x_axis = STRING)? 
-        ('y' ':' y_axis = STRING)? 
-    '}'
-
-;
-
-FQN: ID('.'ID)*;

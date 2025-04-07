@@ -1,7 +1,85 @@
-kafka kafkass {
-    broker: "localhost:39092"
-    input_topic: "CreditCard"
-    consumer_group: "halfSpaceTree"
+
+algorithms { 
+
+    model linear_model {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+    model linear_models {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+                preprocesor = linear_modelss
+            }
+        }
+
+
 }
 
+preproccessors { 
+
+    model linear_modelss {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+    model linear_modelsss {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+
+}
+
+
+optimizers { 
+
+    model linear {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+    model linears {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+
+}
+
+
+
+
+ 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
 

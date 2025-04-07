@@ -44,12 +44,17 @@ def validate_model(grammar_file, model_file):
 
 if __name__ == "__main__":
     args = parse_command_line_arguments()
-    metamodel = metamodel_from_file(args.metamodel)
-    metamodel.register_scope_providers({"*.*": scoping_providers.FQN()})
+    # metamodel = metamodel_from_file(args.metamodel)
+    # metamodel.register_scope_providers({"*.*": scoping_providers.FQN()})
     # Validate the model
-    config = validate_model('beaver.tx', metamodel)
+    config = validate_model('beaver.tx', args.metamodel)
 
     if config:
+        # Index 1 for the second model
+        second_model = config.algorithms.model[1]
+
         # Access parsed data if the model is valid
-        print(f"Kafka Broker: {config.kafka.broker}")
-        print(f"Model Type: {config.model.name}")
+        # print(f"Kafka Broker: {config.kafka.broker}")
+        print(
+            f"Model Type: {config.algorithms.model[1].params[1].value.value.type}")
+        print(f"Model Type: {config.preproccessors}")

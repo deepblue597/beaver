@@ -11,85 +11,34 @@
     edge[dir=black,arrowtail=empty]
 
 
-140017151160736[ label="{Kafka|name: ID\lbroker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+130951649775872[ label="{Model|name: list[ID]\ltype: ID\l}"]
 
-140017151160640[ label="{Model|uniqueID: ID\ltype: ID\lname: ID\l}"]
+130951649775776[ label="{Param|name: ID\l}"]
 
-140017151160688[ label="{Algorithms|}"]
+130951649775824[ label="{*NumberValue|}"]
 
-140017151159056[ label="{Preprocessors|}"]
+130951649786096[ label="{BoolValue|value: BOOL\l}"]
 
-140017151264288[ label="{Optimizers|}"]
+130951649787344[ label="{StringValue|value: list[STRING]\l}"]
 
-140017151265920[ label="{Metrics|}"]
+130951649778368[ label="{FloatValue|value: MYFLOAT\l}"]
 
-140017151264144[ label="{Target|name: STRING\l}"]
-
-140017151265776[ label="{Mapping|key: ID\lvalue: INT\l}"]
-
-140017151264240[ label="{Param|name: ID\l}"]
-
-140017151263232[ label="{*Value|}"]
-
-140017151266688[ label="{RefValue|}"]
-
-140017151264576[ label="{IDValue|value: ID\l}"]
-
-140017151264528[ label="{BoolValue|value: BOOL\l}"]
-
-140017151263520[ label="{StringValue|value: list[STRING]\l}"]
-
-140017151264768[ label="{FloatValue|value: MYFLOAT\l}"]
-
-140017151264720[ label="{IntValue|value: MYINT\l}"]
-
-140017151265008[ label="{Features|features: list[ID]\l}"]
-
-140017151265104[ label="{Assignment|variable: ID\l}"]
-
-140017151263712[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
-
-140017151266544[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
-
-140017151266496[ label="{Factor|sign: PlusOrMinus\l}"]
-
-140017151263568[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
-
-140017151263088[ label="{Plot|type: ID\lx_axis: STRING\ly_axis: STRING\l}"]
+130951649782064[ label="{IntValue|value: MYINT\l}"]
 
 
 
-140017151160640 -> 140017151264240[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-140017151160688 -> 140017151160640[arrowtail=diamond, dir=both, headlabel="algorithms 1..*"]
-140017151159056 -> 140017151160640[arrowtail=diamond, dir=both, headlabel="preprocesors 1..*"]
-140017151264288 -> 140017151160640[arrowtail=diamond, dir=both, headlabel="optimizers 1..*"]
-140017151265920 -> 140017151160640[arrowtail=diamond, dir=both, headlabel="metrics 1..*"]
-140017151264144 -> 140017151265776[arrowtail=diamond, dir=both, headlabel="mappings 1..*"]
-140017151264240 -> 140017151263232[arrowtail=diamond, dir=both, headlabel="value "]
-140017151263232 -> 140017151264768 [dir=back]
-140017151263232 -> 140017151264720 [dir=back]
-140017151263232 -> 140017151263520 [dir=back]
-140017151263232 -> 140017151264528 [dir=back]
-140017151263232 -> 140017151266688 [dir=back]
-140017151266688 -> 140017151160640[headlabel="value "]
-140017151265008 -> 140017151265104[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
-140017151265104 -> 140017151263712[arrowtail=diamond, dir=both, headlabel="expression "]
-140017151263712 -> 140017151266544[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-140017151266544 -> 140017151266496[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-140017151266496 -> 140017151263568[arrowtail=diamond, dir=both, headlabel="op "]
-140017151263568 -> 140017151263712[arrowtail=diamond, dir=both, headlabel="op_expr "]
+130951649775872 -> 130951649775776[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+130951649775776 -> 130951649775824[arrowtail=diamond, dir=both, headlabel="value "]
+130951649775824 -> 130951649778368 [dir=back]
+130951649775824 -> 130951649782064 [dir=back]
+130951649775824 -> 130951649787344 [dir=back]
+130951649775824 -> 130951649786096 [dir=back]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>
 	</tr>
 	<tr>
 		<td><b>MYINT</b></td><td>\-?\d+</td>
-	</tr>
-	<tr>
-		<td><b>MulOrDiv</b></td><td>*|/</td>
-	</tr>
-	<tr>
-		<td><b>PlusOrMinus</b></td><td>+|-</td>
 	</tr>
 </table> >]
 
