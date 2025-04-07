@@ -1,4 +1,27 @@
 
+kafka {
+        broker: "localhost:39092"
+        input_topic: "CreditCard"
+        consumer_group: "halfSpaceTree"
+}
+
+
+features {
+        
+        drop_features : { 
+            
+            minor
+        } 
+
+        generated_features: { 
+
+            
+            len_diff = new_length - old_length;
+        }
+
+}
+
+
 algorithms { 
 
     model linear_model {
@@ -71,10 +94,30 @@ optimizers {
 }
 
 
+ 
+metrics { 
+
+    model linear {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
+
+    model linears {
+
+            type : linear_model
+            name : logreg
+            params : {
+                lr = 1
+            }
+        }
 
 
- 
- 
+}
+
  
  
 

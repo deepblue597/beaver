@@ -1,9 +1,33 @@
 
 ModelFile : 
-
+    
+    kafka = Kafka
+    features = Features
     algorithms = Algorithms
     preproccessors = Preprocessors
     optimizers *= Optimizers 
+    metrics *= Metrics
+
+;
+
+Pipeline : 
+
+    'pipeline' name = ID '{'
+    
+    
+    
+    '}'
+
+Kafka : 
+
+    'kafka' '{' 
+
+        'broker' ':' broker=STRING 
+        'input_topic' ':' input_topic=STRING 
+        ('output_topic' ':' output_topic = STRING)? 
+        'consumer_group' ':' consumer_group = STRING 
+
+    '}'
 
 ;
 
@@ -32,6 +56,16 @@ Optimizers :
     
         model += Model 
 
+    '}'
+
+;
+
+Metrics : 
+
+    'metrics' '{' 
+    
+        model += Model 
+        
     '}'
 
 ;
@@ -66,3 +100,21 @@ FloatValue: value=MYFLOAT;
 IntValue: value=MYINT;
 MYINT: /\-?\d+/;
 MYFLOAT: /\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+/;
+
+
+Features :
+    'features' '{'
+        ('drop_features' ':' '{' features += ID+ '}')?
+        ('generated_features'  ':' '{' assignments*= Assignment '}')? 
+    
+    '}' 
+;
+
+
+Assignment: variable=ID '=' expression=Expression ';';
+Expression: operands=Term (operators=PlusOrMinus operands=Term)*;
+PlusOrMinus: '+' | '-';
+Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
+MulOrDiv: '*' | '/' ;
+Factor: (sign=PlusOrMinus)?  op=Operand;
+Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');

@@ -11,34 +11,84 @@
     edge[dir=black,arrowtail=empty]
 
 
-130951649775872[ label="{Model|name: list[ID]\ltype: ID\l}"]
+134169707374944[ label="{ModelFile|}"]
 
-130951649775776[ label="{Param|name: ID\l}"]
+134169703550800[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-130951649775824[ label="{*NumberValue|}"]
+134169703550128[ label="{Algorithms|}"]
 
-130951649786096[ label="{BoolValue|value: BOOL\l}"]
+134169703557472[ label="{Preprocessors|}"]
 
-130951649787344[ label="{StringValue|value: list[STRING]\l}"]
+134169703558048[ label="{Optimizers|}"]
 
-130951649778368[ label="{FloatValue|value: MYFLOAT\l}"]
+134169703549744[ label="{Metrics|}"]
 
-130951649782064[ label="{IntValue|value: MYINT\l}"]
+134169703637040[ label="{Model|name: ID\ltype: ID\lnameR: ID\l}"]
+
+134169703633536[ label="{Param|name: ID\l}"]
+
+134169703635600[ label="{*NumberValue|}"]
+
+134169703631136[ label="{RefValue|}"]
+
+134169703632768[ label="{BoolValue|value: BOOL\l}"]
+
+134169703633920[ label="{StringValue|value: list[STRING]\l}"]
+
+134169705036496[ label="{FloatValue|value: MYFLOAT\l}"]
+
+134169705034192[ label="{IntValue|value: MYINT\l}"]
+
+134169708490736[ label="{Features|features: list[ID]\l}"]
+
+134169703637184[ label="{Assignment|variable: ID\l}"]
+
+134169703640592[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
+
+134169703641264[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+
+134169703631280[ label="{Factor|sign: PlusOrMinus\l}"]
+
+134169703638864[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
 
 
 
-130951649775872 -> 130951649775776[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-130951649775776 -> 130951649775824[arrowtail=diamond, dir=both, headlabel="value "]
-130951649775824 -> 130951649778368 [dir=back]
-130951649775824 -> 130951649782064 [dir=back]
-130951649775824 -> 130951649787344 [dir=back]
-130951649775824 -> 130951649786096 [dir=back]
+134169707374944 -> 134169703550800[arrowtail=diamond, dir=both, headlabel="kafka "]
+134169707374944 -> 134169708490736[arrowtail=diamond, dir=both, headlabel="features "]
+134169707374944 -> 134169703550128[arrowtail=diamond, dir=both, headlabel="algorithms "]
+134169707374944 -> 134169703557472[arrowtail=diamond, dir=both, headlabel="preproccessors "]
+134169707374944 -> 134169703558048[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
+134169707374944 -> 134169703549744[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
+134169703550128 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+134169703557472 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+134169703558048 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+134169703549744 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+134169703637040 -> 134169703633536[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+134169703633536 -> 134169703635600[arrowtail=diamond, dir=both, headlabel="value "]
+134169703635600 -> 134169705036496 [dir=back]
+134169703635600 -> 134169705034192 [dir=back]
+134169703635600 -> 134169703633920 [dir=back]
+134169703635600 -> 134169703632768 [dir=back]
+134169703635600 -> 134169703631136 [dir=back]
+134169703631136 -> 134169703637040[headlabel="value "]
+134169708490736 -> 134169703637184[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
+134169703637184 -> 134169703640592[arrowtail=diamond, dir=both, headlabel="expression "]
+134169703640592 -> 134169703641264[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+134169703641264 -> 134169703631280[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+134169703631280 -> 134169703638864[arrowtail=diamond, dir=both, headlabel="op "]
+134169703638864 -> 134169703640592[arrowtail=diamond, dir=both, headlabel="op_expr "]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>
 	</tr>
 	<tr>
 		<td><b>MYINT</b></td><td>\-?\d+</td>
+	</tr>
+	<tr>
+		<td><b>MulOrDiv</b></td><td>*|/</td>
+	</tr>
+	<tr>
+		<td><b>PlusOrMinus</b></td><td>+|-</td>
 	</tr>
 </table> >]
 
