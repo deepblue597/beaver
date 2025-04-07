@@ -1,0 +1,7 @@
+kafka kafkass {
+    broker: "localhost:39092"
+    input_topic: "CreditCard"
+    consumer_group: "halfSpaceTree"
+}
+
+
