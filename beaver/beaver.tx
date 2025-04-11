@@ -1,10 +1,10 @@
 
 ModelFile : 
     
+    pipeline += Pipeline
     kafka = Kafka
-    features = Features
+    data += Data 
     algorithms = Algorithms
-    preproccessors = Preprocessors
     optimizers *= Optimizers 
     metrics *= Metrics
 
@@ -13,19 +13,34 @@ ModelFile :
 Pipeline : 
 
     'pipeline' name = ID '{'
-    
-    
+
+        ('output_topic' ':' output_topic = STRING)? 
+        'consumer_group' ':' consumer_group = STRING 
+        data = [Data]
+        algorithms += [Model]
+        metrics += [Model]
+
     
     '}'
+;
+
+Data : 
+    
+    'data' name = ID '{'
+
+        'input_topic' ':' input_topic=STRING 
+        features = Features
+        preproccessors *= [Model]
+    
+    '}'
+; 
 
 Kafka : 
 
     'kafka' '{' 
 
         'broker' ':' broker=STRING 
-        'input_topic' ':' input_topic=STRING 
-        ('output_topic' ':' output_topic = STRING)? 
-        'consumer_group' ':' consumer_group = STRING 
+        
 
     '}'
 
@@ -77,6 +92,7 @@ Model :
     'model' name=ID '{' 
 
         'type' ':' type = ID 
+        ('subtype' ':' subtype = ID)? 
         'name' ':'  nameR = ID
         ('params' ':' '{' 
 
@@ -93,7 +109,7 @@ Param :
 
 NumberValue : FloatValue | IntValue | StringValue | BoolValue | RefValue;
 
-RefValue : value = [Model] ;
+RefValue : value += [Model] ;
 BoolValue : value = BOOL ; 
 StringValue : value+=STRING;
 FloatValue: value=MYFLOAT;

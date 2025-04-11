@@ -11,72 +11,81 @@
     edge[dir=black,arrowtail=empty]
 
 
-134169707374944[ label="{ModelFile|}"]
+131683838011168[ label="{ModelFile|}"]
 
-134169703550800[ label="{Kafka|broker: STRING\linput_topic: STRING\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+131683838002000[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-134169703550128[ label="{Algorithms|}"]
+131683845880000[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-134169703557472[ label="{Preprocessors|}"]
+131683837616512[ label="{Kafka|broker: STRING\l}"]
 
-134169703558048[ label="{Optimizers|}"]
+131683837624240[ label="{Algorithms|}"]
 
-134169703549744[ label="{Metrics|}"]
+131683837621648[ label="{Preprocessors|}"]
 
-134169703637040[ label="{Model|name: ID\ltype: ID\lnameR: ID\l}"]
+131683837623088[ label="{Optimizers|}"]
 
-134169703633536[ label="{Param|name: ID\l}"]
+131683837624144[ label="{Metrics|}"]
 
-134169703635600[ label="{*NumberValue|}"]
+131683837616800[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
 
-134169703631136[ label="{RefValue|}"]
+131683837615648[ label="{Param|name: ID\l}"]
 
-134169703632768[ label="{BoolValue|value: BOOL\l}"]
+131683837613104[ label="{*NumberValue|}"]
 
-134169703633920[ label="{StringValue|value: list[STRING]\l}"]
+131683837613008[ label="{RefValue|}"]
 
-134169705036496[ label="{FloatValue|value: MYFLOAT\l}"]
+131683837610896[ label="{BoolValue|value: BOOL\l}"]
 
-134169705034192[ label="{IntValue|value: MYINT\l}"]
+131683839356528[ label="{StringValue|value: list[STRING]\l}"]
 
-134169708490736[ label="{Features|features: list[ID]\l}"]
+131683839360992[ label="{FloatValue|value: MYFLOAT\l}"]
 
-134169703637184[ label="{Assignment|variable: ID\l}"]
+131683839356432[ label="{IntValue|value: MYINT\l}"]
 
-134169703640592[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
+131683838215328[ label="{Features|features: list[ID]\l}"]
 
-134169703641264[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+131683838214704[ label="{Assignment|variable: ID\l}"]
 
-134169703631280[ label="{Factor|sign: PlusOrMinus\l}"]
+131683838214224[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
 
-134169703638864[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
+131683838214416[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+
+131683838215040[ label="{Factor|sign: PlusOrMinus\l}"]
+
+131683838215136[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
 
 
 
-134169707374944 -> 134169703550800[arrowtail=diamond, dir=both, headlabel="kafka "]
-134169707374944 -> 134169708490736[arrowtail=diamond, dir=both, headlabel="features "]
-134169707374944 -> 134169703550128[arrowtail=diamond, dir=both, headlabel="algorithms "]
-134169707374944 -> 134169703557472[arrowtail=diamond, dir=both, headlabel="preproccessors "]
-134169707374944 -> 134169703558048[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
-134169707374944 -> 134169703549744[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
-134169703550128 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-134169703557472 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-134169703558048 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-134169703549744 -> 134169703637040[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-134169703637040 -> 134169703633536[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-134169703633536 -> 134169703635600[arrowtail=diamond, dir=both, headlabel="value "]
-134169703635600 -> 134169705036496 [dir=back]
-134169703635600 -> 134169705034192 [dir=back]
-134169703635600 -> 134169703633920 [dir=back]
-134169703635600 -> 134169703632768 [dir=back]
-134169703635600 -> 134169703631136 [dir=back]
-134169703631136 -> 134169703637040[headlabel="value "]
-134169708490736 -> 134169703637184[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
-134169703637184 -> 134169703640592[arrowtail=diamond, dir=both, headlabel="expression "]
-134169703640592 -> 134169703641264[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-134169703641264 -> 134169703631280[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-134169703631280 -> 134169703638864[arrowtail=diamond, dir=both, headlabel="op "]
-134169703638864 -> 134169703640592[arrowtail=diamond, dir=both, headlabel="op_expr "]
+131683838011168 -> 131683838002000[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
+131683838011168 -> 131683837616512[arrowtail=diamond, dir=both, headlabel="kafka "]
+131683838011168 -> 131683845880000[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+131683838011168 -> 131683837624240[arrowtail=diamond, dir=both, headlabel="algorithms "]
+131683838011168 -> 131683837623088[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
+131683838011168 -> 131683837624144[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
+131683838002000 -> 131683845880000[headlabel="data "]
+131683838002000 -> 131683837616800[headlabel="algorithms 1..*"]
+131683838002000 -> 131683837616800[headlabel="metrics 1..*"]
+131683845880000 -> 131683838215328[arrowtail=diamond, dir=both, headlabel="features "]
+131683845880000 -> 131683837616800[headlabel="preproccessors 0..*"]
+131683837624240 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+131683837621648 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+131683837623088 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+131683837624144 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+131683837616800 -> 131683837615648[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+131683837615648 -> 131683837613104[arrowtail=diamond, dir=both, headlabel="value "]
+131683837613104 -> 131683839360992 [dir=back]
+131683837613104 -> 131683839356432 [dir=back]
+131683837613104 -> 131683839356528 [dir=back]
+131683837613104 -> 131683837610896 [dir=back]
+131683837613104 -> 131683837613008 [dir=back]
+131683837613008 -> 131683837616800[headlabel="value 1..*"]
+131683838215328 -> 131683838214704[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
+131683838214704 -> 131683838214224[arrowtail=diamond, dir=both, headlabel="expression "]
+131683838214224 -> 131683838214416[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+131683838214416 -> 131683838215040[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+131683838215040 -> 131683838215136[arrowtail=diamond, dir=both, headlabel="op "]
+131683838215136 -> 131683838214224[arrowtail=diamond, dir=both, headlabel="op_expr "]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>

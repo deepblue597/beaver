@@ -1,5 +1,6 @@
 
 # %%
+import numbers
 from river.compose import Select, TransformerProduct
 from river import preprocessing
 from river import linear_model
@@ -124,4 +125,11 @@ compose.Prefixer('prefix_').transform_one(x)
 
 x = {'a': 42, 'b': 12}
 compose.Suffixer('_suffix').transform_one(x)
+# %%
+
+num = compose.SelectType(numbers.Number) | preprocessing.StandardScaler()
+cat = compose.SelectType(str) | preprocessing.OneHotEncoder()
+model = (num + cat) | linear_model.LogisticRegression()
+# %%
+model
 # %%
