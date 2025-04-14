@@ -267,3 +267,80 @@ evaluate.progressive_val_score(dataset, model, metric)
 # %%
 model[1].models
 # %%
+from river import ensemble
+from river import evaluate
+from river import metrics
+from river.datasets import synth
+from river import tree
+
+dataset = synth.ConceptDriftStream(
+    seed=42,
+    position=500,
+    width=50
+).take(1000)
+
+base_model = tree.HoeffdingTreeClassifier(
+    grace_period=50, delta=0.01,
+    nominal_attributes=['age', 'car', 'zipcode']
+)
+model = ensemble.SRPClassifier(
+    model=base_model, n_models=3, seed=42,
+)
+
+metric = metrics.Accuracy()
+
+evaluate.progressive_val_score(dataset, model, metric)
+# %%
+model
+# %%
+model.models
+# %%
+from river import ensemble
+from river import evaluate
+from river import metrics
+from river.datasets import synth
+from river import tree
+
+dataset = synth.FriedmanDrift(
+    drift_type='gsg',
+    position=(350, 750),
+    transition_window=200,
+    seed=42
+).take(1000)
+
+base_model = tree.HoeffdingTreeRegressor(grace_period=50)
+model = ensemble.SRPRegressor(
+    model=base_model,
+    training_method="patches",
+    n_models=3,
+    seed=42
+)
+
+metric = metrics.R2()
+
+evaluate.progressive_val_score(dataset, model, metric)
+# %%
+from river import datasets
+from river import ensemble
+from river import evaluate
+from river import linear_model
+from river import metrics
+from river import naive_bayes
+from river import preprocessing
+from river import tree
+
+dataset = datasets.Phishing()
+
+model = (
+    preprocessing.StandardScaler() |
+    ensemble.VotingClassifier([
+        linear_model.LogisticRegression(),
+        tree.HoeffdingTreeClassifier(),
+        naive_bayes.GaussianNB()
+    ])
+)
+
+metric = metrics.F1()
+
+evaluate.progressive_val_score(dataset, model, metric)
+# %%

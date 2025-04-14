@@ -2,7 +2,7 @@
 ModelFile : 
     
     pipeline += Pipeline
-    kafka = Kafka
+    connector = Connector
     data += Data 
     algorithms = Algorithms
     optimizers *= Optimizers 
@@ -30,14 +30,14 @@ Data :
 
         'input_topic' ':' input_topic=STRING 
         features = Features
-        preproccessors *= [Model]
+        preprocessors *= [Model]
     
     '}'
 ; 
 
-Kafka : 
+Connector : 
 
-    'kafka' '{' 
+    'connector' '{' 
 
         'broker' ':' broker=STRING 
         
@@ -57,7 +57,7 @@ Algorithms :
 
 Preprocessors : 
 
-    'preproccessors' '{'
+    'preprocessors' '{'
     
         model += Model 
 
