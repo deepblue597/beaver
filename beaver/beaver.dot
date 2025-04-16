@@ -11,88 +11,86 @@
     edge[dir=black,arrowtail=empty]
 
 
-131683838011168[ label="{ModelFile|}"]
+1648031280416[ label="{ModelFile|}"]
 
-131683838002000[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+1648031281088[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-131683845880000[ label="{Data|name: ID\linput_topic: STRING\l}"]
+1648031279216[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-131683837616512[ label="{Kafka|broker: STRING\l}"]
+1648031278784[ label="{Connector|broker: STRING\l}"]
 
-131683837624240[ label="{Algorithms|}"]
+1648031278832[ label="{Algorithms|}"]
 
-131683837621648[ label="{Preprocessors|}"]
+1648031277536[ label="{Preprocessors|}"]
 
-131683837623088[ label="{Optimizers|}"]
+1648031278976[ label="{Optimizers|}"]
 
-131683837624144[ label="{Metrics|}"]
+1648031281856[ label="{Metrics|}"]
 
-131683837616800[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
+1648031280752[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
 
-131683837615648[ label="{Param|name: ID\l}"]
+1648031279264[ label="{Param|name: ID\l}"]
 
-131683837613104[ label="{*NumberValue|}"]
+1648031279360[ label="{List|}"]
 
-131683837613008[ label="{RefValue|}"]
+1648031279408[ label="{*ParamValue|}"]
 
-131683837610896[ label="{BoolValue|value: BOOL\l}"]
+1648031279504[ label="{Dict|}"]
 
-131683839356528[ label="{StringValue|value: list[STRING]\l}"]
+1648031279600[ label="{DictItem|name: STRING\l}"]
 
-131683839360992[ label="{FloatValue|value: MYFLOAT\l}"]
+1648031279696[ label="{*DictType|}"]
 
-131683839356432[ label="{IntValue|value: MYINT\l}"]
+1648031279792[ label="{Reference|}"]
 
-131683838215328[ label="{Features|features: list[ID]\l}"]
+1648031279888[ label="{Features|features: list[ID]\l}"]
 
-131683838214704[ label="{Assignment|variable: ID\l}"]
+1648031280896[ label="{Assignment|variable: ID\l}"]
 
-131683838214224[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
+1647994350832[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
 
-131683838214416[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+1648031282240[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
 
-131683838215040[ label="{Factor|sign: PlusOrMinus\l}"]
+1648031282672[ label="{Factor|sign: PlusOrMinus\l}"]
 
-131683838215136[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
+1648031282768[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
 
 
 
-131683838011168 -> 131683838002000[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
-131683838011168 -> 131683837616512[arrowtail=diamond, dir=both, headlabel="kafka "]
-131683838011168 -> 131683845880000[arrowtail=diamond, dir=both, headlabel="data 1..*"]
-131683838011168 -> 131683837624240[arrowtail=diamond, dir=both, headlabel="algorithms "]
-131683838011168 -> 131683837623088[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
-131683838011168 -> 131683837624144[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
-131683838002000 -> 131683845880000[headlabel="data "]
-131683838002000 -> 131683837616800[headlabel="algorithms 1..*"]
-131683838002000 -> 131683837616800[headlabel="metrics 1..*"]
-131683845880000 -> 131683838215328[arrowtail=diamond, dir=both, headlabel="features "]
-131683845880000 -> 131683837616800[headlabel="preproccessors 0..*"]
-131683837624240 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-131683837621648 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-131683837623088 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-131683837624144 -> 131683837616800[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-131683837616800 -> 131683837615648[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-131683837615648 -> 131683837613104[arrowtail=diamond, dir=both, headlabel="value "]
-131683837613104 -> 131683839360992 [dir=back]
-131683837613104 -> 131683839356432 [dir=back]
-131683837613104 -> 131683839356528 [dir=back]
-131683837613104 -> 131683837610896 [dir=back]
-131683837613104 -> 131683837613008 [dir=back]
-131683837613008 -> 131683837616800[headlabel="value 1..*"]
-131683838215328 -> 131683838214704[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
-131683838214704 -> 131683838214224[arrowtail=diamond, dir=both, headlabel="expression "]
-131683838214224 -> 131683838214416[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-131683838214416 -> 131683838215040[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-131683838215040 -> 131683838215136[arrowtail=diamond, dir=both, headlabel="op "]
-131683838215136 -> 131683838214224[arrowtail=diamond, dir=both, headlabel="op_expr "]
+1648031280416 -> 1648031281088[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
+1648031280416 -> 1648031278784[arrowtail=diamond, dir=both, headlabel="connector "]
+1648031280416 -> 1648031279216[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+1648031280416 -> 1648031277536[arrowtail=diamond, dir=both, headlabel="preprocessors 0..*"]
+1648031280416 -> 1648031278832[arrowtail=diamond, dir=both, headlabel="algorithms "]
+1648031280416 -> 1648031278976[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
+1648031280416 -> 1648031281856[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
+1648031281088 -> 1648031279216[headlabel="data "]
+1648031281088 -> 1648031280752[headlabel="algorithm "]
+1648031281088 -> 1648031280752[headlabel="metrics 1..*"]
+1648031279216 -> 1648031279888[arrowtail=diamond, dir=both, headlabel="features "]
+1648031279216 -> 1648031280752[headlabel="preprocessors 0..*"]
+1648031278832 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1648031277536 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1648031278976 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1648031281856 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1648031280752 -> 1648031279264[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+1648031279264 -> 1648031279408[arrowtail=diamond, dir=both, headlabel="value "]
+1648031279360 -> 1648031279408[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+1648031279408 -> 1648031279792 [dir=back]
+1648031279408 -> 1648031279360 [dir=back]
+1648031279408 -> 1648031279504 [dir=back]
+1648031279504 -> 1648031279600[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+1648031279600 -> 1648031279696[arrowtail=diamond, dir=both, headlabel="value "]
+1648031279696 -> 1648031279504 [dir=back]
+1648031279696 -> 1648031279360 [dir=back]
+1648031279792 -> 1648031280752[headlabel="value "]
+1648031279888 -> 1648031280896[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
+1648031280896 -> 1647994350832[arrowtail=diamond, dir=both, headlabel="expression "]
+1647994350832 -> 1648031282240[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+1648031282240 -> 1648031282672[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+1648031282672 -> 1648031282768[arrowtail=diamond, dir=both, headlabel="op "]
+1648031282768 -> 1647994350832[arrowtail=diamond, dir=both, headlabel="op_expr "]
 match_rules [ shape=plaintext, label=< <table>
-	<tr>
-		<td><b>MYFLOAT</b></td><td>\-?\d+\.\d+([eE][-+]?\d+)?|\-?\d+[eE][-+]?\d+</td>
-	</tr>
-	<tr>
-		<td><b>MYINT</b></td><td>\-?\d+</td>
-	</tr>
 	<tr>
 		<td><b>MulOrDiv</b></td><td>*|/</td>
 	</tr>

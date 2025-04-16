@@ -24,7 +24,7 @@ def validate_model(grammar_file, model_file):
     try:
         # Load the grammar
         ml_mm = metamodel_from_file(grammar_file)
-
+        
         # Parse the model file
         config = ml_mm.model_from_file(model_file)
 
@@ -55,6 +55,10 @@ if __name__ == "__main__":
 
         # Access parsed data if the model is valid
         # print(f"Kafka Broker: {config.kafka.broker}")
-        print(
-            f"Model Type: {config.algorithms.model[1].params[1].value.value.type}")
-        print(f"Model Type: {config.preproccessors}")
+        print(config.connector.broker)
+        print(config.pipeline[0].algorithm.type)
+        print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
+        # TODO: if it's a Reference, we need the value.value not .value 
+        # if isinstance(config.pipeline[0].data.preprocessors[0].params[1].value , config._tx_model_repository.metamodel['Model']) :
+        #     print("The value is of type Model") 
+        print(config.pipeline[1].name)
