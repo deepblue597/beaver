@@ -7,7 +7,7 @@ File :
     preprocessors *= Preprocessors
     algorithms = Algorithms
     optimizers *= Optimizers 
-    metrics *= Metrics
+    metrics = Metrics
 
 ;
 
@@ -122,7 +122,7 @@ ParamValue : NUMBER | STRING | BOOL | Reference | List | Dict;
 // TODO: Learn how to raise errors in python
 
 Dict:
-    '{' items*=DictItem[','] '}'
+    '{' itemsD*=DictItem[','] '}'
 ;
 
 DictItem:

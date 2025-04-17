@@ -48,6 +48,22 @@ if __name__ == "__main__":
     # metamodel.register_scope_providers({"*.*": scoping_providers.FQN()})
     # Validate the model
     config = validate_model('beaver.tx', args.metamodel)
+        # Load the DSL grammar
+    ml_mm = metamodel_from_file('beaver.tx')
+       # Parse the DSL configuration file
+    config = ml_mm.model_from_file(args.metamodel)
+
+    env = Environment(loader=FileSystemLoader('.'))
+    template = env.get_template('python.template')
+
+    generated_code = template.render(
+        file =config)
+
+    # Save the generated code to a file
+    with open(args.generated_file_name, 'w') as f:
+        f.write(generated_code)
+
+    print("Generated code saved to:", args.generated_file_name)
 
     if config:
         # Index 1 for the second model
@@ -56,8 +72,9 @@ if __name__ == "__main__":
         # Access parsed data if the model is valid
         # print(f"Kafka Broker: {config.kafka.broker}")
         print(config.connector.broker)
+        print(config.preprocessors[0].model)
         print(config.pipeline[0].algorithm.type)
-        print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
+        #print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
         # TODO: if it's a Reference, we need the value.value not .value 
         # if isinstance(config.pipeline[0].data.preprocessors[0].params[1].value , config._tx_model_repository.metamodel['Model']) :
         #     print("The value is of type Model") 

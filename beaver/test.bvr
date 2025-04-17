@@ -44,9 +44,8 @@ preprocessors {
 
         model preproc1 {
 
-            type : standardScaler
-            subtype : pre
-            name : logreg
+            type : preprocessing
+            name : AdaptiveStandardScaler
             params : {
                 lr = 1,
                 optim = optim1,
@@ -59,8 +58,8 @@ preprocessors {
 
         model preproc2 {
 
-            type : standardScaler
-            name : logreg
+            type : preprocessing
+            name : FeatureHasher
             params : {
                 lr = 1
             }
@@ -72,7 +71,8 @@ algorithms {
 
     model testAlgo {
 
-            type : linear_model
+            type : drift
+            subtype : binary
             name : logreg
             params : {
                 lr = 1
@@ -103,6 +103,8 @@ optimizers {
                 lr = 1
             }
         }
+
+        
 
 
 }
