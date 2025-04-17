@@ -1,5 +1,5 @@
 
-ModelFile : 
+File : 
     
     pipeline += Pipeline
     connector = Connector
@@ -24,8 +24,8 @@ Pipeline :
     
     '}'
 ;
-// FIXME: Check pipeline if it's correct
-// 
+
+ 
 Data : 
     
     'data' name = ID '{'
@@ -41,8 +41,11 @@ Connector :
 
     'connector' '{' 
 
-        'broker' ':' broker=STRING 
-        
+        'broker' ':' broker=STRING
+        'connection_type' ':' connection_type = STRING 
+        ('username' ':' username = STRING)? 
+        ('password' ':' password = STRING)? 
+       //TODO: SASL connection with username and passwd 
 
     '}'
 
@@ -115,7 +118,7 @@ List:
 
 ParamValue : NUMBER | STRING | BOOL | Reference | List | Dict;
 
-// TODO: Check if it is correct 
+
 // TODO: Learn how to raise errors in python
 
 Dict:

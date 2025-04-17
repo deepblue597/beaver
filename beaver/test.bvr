@@ -20,6 +20,7 @@ pipeline testPipeline1 {
 
 connector {
         broker: "localhost:39092"
+        connection_type : 'PLAINTEXT'
 
 }
 

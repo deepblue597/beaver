@@ -11,85 +11,85 @@
     edge[dir=black,arrowtail=empty]
 
 
-1648031280416[ label="{ModelFile|}"]
+1205354998064[ label="{File|}"]
 
-1648031281088[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+1205355308928[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
 
-1648031279216[ label="{Data|name: ID\linput_topic: STRING\l}"]
+1205355309360[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-1648031278784[ label="{Connector|broker: STRING\l}"]
+1205355306864[ label="{Connector|broker: STRING\lconnection_type: STRING\lusername: STRING\lpassword: STRING\l}"]
 
-1648031278832[ label="{Algorithms|}"]
+1205355301920[ label="{Algorithms|}"]
 
-1648031277536[ label="{Preprocessors|}"]
+1205355305712[ label="{Preprocessors|}"]
 
-1648031278976[ label="{Optimizers|}"]
+1205355305664[ label="{Optimizers|}"]
 
-1648031281856[ label="{Metrics|}"]
+1205355300816[ label="{Metrics|}"]
 
-1648031280752[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
+1205355313728[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
 
-1648031279264[ label="{Param|name: ID\l}"]
+1205355308208[ label="{Param|name: ID\l}"]
 
-1648031279360[ label="{List|}"]
+1205355312336[ label="{List|}"]
 
-1648031279408[ label="{*ParamValue|}"]
+1205355301872[ label="{*ParamValue|}"]
 
-1648031279504[ label="{Dict|}"]
+1205355299760[ label="{Dict|}"]
 
-1648031279600[ label="{DictItem|name: STRING\l}"]
+1205355299088[ label="{DictItem|name: STRING\l}"]
 
-1648031279696[ label="{*DictType|}"]
+1205355307872[ label="{*DictType|}"]
 
-1648031279792[ label="{Reference|}"]
+1205355310512[ label="{Reference|}"]
 
-1648031279888[ label="{Features|features: list[ID]\l}"]
+1205355299280[ label="{Features|features: list[ID]\l}"]
 
-1648031280896[ label="{Assignment|variable: ID\l}"]
+1205355304416[ label="{Assignment|variable: ID\l}"]
 
-1647994350832[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
+1205318462704[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
 
-1648031282240[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+1205355313920[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
 
-1648031282672[ label="{Factor|sign: PlusOrMinus\l}"]
+1205355309696[ label="{Factor|sign: PlusOrMinus\l}"]
 
-1648031282768[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
+1205355315120[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
 
 
 
-1648031280416 -> 1648031281088[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
-1648031280416 -> 1648031278784[arrowtail=diamond, dir=both, headlabel="connector "]
-1648031280416 -> 1648031279216[arrowtail=diamond, dir=both, headlabel="data 1..*"]
-1648031280416 -> 1648031277536[arrowtail=diamond, dir=both, headlabel="preprocessors 0..*"]
-1648031280416 -> 1648031278832[arrowtail=diamond, dir=both, headlabel="algorithms "]
-1648031280416 -> 1648031278976[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
-1648031280416 -> 1648031281856[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
-1648031281088 -> 1648031279216[headlabel="data "]
-1648031281088 -> 1648031280752[headlabel="algorithm "]
-1648031281088 -> 1648031280752[headlabel="metrics 1..*"]
-1648031279216 -> 1648031279888[arrowtail=diamond, dir=both, headlabel="features "]
-1648031279216 -> 1648031280752[headlabel="preprocessors 0..*"]
-1648031278832 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-1648031277536 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-1648031278976 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-1648031281856 -> 1648031280752[arrowtail=diamond, dir=both, headlabel="model 1..*"]
-1648031280752 -> 1648031279264[arrowtail=diamond, dir=both, headlabel="params 1..*"]
-1648031279264 -> 1648031279408[arrowtail=diamond, dir=both, headlabel="value "]
-1648031279360 -> 1648031279408[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-1648031279408 -> 1648031279792 [dir=back]
-1648031279408 -> 1648031279360 [dir=back]
-1648031279408 -> 1648031279504 [dir=back]
-1648031279504 -> 1648031279600[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-1648031279600 -> 1648031279696[arrowtail=diamond, dir=both, headlabel="value "]
-1648031279696 -> 1648031279504 [dir=back]
-1648031279696 -> 1648031279360 [dir=back]
-1648031279792 -> 1648031280752[headlabel="value "]
-1648031279888 -> 1648031280896[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
-1648031280896 -> 1647994350832[arrowtail=diamond, dir=both, headlabel="expression "]
-1647994350832 -> 1648031282240[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-1648031282240 -> 1648031282672[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
-1648031282672 -> 1648031282768[arrowtail=diamond, dir=both, headlabel="op "]
-1648031282768 -> 1647994350832[arrowtail=diamond, dir=both, headlabel="op_expr "]
+1205354998064 -> 1205355308928[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
+1205354998064 -> 1205355306864[arrowtail=diamond, dir=both, headlabel="connector "]
+1205354998064 -> 1205355309360[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+1205354998064 -> 1205355305712[arrowtail=diamond, dir=both, headlabel="preprocessors 0..*"]
+1205354998064 -> 1205355301920[arrowtail=diamond, dir=both, headlabel="algorithms "]
+1205354998064 -> 1205355305664[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
+1205354998064 -> 1205355300816[arrowtail=diamond, dir=both, headlabel="metrics 0..*"]
+1205355308928 -> 1205355309360[headlabel="data "]
+1205355308928 -> 1205355313728[headlabel="algorithm "]
+1205355308928 -> 1205355313728[headlabel="metrics 1..*"]
+1205355309360 -> 1205355299280[arrowtail=diamond, dir=both, headlabel="features "]
+1205355309360 -> 1205355313728[headlabel="preprocessors 0..*"]
+1205355301920 -> 1205355313728[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1205355305712 -> 1205355313728[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1205355305664 -> 1205355313728[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1205355300816 -> 1205355313728[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+1205355313728 -> 1205355308208[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+1205355308208 -> 1205355301872[arrowtail=diamond, dir=both, headlabel="value "]
+1205355312336 -> 1205355301872[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+1205355301872 -> 1205355310512 [dir=back]
+1205355301872 -> 1205355312336 [dir=back]
+1205355301872 -> 1205355299760 [dir=back]
+1205355299760 -> 1205355299088[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+1205355299088 -> 1205355307872[arrowtail=diamond, dir=both, headlabel="value "]
+1205355307872 -> 1205355299760 [dir=back]
+1205355307872 -> 1205355312336 [dir=back]
+1205355310512 -> 1205355313728[headlabel="value "]
+1205355299280 -> 1205355304416[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
+1205355304416 -> 1205318462704[arrowtail=diamond, dir=both, headlabel="expression "]
+1205318462704 -> 1205355313920[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+1205355313920 -> 1205355309696[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+1205355309696 -> 1205355315120[arrowtail=diamond, dir=both, headlabel="op "]
+1205355315120 -> 1205318462704[arrowtail=diamond, dir=both, headlabel="op_expr "]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>MulOrDiv</b></td><td>*|/</td>
