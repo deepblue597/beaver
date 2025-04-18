@@ -8,6 +8,7 @@ File :
     algorithms = Algorithms
     optimizers *= Optimizers 
     metrics = Metrics
+    //TODO: Add plot 
 
 ;
 
@@ -56,6 +57,7 @@ Algorithms :
     'algorithms' '{'
     
         model += Model 
+        //TODO: models not model
     
     '}'
 ;
@@ -140,6 +142,7 @@ Reference : value = [Model] ;
 
 Features :
     'features' '{'
+        ('keep_features' ':' '[' features += ID[','] ']')?
         ('drop_features' ':' '[' features += ID[','] ']')?
         ('generated_features'  ':' '{' assignments*= Assignment '}')? 
     

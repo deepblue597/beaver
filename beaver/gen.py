@@ -14,30 +14,25 @@ from river import linear_model
 
 
 
+optim1 = optim.AdaDelta(
+)
 preproc1 = preprocessing.AdaptiveStandardScaler(
     lr =1,
-    optim =logreg,
+    optim =optim1,
     param =0.2,
     test =['model', 'model2'],
     dict ={"true" : 1,"false" : 0,},
     problem =False,
 )
 preproc2 = preprocessing.FeatureHasher(
-    lr =1,
+    n_features =10,
+    seed =42,
 )
-
-
-
-optim1 = linear_model.logreg(
-    lr =1,
+testMetric1 = metrics.AdjustedRand(
 )
-
-
-
-
-testMetric1 = linear_model.logreg(
-    lr =1,
+testMetric2 = metrics.CohenKappa(
 )
-testMetric2 = linear_model.logreg(
-    lr =1,
+testAlgo = drift.binary.DDM(
+)
+testAlgo1 = linear_model.ALMAClassifier(
 )

@@ -144,18 +144,34 @@ and your model will be created.
 
 ## :memo: Detailed Explanation
 
-### Pipeline
+### Model
 
-A `Pipeline` is the top-level construct that contains all the components of a machine learning pipeline.
+The basic component of the language is the **Model**
 
-```plaintext
-pipeline <name> {
-    kafka { ... }
-    model { ... }
-    features { ... }
-    metrics { ... }
-    target { ... }?
-    plot { ... }?
+The model has the following parameters
+
+- name : ID of the model
+- type : which model group it belongs to (e.g. linear_model )
+- subtype : Optional parameter. Some models are within a model subtype group (e.g. `ddm = drift.binary.DDM()` ) so we will need this information to define
+- NameR : the name of the model in the river. The name parameter is used to define the id of the model
+- Params : The parameters of the model which can be 0 and above. That's why it is defined as an Optional parameter.
+
+e.g.
+
+```yaml
+model preproc1 {
+
+    type : standardScaler
+    subtype : pre
+    name : logreg
+    params : {
+        lr = 1,
+        optim = optim1,
+        param = 0.2,
+        test = ["model" , "model2"],
+        dict = { "true" : 1  , 'false' : 0},
+        problem = false
+    }
 }
 ```
 

@@ -18,31 +18,6 @@ from river import {{model.type}}
 {%endfor%}
 
 
-{%if file.preprocessors -%}
-
-{%for model in file.preprocessors[0].model-%}
-{{model.name}} = {{model.type}}.{{model.nameR}}(
-    {%-for param in model.params%}
-    {{param.name}} =  
-    {%-if param.value.value-%}
-    {{param.value.value.nameR}}
-    {%-elif param.value.items -%}
-    {{param.value.items}}
-    {%-elif param.value.itemsD -%}
-    {
-    {%-for param in param.value.itemsD-%}
-    "{{param.name}}" : {{param.value}},
-    {%-endfor-%}
-    }
-    {%-else-%}
-    {{param.value}}
-    {%-endif%},
-    {%- endfor %}
-)
-{%endfor%}
-{%- endif %}
-
-
 {%if file.optimizers -%}
 
 {%for model in file.optimizers[0].model-%}
@@ -50,7 +25,7 @@ from river import {{model.type}}
     {%-for param in model.params%}
     {{param.name}} =  
     {%-if param.value.value-%}
-    {{param.value.value.nameR}}
+    {{param.value.value.name}}
     {%-elif param.value.items -%}
     {{param.value.items}}
     {%-elif param.value.itemsD -%}
@@ -68,13 +43,60 @@ from river import {{model.type}}
 {%- endif %}
 
 
+{%-if file.preprocessors -%}
 
-{%for model in file.metrics.model-%}
+{%for model in file.preprocessors[0].model-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
     {%-if param.value.value-%}
-    {{param.value.value.nameR}}
+    {{param.value.value.name}}
+    {%-elif param.value.items -%}
+    {{param.value.items}}
+    {%-elif param.value.itemsD -%}
+    {
+    {%-for param in param.value.itemsD-%}
+    "{{param.name}}" : {{param.value}},
+    {%-endfor-%}
+    }
+    {%-else-%}
+    {{param.value}}
+    {%-endif%},
+    {%- endfor %}
+)
+{%endfor%}
+{%- endif %}
+
+
+{%-for model in file.metrics.model-%}
+{{model.name}} = {{model.type}}.{{model.nameR}}(
+    {%-for param in model.params%}
+    {{param.name}} =  
+    {%-if param.value.value-%}
+    {{param.value.value.name}}
+    {%-elif param.value.items -%}
+    {{param.value.items}}
+    {%-elif param.value.itemsD -%}
+    {
+    {%-for param in param.value.itemsD-%}
+    "{{param.name}}" : {{param.value}},
+    {%-endfor-%}
+    }
+    {%-else-%}
+    {{param.value}}
+    {%-endif%},
+    {%- endfor %}
+)
+{%endfor%}
+
+
+{%-for model in file.algorithms.model-%}
+{{model.name}} = {{model.type}}.{%-if model.subtype-%}{{model.subtype}}.{%-endif-%}
+{{model.nameR}}(
+    {%-for param in model.params%}
+    {{param.name}} =  
+    {%-if param.value.value-%}
+    {{param.value.value.name}}
     {%-elif param.value.items -%}
     {{param.value.items}}
     {%-elif param.value.itemsD -%}
