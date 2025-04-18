@@ -1,0 +1,130 @@
+
+
+pipeline testPipeline { 
+
+    output_topic : 'tester_topic' 
+    consumer_group : 'the_test_consumer_group'
+    data : testData
+    algorithm : testAlgo 
+    metrics : [testMetric1 , testMetric2] 
+}
+
+pipeline testPipeline1 { 
+
+    output_topic : 'tester_topic' 
+    consumer_group : 'the_test_consumer_group'
+    data : testData
+    algorithm : testAlgo 
+    metrics : [testMetric1 , testMetric2] 
+}
+
+connector {
+        broker: "localhost:39092"
+        connection_type : 'PLAINTEXT'
+
+}
+
+data testData { 
+
+    input_topic : 'test_input_topic'
+    
+    features { 
+        drop_features : [ drop1 , drop2 ]  
+        generated_features : { 
+            generated1 = keep1 - 2 * keep2; 
+            generated2 = keep * keep;
+        }
+    }
+
+    preprocessors : [ preproc1 , preproc2 ]
+}
+
+
+preprocessors { 
+
+        model preproc1 {
+
+            type : preprocessing
+            name : AdaptiveStandardScaler
+            params : {
+                lr = 1,
+                optim = optim1,
+                param = 0.2,
+                test = ["model" , "model2"], 
+                dict = { "true" : 1  , 'false' : 0},
+                problem = false
+            }
+        }
+
+        model preproc2 {
+
+            type : preprocessing
+            name : FeatureHasher
+            params : {
+                n_features=10, 
+                seed=42
+            }
+        }
+}
+
+
+algorithms { 
+
+    model testAlgo {
+
+            type : drift
+            subtype : binary
+            name : DDM
+        }
+
+    model testAlgo1 {
+
+            type : linear_model
+            name : ALMAClassifier
+        }
+
+
+}
+
+
+optimizers { 
+
+    model optim1 {
+
+            type : optim
+            name : AdaDelta
+        }
+
+        
+
+
+}
+
+
+ 
+metrics { 
+
+    model testMetric1 {
+
+            type : metrics
+            name : AdjustedRand
+        }
+
+    model testMetric2 {
+
+            type : metrics
+            name : CohenKappa
+
+        }
+
+
+}
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+

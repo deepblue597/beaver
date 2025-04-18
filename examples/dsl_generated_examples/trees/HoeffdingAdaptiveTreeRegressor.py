@@ -15,6 +15,7 @@ from river import preprocessing
 import json
 
 import dill
+import numpy as np 
 
 
 # Define an application that will connect to Kafka
@@ -25,7 +26,7 @@ app = Application(
 )
 
 # Define the Kafka topics
-input_topic = app.topic("trump-approval", value_deserializer="json")
+input_topic = app.topic("TrumpApproval", value_deserializer="json")
 
 output_topic = app.topic("HoeffdingAdaptiveTreeRegressor-results",
                         value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
@@ -71,20 +72,21 @@ MAE = []
 
 
 # Variables for plotting
+
 y_true = []
 y_pred = []
 
 
 # Function for training the model
-def train_and_predict(event):
+def train_and_predict(X):
 
-
     
-    X = {key: value for key, value in event.items() if key != "five_thirty_eight"}  
-    
-    
-    y = event["five_thirty_eight"]
+    y = X["class"]
      
+    
+    X = {key: value for key, value in X.items() if key != "class"}  
+    
+
     
     model.learn_one(X, y)
      
@@ -93,11 +95,12 @@ def train_and_predict(event):
     y_predicted = model.predict_one(X)
     
     
-
     # Update metric
-    metric.update(y, y_predicted)
     
-    print(f"True Label: {y}, Predicted: {y_predicted}")
+    metric.update(y, y_predicted )
+
+    
+    print(f"True y: {y}, Predicted: {y_predicted}")
     
     print(metric)
     MAE.append(metric.get()) 
@@ -109,6 +112,10 @@ def train_and_predict(event):
         dill.dump(model, model_file)
 
     
+    
+
+
+
     # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
     # so we check if y_pred is not None to add to the lists
     if y_predicted is not None:
@@ -118,7 +125,7 @@ def train_and_predict(event):
 
 
     return {
-                **event, 
+                **X, 
                 
                 "Prediction": y_predicted,
                 "MAE": metric.get()
@@ -138,9 +145,9 @@ app.run()
 plt.figure(figsize=(8, 6))
 plt.scatter(y_true, y_pred, alpha=0.5)
 plt.plot([min(y_true), max(y_true)], [min(y_true), max(y_true)], 'r--')  # Ideal line
-plt.xlabel("Real Values five_thirty_eight")
-plt.ylabel("Predicted Values five_thirty_eight ")
-plt.title("Real vs Predicted five_thirty_eight")
+plt.xlabel("Real Values class")
+plt.ylabel("Predicted Values class ")
+plt.title("Real vs Predicted class")
 plt.show()
 
 

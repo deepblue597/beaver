@@ -1,0 +1,103 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+2905109581408[ label="{File|}"]
+
+2905109586880[ label="{Pipeline|name: ID\loutput_topic: STRING\lconsumer_group: STRING\l}"]
+
+2905109582272[ label="{Data|name: ID\linput_topic: STRING\l}"]
+
+2905109578192[ label="{Connector|broker: STRING\lconnection_type: STRING\lusername: STRING\lpassword: STRING\l}"]
+
+2905109584096[ label="{Algorithms|}"]
+
+2905109586496[ label="{Preprocessors|}"]
+
+2905109585872[ label="{Optimizers|}"]
+
+2905109587360[ label="{Metrics|}"]
+
+2905109578144[ label="{Model|name: ID\ltype: ID\lsubtype: ID\lnameR: ID\l}"]
+
+2905109589328[ label="{Param|name: ID\l}"]
+
+2905109583664[ label="{List|}"]
+
+2905109582800[ label="{*ParamValue|}"]
+
+2905109593792[ label="{Dict|}"]
+
+2905109590864[ label="{DictItem|name: STRING\l}"]
+
+2905109585728[ label="{*DictType|}"]
+
+2905109586544[ label="{Reference|}"]
+
+2905109578432[ label="{Features|features: list[ID]\l}"]
+
+2905109585536[ label="{Assignment|variable: ID\l}"]
+
+2905109587744[ label="{Expression|operators: optional\<list[PlusOrMinus]\>\l}"]
+
+2905109584528[ label="{Term|operators: optional\<list[MulOrDiv]\>\l}"]
+
+2905109589520[ label="{Factor|sign: PlusOrMinus\l}"]
+
+2905109588704[ label="{Operand|op_num: NUMBER\lop_id: ID\l}"]
+
+
+
+2905109581408 -> 2905109586880[arrowtail=diamond, dir=both, headlabel="pipeline 1..*"]
+2905109581408 -> 2905109578192[arrowtail=diamond, dir=both, headlabel="connector "]
+2905109581408 -> 2905109582272[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+2905109581408 -> 2905109586496[arrowtail=diamond, dir=both, headlabel="preprocessors 0..*"]
+2905109581408 -> 2905109584096[arrowtail=diamond, dir=both, headlabel="algorithms "]
+2905109581408 -> 2905109585872[arrowtail=diamond, dir=both, headlabel="optimizers 0..*"]
+2905109581408 -> 2905109587360[arrowtail=diamond, dir=both, headlabel="metrics "]
+2905109586880 -> 2905109582272[headlabel="data "]
+2905109586880 -> 2905109578144[headlabel="algorithm "]
+2905109586880 -> 2905109578144[headlabel="metrics 1..*"]
+2905109582272 -> 2905109578432[arrowtail=diamond, dir=both, headlabel="features "]
+2905109582272 -> 2905109578144[headlabel="preprocessors 0..*"]
+2905109584096 -> 2905109578144[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+2905109586496 -> 2905109578144[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+2905109585872 -> 2905109578144[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+2905109587360 -> 2905109578144[arrowtail=diamond, dir=both, headlabel="model 1..*"]
+2905109578144 -> 2905109589328[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2905109589328 -> 2905109582800[arrowtail=diamond, dir=both, headlabel="value "]
+2905109583664 -> 2905109582800[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2905109582800 -> 2905109586544 [dir=back]
+2905109582800 -> 2905109583664 [dir=back]
+2905109582800 -> 2905109593792 [dir=back]
+2905109593792 -> 2905109590864[arrowtail=diamond, dir=both, headlabel="itemsD 0..*"]
+2905109590864 -> 2905109585728[arrowtail=diamond, dir=both, headlabel="value "]
+2905109585728 -> 2905109593792 [dir=back]
+2905109585728 -> 2905109583664 [dir=back]
+2905109586544 -> 2905109578144[headlabel="value "]
+2905109578432 -> 2905109585536[arrowtail=diamond, dir=both, headlabel="assignments 0..*"]
+2905109585536 -> 2905109587744[arrowtail=diamond, dir=both, headlabel="expression "]
+2905109587744 -> 2905109584528[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+2905109584528 -> 2905109589520[arrowtail=diamond, dir=both, headlabel="operands 0..*"]
+2905109589520 -> 2905109588704[arrowtail=diamond, dir=both, headlabel="op "]
+2905109588704 -> 2905109587744[arrowtail=diamond, dir=both, headlabel="op_expr "]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>MulOrDiv</b></td><td>*|/</td>
+	</tr>
+	<tr>
+		<td><b>PlusOrMinus</b></td><td>+|-</td>
+	</tr>
+</table> >]
+
+
+}

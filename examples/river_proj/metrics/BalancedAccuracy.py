@@ -1,29 +1,17 @@
 # %%
-from river import evaluate
-from river import forest
+
 from river import metrics
-from river.datasets import synth
 import matplotlib.pyplot as plt
 import seaborn as sns
+y_true = [0, 1, 0, 0, 1, 0]
+y_pred = [0, 1, 0, 0, 0, 1]
+metric = metrics.BalancedAccuracy()
+for yt, yp in zip(y_true, y_pred):
+    metric.update(yt, yp)
+
+metric
 
 # %%
-dataset = synth.ConceptDriftStream(
-    seed=42,
-    position=500,
-    width=40
-).take(1000)
-
-model = forest.ARFClassifier(seed=8, leaf_prediction="mc")
-
-metric = metrics.Accuracy()
-
-evaluate.progressive_val_score(dataset, model, metric)
-# %%
-model.n_warnings_detected(), model.n_drifts_detected()
-# %%
-metric.cm
-# %%
-# Get sorted class labels. Could also be metric.cm.classes
 classes = sorted(metric.cm.classes)
 data = [[metric.cm.data[true][pred] for pred in classes]
         for true in classes]  # Convert to 2D list
@@ -36,5 +24,4 @@ plt.xlabel("Predicted")
 plt.ylabel("True")
 plt.title("Confusion Matrix Heatmap")
 plt.show()
-
 # %%

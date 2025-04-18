@@ -22,16 +22,16 @@ if __name__ == "__main__":
     # dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
-    # gen = synth.Agrawal(classification_function=0, seed=42)
+    gen = synth.Agrawal(classification_function=0, seed=42)
     # gen = synth.ConceptDriftStream(stream=synth.SEA(seed=42, variant=0),
     #                                drift_stream=synth.SEA(seed=42, variant=1),
     #                                seed=1, position=500, width=50)
-    # dataset = iter(gen.take(1000))
+    dataset = iter(gen.take(1000))
     # dataset = synth.ConceptDriftStream(
     #    seed=42,
     #    position=500,
     #    width=40).take(1000)
-    dataset = datasets.Bananas().take(500)
+    # dataset = datasets.Bananas().take(500)
     # dataset = [
     #     [1, 2],
     #     [1, 4],

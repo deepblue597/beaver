@@ -4,7 +4,7 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 import seaborn as sns
 
-from river import metrics, preprocessing
+from river import metrics , preprocessing
 from river import cluster
 import matplotlib.pyplot as plt
 from river import ensemble
@@ -15,7 +15,7 @@ from river import preprocessing
 import json
 
 import dill
-import numpy as np
+import numpy as np 
 
 
 # Define an application that will connect to Kafka
@@ -29,107 +29,92 @@ app = Application(
 input_topic = app.topic("clusters", value_deserializer="json")
 
 output_topic = app.topic("DenStream-results",
-                         # Create a Streaming DataFrame connected to the input Kafka topic
-                         value_serializer="json")
+                        value_serializer="json")# Create a Streaming DataFrame connected to the input Kafka topic
 sdf = app.dataframe(topic=input_topic)
 
 
+
+
 # Define River Model
-model = (
-
+model =(
+    
     cluster.DenStream(
-
-        decaying_factor=0.01,
-        beta=0.5,
-        mu=2.5,
-        epsilon=0.5,
-        n_samples_init=10,
+    
+        decaying_factor = 0.01,
+        beta = 0.5,
+        mu = 2.5,
+        epsilon = 0.5,
+        n_samples_init = 10,
 
     ))
+    
 
 
 # Define new features
 
 
-# Drop features
+# Drop features 
 
 
 # Define metrics
-metric = metrics.MicroPrecision()
+metric = metrics.Silhouette() 
+   
+Silhouette = [] 
+ 
 
-Silhouette = []
 
 
-# Variables for plotting
-x_axis = []
-y_axis = []
 
-y_true = []
-y_pred = []
+
 
 
 # Function for training the model
 def train_and_predict(X):
 
+     
+    
+
+    
     model.learn_one(X)
-
+     
+    
+    
     y_predicted = model.predict_one(X)
-
+    
+    
     # Update metric
     metric.update(X, y_predicted,  model.centers)
 
+    
     print(metric)
-    Silhouette.append(metric.get())
+    Silhouette.append(metric.get()) 
+    
+    
+
 
     with open('DenStream.pkl', 'wb') as model_file:
         dill.dump(model, model_file)
 
-    x_axis.append(X["0"])
-    y_axis.append(X["1"])
+    
 
-    # in some cases model returns one (e.g first learn one iteration in OneVsOneClassifier)
-    # so we check if y_pred is not None to add to the lists
-    if y_predicted is not None:
-
-        y_pred.append(y_predicted)
 
     return {
-        **X,
-
-        "Prediction": y_predicted,
-        "Silhouette": metric.get()
-
-    }
+                **X, 
+                
+                "Prediction": y_predicted,
+                "Silhouette": metric.get()
+                
+            }
 
 
 # Apply the train_and_predict function to each row in the filtered DataFrame
 sdf = sdf.apply(train_and_predict)
 
-# Output topic
-# Run the streaming application (app automatically tracks the sdf!)
-sdf = sdf.to_topic(output_topic)
+# Output topic 
+sdf = sdf.to_topic(output_topic)# Run the streaming application (app automatically tracks the sdf!)
 app.run()
 
 
-centers = np.array([list(model.centers[i].values()) for i in model.centers])
-x_axis = np.array(x_axis)
-y_axis = np.array(y_axis)
-center_colors = [plt.cm.viridis(i / (len(centers) - 1))
-                 for i in range(len(centers))]
-
-# Scatter plot: Data points with cluster colors
-plt.scatter(x_axis, y_axis, c=y_pred,
-            cmap="viridis", alpha=0.6, edgecolors="k", label="Points")
-
-
-for i, center in enumerate(centers):
-    plt.scatter(center[0], center[1], c=[center_colors[i]],
-                marker='x', s=200, label=f"Cluster {i} Center")
-plt.title('Cluster Centers')
-plt.xlabel("0")
-plt.ylabel("1")
-plt.legend()
-plt.show()
 
 
 plt.plot(Silhouette)
@@ -137,3 +122,4 @@ plt.xlabel('Iterations')
 plt.ylabel('Silhouette')
 plt.title('Silhouette over Training Iterations')
 plt.show()
+ 

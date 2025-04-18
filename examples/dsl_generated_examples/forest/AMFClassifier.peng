@@ -1,7 +1,7 @@
 pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
-        input_topic: "Bananas"
+        input_topic: "Bananass"
         output_topic: "AMFClassifier-results"
         consumer_group: "AMFClassifier"
     }

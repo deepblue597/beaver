@@ -1,29 +1,21 @@
 # %%
-from river import evaluate
-from river import forest
 from river import metrics
-from river.datasets import synth
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# %%
-dataset = synth.ConceptDriftStream(
-    seed=42,
-    position=500,
-    width=40
-).take(1000)
 
-model = forest.ARFClassifier(seed=8, leaf_prediction="mc")
+y_true = ['pear', 'apple', 'banana', 'banana', 'banana']
+y_pred = ['apple', 'pear', 'banana', 'banana', 'apple']
 
-metric = metrics.Accuracy()
+report = metrics.ClassificationReport()
 
-evaluate.progressive_val_score(dataset, model, metric)
+for yt, yp in zip(y_true, y_pred):
+    report.update(yt, yp)
+
+print(report)
+
 # %%
-model.n_warnings_detected(), model.n_drifts_detected()
-# %%
-metric.cm
-# %%
-# Get sorted class labels. Could also be metric.cm.classes
+
 classes = sorted(metric.cm.classes)
 data = [[metric.cm.data[true][pred] for pred in classes]
         for true in classes]  # Convert to 2D list

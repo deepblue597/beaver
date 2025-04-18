@@ -1,0 +1,159 @@
+
+File : 
+    
+    pipeline += Pipeline
+    connector = Connector
+    data += Data 
+    preprocessors *= Preprocessors
+    algorithms = Algorithms
+    optimizers *= Optimizers 
+    metrics = Metrics
+    //TODO: Add plot 
+
+;
+
+Pipeline : 
+
+    'pipeline' name = ID '{'
+
+        ('output_topic' ':' output_topic = STRING)? 
+        'consumer_group' ':' consumer_group = STRING 
+        'data' ':' data = [Data]
+        'algorithm' ':' algorithm = [Model]
+        'metrics' ':' '['metrics += [Model][',']']'
+
+    
+    '}'
+;
+
+ 
+Data : 
+    
+    'data' name = ID '{'
+
+        'input_topic' ':' input_topic=STRING 
+        features = Features
+        'preprocessors' ':' '[' preprocessors *= [Model][','] ']'
+    
+    '}'
+; 
+
+Connector : 
+
+    'connector' '{' 
+
+        'broker' ':' broker=STRING
+        'connection_type' ':' connection_type = STRING 
+        ('username' ':' username = STRING)? 
+        ('password' ':' password = STRING)? 
+       //TODO: SASL connection with username and passwd 
+
+    '}'
+
+;
+
+Algorithms : 
+
+    'algorithms' '{'
+    
+        model += Model 
+        //TODO: models not model
+    
+    '}'
+;
+
+Preprocessors : 
+
+    'preprocessors' '{'
+    
+        model += Model 
+
+    '}'
+
+;
+
+Optimizers : 
+
+    'optimizers' '{'
+    
+        model += Model 
+
+    '}'
+
+;
+
+Metrics : 
+
+    'metrics' '{' 
+    
+        model += Model 
+        
+    '}'
+
+;
+
+
+
+Model : 
+
+    'model' name=ID '{' 
+
+        'type' ':' type = ID 
+        ('subtype' ':' subtype = ID)? 
+        'name' ':'  nameR = ID
+        ('params' ':' '{' 
+
+            params += Param[',']
+        '}')?   
+    
+    '}'
+; 
+
+
+Param : 
+
+    name = ID '=' value =  ParamValue   ; 
+
+List:
+    '[' items*=ParamValue[','] ']'
+;
+
+ParamValue : NUMBER | STRING | BOOL | Reference | List | Dict;
+
+
+// TODO: Learn how to raise errors in python
+
+Dict:
+    '{' itemsD*=DictItem[','] '}'
+;
+
+DictItem:
+    name=STRING ':' value=DictType
+;
+
+DictType:
+    NUMBER | STRING | BOOL | Dict | List 
+;
+
+
+Reference : value = [Model] ;
+
+
+
+Features :
+    'features' '{'
+        ('keep_features' ':' '[' features += ID[','] ']')?
+        ('drop_features' ':' '[' features += ID[','] ']')?
+        ('generated_features'  ':' '{' assignments*= Assignment '}')? 
+    
+    '}' 
+;
+
+
+Assignment: variable=ID '=' expression=Expression ';';
+Expression: operands=Term (operators=PlusOrMinus operands=Term)*;
+PlusOrMinus: '+' | '-';
+Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
+MulOrDiv: '*' | '/' ;
+Factor: (sign=PlusOrMinus)?  op=Operand;
+Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');

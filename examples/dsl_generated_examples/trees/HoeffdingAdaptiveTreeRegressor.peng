@@ -1,7 +1,7 @@
 pipeline MyPipeline {
     kafka {
         broker: "localhost:39092"
-        input_topic: "trump-approval"
+        input_topic: "TrumpApproval"
         output_topic: "HoeffdingAdaptiveTreeRegressor-results"
         consumer_group: "HoeffdingAdaptiveTreeRegressor"
     }
@@ -27,7 +27,7 @@ pipeline MyPipeline {
     }
 
     target : {
-        name: "five_thirty_eight"
+        name: "class"
     }
 
     plot: { 
