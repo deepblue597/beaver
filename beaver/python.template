@@ -2,6 +2,8 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
+from quixstreams.kafka import ConnectionConfig 
+
 
 {%if file.preprocessors -%}
 from river import preprocessing
@@ -13,14 +15,14 @@ from river import optim
 
 from river import metrics
 
-{%for model in file.algorithms.model-%}
+{%for model in file.algorithms.models-%}
 from river import {{model.type}}
 {%endfor%}
 
 
 {%if file.optimizers -%}
 
-{%for model in file.optimizers[0].model-%}
+{%for model in file.optimizers[0].models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
@@ -34,6 +36,8 @@ from river import {{model.type}}
     "{{param.name}}" : {{param.value}},
     {%-endfor-%}
     }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
     {%-else-%}
     {{param.value}}
     {%-endif%},
@@ -45,7 +49,7 @@ from river import {{model.type}}
 
 {%-if file.preprocessors -%}
 
-{%for model in file.preprocessors[0].model-%}
+{%for model in file.preprocessors[0].models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
@@ -59,6 +63,8 @@ from river import {{model.type}}
     "{{param.name}}" : {{param.value}},
     {%-endfor-%}
     }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
     {%-else-%}
     {{param.value}}
     {%-endif%},
@@ -68,7 +74,7 @@ from river import {{model.type}}
 {%- endif %}
 
 
-{%-for model in file.metrics.model-%}
+{%-for model in file.metrics.models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
@@ -82,6 +88,8 @@ from river import {{model.type}}
     "{{param.name}}" : {{param.value}},
     {%-endfor-%}
     }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
     {%-else-%}
     {{param.value}}
     {%-endif%},
@@ -90,7 +98,7 @@ from river import {{model.type}}
 {%endfor%}
 
 
-{%-for model in file.algorithms.model-%}
+{%-for model in file.algorithms.models-%}
 {{model.name}} = {{model.type}}.{%-if model.subtype-%}{{model.subtype}}.{%-endif-%}
 {{model.nameR}}(
     {%-for param in model.params%}
@@ -105,9 +113,24 @@ from river import {{model.type}}
     "{{param.name}}" : {{param.value}},
     {%-endfor-%}
     }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
     {%-else-%}
     {{param.value}}
     {%-endif%},
     {%- endfor %}
 )
 {%endfor%}
+
+
+connectionConfig = ConnectionConfig( 
+    bootstrap_servers = "{{file.connector.broker}}",
+    security_protocol = "{{file.connector.connection_type}}", 
+    {%if file.connector.connection_type == "sasl_plaintext"-%}
+    sasl_mechanism = "PLAIN",
+    sasl_username="{{file.connector.username}}",
+    sasl_password="{{file.connector.password}}",
+    {%-endif%}
+)
+
+

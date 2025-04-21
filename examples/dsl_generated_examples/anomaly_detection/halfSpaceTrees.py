@@ -2,6 +2,7 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
+from quixstreams.kafka import ConnectionConfig 
 import seaborn as sns
 
 from river import metrics , preprocessing
@@ -17,10 +18,18 @@ import json
 import dill
 import numpy as np 
 
+connection_settings = ConnectionConfig(
+    bootstrap_servers="localhost:39092",
+    security_protocol="sasl_plaintext",
+    sasl_mechanism="PLAIN",
+    sasl_username="admin",
+    sasl_password="admin-secret",
+
+)
 
 # Define an application that will connect to Kafka
 app = Application(
-    broker_address="localhost:39092",  # Kafka broker address
+    broker_address= connection_settings,  # Kafka broker address
     auto_offset_reset="earliest",
     consumer_group="halfSpaceTree",
 )

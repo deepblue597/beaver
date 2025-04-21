@@ -20,7 +20,9 @@ pipeline testPipeline1 {
 
 connector {
         broker: "localhost:39092"
-        connection_type : 'PLAINTEXT'
+        connection_type : "sasl_plaintext"
+        username : "username" 
+        password : "admin_pass"
 
 }
 
@@ -52,7 +54,8 @@ preprocessors {
                 param = 0.2,
                 test = ["model" , "model2"], 
                 dict = { "true" : 1  , 'false' : 0},
-                problem = false
+                problem = false, 
+                string = "stringgg"
             }
         }
 

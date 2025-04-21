@@ -2,6 +2,8 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
+from quixstreams.kafka import ConnectionConfig 
+
 
 from river import preprocessing
 
@@ -23,6 +25,7 @@ preproc1 = preprocessing.AdaptiveStandardScaler(
     test =['model', 'model2'],
     dict ={"true" : 1,"false" : 0,},
     problem =False,
+    string ="stringgg",
 )
 preproc2 = preprocessing.FeatureHasher(
     n_features =10,
@@ -36,3 +39,14 @@ testAlgo = drift.binary.DDM(
 )
 testAlgo1 = linear_model.ALMAClassifier(
 )
+
+
+
+connectionConfig = ConnectionConfig( 
+    bootstrap_servers = "localhost:39092",
+    security_protocol = "sasl_plaintext", 
+    sasl_mechanism = "PLAIN",
+    sasl_username="username",
+    sasl_password="admin_pass",
+)
+

@@ -67,12 +67,12 @@ if __name__ == "__main__":
 
     if config:
         # Index 1 for the second model
-        second_model = config.algorithms.model[1]
+        second_model = config.algorithms.models[1]
 
         # Access parsed data if the model is valid
         # print(f"Kafka Broker: {config.kafka.broker}")
         print(config.connector.broker)
-        print(config.preprocessors[0].model)
+        print(config.preprocessors[0].models)
         print(config.pipeline[0].algorithm.type)
         #print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
         # TODO: if it's a Reference, we need the value.value not .value 

@@ -34,6 +34,7 @@ Data :
         'input_topic' ':' input_topic=STRING 
         features = Features
         'preprocessors' ':' '[' preprocessors *= [Model][','] ']'
+        plots *= Plot
     
     '}'
 ; 
@@ -46,7 +47,6 @@ Connector :
         'connection_type' ':' connection_type = STRING 
         ('username' ':' username = STRING)? 
         ('password' ':' password = STRING)? 
-       //TODO: SASL connection with username and passwd 
 
     '}'
 
@@ -56,7 +56,7 @@ Algorithms :
 
     'algorithms' '{'
     
-        model += Model 
+        models += Model 
         //TODO: models not model
     
     '}'
@@ -66,7 +66,7 @@ Preprocessors :
 
     'preprocessors' '{'
     
-        model += Model 
+        models += Model 
 
     '}'
 
@@ -76,7 +76,7 @@ Optimizers :
 
     'optimizers' '{'
     
-        model += Model 
+        models += Model 
 
     '}'
 
@@ -86,7 +86,7 @@ Metrics :
 
     'metrics' '{' 
     
-        model += Model 
+        models += Model 
         
     '}'
 
@@ -157,3 +157,16 @@ Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
 MulOrDiv: '*' | '/' ;
 Factor: (sign=PlusOrMinus)?  op=Operand;
 Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');
+
+Plot : 
+
+    'plot' name = ID '{'
+    
+
+        'type' ':' type = ID 
+        ('x' ':' x = STRING)? 
+        ('y' ':' y = STRING)? 
+    
+    
+    '}'
+;
