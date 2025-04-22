@@ -16,37 +16,41 @@ from river import linear_model
 
 
 
-optim1 = optim.AdaDelta(
-)
+#Define optimizers
+optim1 = optim.AdaDelta()
+
+
+
+#Define preprocessors
 preproc1 = preprocessing.AdaptiveStandardScaler(
     lr =1,
     optim =optim1,
     param =0.2,
     test =['model', 'model2'],
-    dict ={"true" : 1,"false" : 0,},
+    dict ={"true" : 1,"false" : 0},
     problem =False,
-    string ="stringgg",
-)
+    string ="stringgg")
 preproc2 = preprocessing.FeatureHasher(
     n_features =10,
-    seed =42,
-)
-testMetric1 = metrics.AdjustedRand(
-)
-testMetric2 = metrics.CohenKappa(
-)
-testAlgo = drift.binary.DDM(
-)
-testAlgo1 = linear_model.ALMAClassifier(
-)
+    seed =42)
 
 
 
+#Define metrics
+testMetric1 = metrics.AdjustedRand()
+testMetric2 = metrics.CohenKappa()
+
+
+#Define live data algorithms
+testAlgo = drift.binary.DDM()
+testAlgo1 = linear_model.ALMAClassifier()
+
+
+#Connection Configuration for quixstreams
 connectionConfig = ConnectionConfig( 
     bootstrap_servers = "localhost:39092",
-    security_protocol = "sasl_plaintext", 
+    security_protocol = "sasl_plaintext",
     sasl_mechanism = "PLAIN",
     sasl_username="username",
-    sasl_password="admin_pass",
-)
+    sasl_password="admin_pass")
 

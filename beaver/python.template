@@ -21,7 +21,7 @@ from river import {{model.type}}
 
 
 {%if file.optimizers -%}
-
+#Define optimizers
 {%for model in file.optimizers[0].models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
@@ -33,22 +33,22 @@ from river import {{model.type}}
     {%-elif param.value.itemsD -%}
     {
     {%-for param in param.value.itemsD-%}
-    "{{param.name}}" : {{param.value}},
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
     {%-endfor-%}
     }
     {%- elif param.value is string -%}
     "{{param.value}}"
     {%-else-%}
     {{param.value}}
-    {%-endif%},
-    {%- endfor %}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
 )
 {%endfor%}
 {%- endif %}
 
 
-{%-if file.preprocessors -%}
-
+{%if file.preprocessors -%}
+#Define preprocessors
 {%for model in file.preprocessors[0].models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
@@ -60,21 +60,22 @@ from river import {{model.type}}
     {%-elif param.value.itemsD -%}
     {
     {%-for param in param.value.itemsD-%}
-    "{{param.name}}" : {{param.value}},
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
     {%-endfor-%}
     }
     {%- elif param.value is string -%}
     "{{param.value}}"
     {%-else-%}
     {{param.value}}
-    {%-endif%},
-    {%- endfor %}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
 )
 {%endfor%}
 {%- endif %}
 
 
-{%-for model in file.metrics.models-%}
+#Define metrics
+{%for model in file.metrics.models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
@@ -85,20 +86,20 @@ from river import {{model.type}}
     {%-elif param.value.itemsD -%}
     {
     {%-for param in param.value.itemsD-%}
-    "{{param.name}}" : {{param.value}},
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%}
     {%-endfor-%}
     }
     {%- elif param.value is string -%}
     "{{param.value}}"
     {%-else-%}
     {{param.value}}
-    {%-endif%},
-    {%- endfor %}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
 )
 {%endfor%}
 
-
-{%-for model in file.algorithms.models-%}
+#Define live data algorithms
+{%for model in file.algorithms.models-%}
 {{model.name}} = {{model.type}}.{%-if model.subtype-%}{{model.subtype}}.{%-endif-%}
 {{model.nameR}}(
     {%-for param in model.params%}
@@ -110,27 +111,27 @@ from river import {{model.type}}
     {%-elif param.value.itemsD -%}
     {
     {%-for param in param.value.itemsD-%}
-    "{{param.name}}" : {{param.value}},
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
     {%-endfor-%}
     }
     {%- elif param.value is string -%}
     "{{param.value}}"
     {%-else-%}
     {{param.value}}
-    {%-endif%},
-    {%- endfor %}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
 )
 {%endfor%}
 
-
+#Connection Configuration for quixstreams
 connectionConfig = ConnectionConfig( 
     bootstrap_servers = "{{file.connector.broker}}",
-    security_protocol = "{{file.connector.connection_type}}", 
-    {%if file.connector.connection_type == "sasl_plaintext"-%}
+    security_protocol = "{{file.connector.connection_type}}"
+    {%-if file.connector.connection_type == "sasl_plaintext"-%},
     sasl_mechanism = "PLAIN",
     sasl_username="{{file.connector.username}}",
-    sasl_password="{{file.connector.password}}",
-    {%-endif%}
+    sasl_password="{{file.connector.password}}"
+    {%-endif-%}
 )
 
 
