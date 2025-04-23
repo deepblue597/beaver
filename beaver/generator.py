@@ -4,7 +4,7 @@ from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
 import textx.scoping.providers as scoping_providers
-from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester
+from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester , name
 
 # %%
 

@@ -1,5 +1,14 @@
 
+
+__all__ = ["data_action",
+           "assignment_action", "expression_action", "term_action",
+           "factor_action", "operand_action", "flatten_nested_list","tester","name"]
+
 tester = []
+name = [] 
+
+def data_action(data):
+    name.append(data.name)
 
 
 def assignment_action(assignment):

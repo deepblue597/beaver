@@ -3,7 +3,7 @@ from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
 
-from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester
+from calc import *
 
 # %%
 
@@ -23,6 +23,7 @@ def parse_command_line_arguments():
 if __name__ == "__main__":
 
     processors = {
+        'Data': data_action,
         'Assignment': assignment_action,
         'Expression': expression_action,
         'Term': term_action,
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     template = env.get_template('python.template')
 
     flattened_list = flatten_nested_list(tester)
-
+    print(name)
     # Render template with parsed configuration
     generated_code = template.render(
         file=config, assignments=flattened_list)

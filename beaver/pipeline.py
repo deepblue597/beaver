@@ -10,7 +10,9 @@ class Pipeline:
         for metric in self.metrics:
             metric.n 
 
-        
+    def __str__(self):
+        return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
+    
     def train_and_predict(self, X , y : str = None) -> dict:
         pass 
         y = X[y]

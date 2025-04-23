@@ -69,7 +69,7 @@ input_topic_testData2 = app.topic("test_input_topic", value_deserializer="json")
 sdf_testData = app.dataframe(topic=input_topic_testData)
 sdf_testData2 = app.dataframe(topic=input_topic_testData2)
 
-#FIXME: The below code creates new features in the main sdf which we might not want 
+#FIXME: The below code creates new features in a generic sdf which we might not want 
 # See how to fix that 
 # Define new features
 sdf["generated1"]=((sdf["keep1"])-(2*sdf["keep2"]))

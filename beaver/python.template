@@ -168,7 +168,7 @@ input_topic_{{data.name}} = app.topic("{{data.input_topic}}", value_deserializer
 sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
 {%- endfor %}
 
-#FIXME: The below code creates new features in the main sdf which we might not want 
+#FIXME: The below code creates new features in a generic sdf which we might not want 
 # See how to fix that 
 # Define new features
 {%for assignment in assignments -%}
