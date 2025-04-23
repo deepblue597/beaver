@@ -1,99 +1,65 @@
-from os.path import dirname, join
+# %%
+from textx import metamodel_from_file
+from jinja2 import Environment, FileSystemLoader
+import argparse
 
-from pytest import raises
+from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester
 
-import textx.exceptions
-import textx.scoping.providers as scoping_providers
-from textx import get_children, metamodel_from_str
-
-metamodel_str = """
-ModelFile:
-
-;
-
-Package:
-    'package' name=ID '{'
-    classes*=Class
-    '}'
-;
-
-Class:
-    'class' name=ID '{'
-        attributes*=Attribute
-    '}'
-;
-
-Attribute:
-        'attr' ref=[Class:FQN] name=ID ';'
-;
-
-Comment: /#.*/;
-FQN: ID('.'ID)*;
-"""
+# %%
 
 
-def test_fully_qualified_name_ref():
-    """
-    This is a basic test for the FQN (positive and negative test).
-    """
-    #################################
-    # META MODEL DEF
-    #################################
+def parse_command_line_arguments():
+    parser = argparse.ArgumentParser(description='Pipeline generator')
 
-    my_metamodel = metamodel_from_str(metamodel_str)
+    parser.add_argument('--metamodel', default='general.jsl',
+                        help='the file in which your pipeline is configured', type=str)
+    parser.add_argument('--generated_file_name', default='generated_pipeline.py',
+                        help='Destination file name', type=str)
 
-    my_metamodel.register_scope_providers({"*.*": scoping_providers.FQN()})
+    return parser.parse_args()
 
-    #################################
-    # MODEL PARSING
-    #################################
 
-    my_model = my_metamodel.model_from_str(
-        """
-    package P1 {
-        class Part1 {
-        }
+# %%
+if __name__ == "__main__":
+
+    processors = {
+        'Assignment': assignment_action,
+        'Expression': expression_action,
+        'Term': term_action,
+        'Factor': factor_action,
+        'Operand': operand_action,
     }
-    package P2 {
-        class Part2 {
-            attr C2 rec;
-        }
-        class C2 {
-            attr P1.Part1 p1;
-            attr Part2 p2a;
-            attr P2.Part2 p2b;
-        }
-    }
-    """
-    )
 
-    #################################
-    # TEST MODEL
-    #################################
+    args = parse_command_line_arguments()
 
-    a = get_children(lambda x: hasattr(x, "name")
-                     and x.name == "rec", my_model)
-    assert len(a) == 1
-    assert a[0].name == "rec"
-    assert a[0].ref.__class__.__name__ == "Class"
-    assert a[0].ref.name == "C2"
+    # Load the DSL grammar
+    ml_mm = metamodel_from_file('beaver.tx')
 
-    a = get_children(lambda x: hasattr(x, "name") and x.name == "p1", my_model)
-    assert len(a) == 1
-    assert a[0].name == "p1"
-    assert a[0].ref.__class__.__name__ == "Class"
-    assert a[0].ref.name == "Part1"
+    ml_mm.register_obj_processors(processors)
 
-    a = get_children(lambda x: hasattr(x, "name")
-                     and x.name == "p2a", my_model)
-    assert len(a) == 1
-    assert a[0].name == "p2a"
-    assert a[0].ref.__class__.__name__ == "Class"
-    assert a[0].ref.name == "Part2"
+    # Parse the DSL configuration file
+    config = ml_mm.model_from_file(args.metamodel)
 
-    a = get_children(lambda x: hasattr(x, "name")
-                     and x.name == "p2b", my_model)
-    assert len(a) == 1
-    assert a[0].name == "p2b"
-    assert a[0].ref.__class__.__name__ == "Class"
-    assert a[0].ref.name == "Part2"
+    # Access parsed data
+    #print(f"Pipeline Name: {config.name}")
+    #print(f"Kafka Broker: {config.kafka.broker}")
+    #print(f"Model Type: {config.model.name}")
+    #print(f"Features: {config.features.features}")
+    # print(f"Target: {config.target.name}")
+
+    # %%
+    # Load Jinja2 template
+    env = Environment(loader=FileSystemLoader('.'))
+    template = env.get_template('python.template')
+
+    flattened_list = flatten_nested_list(tester)
+
+    # Render template with parsed configuration
+    generated_code = template.render(
+        file=config, assignments=flattened_list)
+
+    # Save the generated code to a file
+    with open(args.generated_file_name, 'w') as f:
+        f.write(generated_code)
+
+    print("Generated code saved to:", args.generated_file_name)

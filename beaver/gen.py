@@ -48,9 +48,32 @@ testAlgo1 = linear_model.ALMAClassifier()
 
 #Connection Configuration for quixstreams
 connectionConfig = ConnectionConfig( 
-    bootstrap_servers = "localhost:39092",
-    security_protocol = "sasl_plaintext",
-    sasl_mechanism = "PLAIN",
-    sasl_username="username",
-    sasl_password="admin_pass")
+    
+    broker ="localhost:39092",
+    connection_type ="sasl_plaintext",
+    username ="username",
+    password ="admin_pass")
+
+#Connection to Kafka 
+app = Application( 
+    broker_address = connectionConfig,
+    consumer_group ="the_test_consumer_group")
+
+#Input topics 
+
+input_topic_testData = app.topic("test_input_topic", value_deserializer="json")
+input_topic_testData2 = app.topic("test_input_topic", value_deserializer="json")
+
+# Create Streaming DataFrames connected to the input Kafka topics
+
+sdf_testData = app.dataframe(topic=input_topic_testData)
+sdf_testData2 = app.dataframe(topic=input_topic_testData2)
+
+#FIXME: The below code creates new features in the main sdf which we might not want 
+# See how to fix that 
+# Define new features
+sdf["generated1"]=((sdf["keep1"])-(2*sdf["keep2"]))
+sdf["generated2"]=((sdf["keep"]*sdf["keep"]))
+sdf["generated12"]=((sdf["keep1"])-(2*sdf["keep2"]))
+sdf["generated22"]=((sdf["keep"]*sdf["keep"]))
 

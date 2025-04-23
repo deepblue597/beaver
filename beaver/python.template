@@ -125,13 +125,63 @@ from river import {{model.type}}
 
 #Connection Configuration for quixstreams
 connectionConfig = ConnectionConfig( 
-    bootstrap_servers = "{{file.connector.broker}}",
-    security_protocol = "{{file.connector.connection_type}}"
-    {%-if file.connector.connection_type == "sasl_plaintext"-%},
-    sasl_mechanism = "PLAIN",
-    sasl_username="{{file.connector.username}}",
-    sasl_password="{{file.connector.password}}"
-    {%-endif-%}
+    {% for param in file.connector.connection_params%}
+    {{param.name}} = {%- if param.value is string -%}
+    "{{param.value}}"
+    {%-else-%}
+    {{param.value}}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%-endfor-%}
+
 )
 
+#Connection to Kafka 
+app = Application( 
+    broker_address = connectionConfig, 
+    {%-for param in file.connector.kafka_params%}
+    {{param.name}} =  
+    {%-if param.value.value-%}
+    {{param.value.value.name}}
+    {%-elif param.value.items -%}
+    {{param.value.items}}
+    {%-elif param.value.itemsD -%}
+    {
+    {%-for param in param.value.itemsD-%}
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
+    {%-endfor-%}
+    }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
+    {%-else-%}
+    {{param.value}}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
+)
+
+#Input topics 
+{%for data in file.data%}
+input_topic_{{data.name}} = app.topic("{{data.input_topic}}", value_deserializer="json")
+{%- endfor %}
+
+# Create Streaming DataFrames connected to the input Kafka topics
+{%for data in file.data%}
+sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
+{%- endfor %}
+
+#FIXME: The below code creates new features in the main sdf which we might not want 
+# See how to fix that 
+# Define new features
+{%for assignment in assignments -%}
+
+{% if assignment == ';' %}
+{% elif assignment == '(' or assignment == ')' -%}
+    {{ assignment }}
+{%- elif assignment is number -%}
+    {{ assignment }}
+{%- elif assignment in ['+', '-', '*', '/', '='] -%}
+    {{ assignment }}
+{%- else -%}
+    sdf["{{ assignment }}"]
+{%- endif %}
+{%-endfor%}
 

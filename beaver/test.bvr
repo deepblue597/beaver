@@ -3,7 +3,6 @@
 pipeline testPipeline { 
 
     output_topic : 'tester_topic' 
-    consumer_group : 'the_test_consumer_group'
     data : testData
     algorithm : testAlgo 
     metrics : [testMetric1 , testMetric2] 
@@ -12,29 +11,52 @@ pipeline testPipeline {
 pipeline testPipeline1 { 
 
     output_topic : 'tester_topic' 
-    consumer_group : 'the_test_consumer_group'
     data : testData
     algorithm : testAlgo 
     metrics : [testMetric1 , testMetric2] 
 }
 
 connector {
-        broker: "localhost:39092"
-        connection_type : "sasl_plaintext"
-        username : "username" 
-        password : "admin_pass"
+
+    connection_params { 
+        
+        broker = "localhost:39092",
+        connection_type = "sasl_plaintext",
+        username = "username",
+        password = "admin_pass"
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'the_test_consumer_group'
+    
+    }
 
 }
 
 data testData { 
 
     input_topic : 'test_input_topic'
-    
     features { 
         drop_features : [ drop1 , drop2 ]  
         generated_features : { 
             generated1 = keep1 - 2 * keep2; 
             generated2 = keep * keep;
+        }
+    }
+
+    preprocessors : [ preproc1 , preproc2 ]
+}
+
+data testData2 { 
+
+    input_topic : 'test_input_topic'
+    features { 
+        drop_features : [ drop1 , drop2 ]  
+        generated_features : { 
+            generated12 = keep1 - 2 * keep2; 
+            generated22 = keep * keep;
         }
     }
 

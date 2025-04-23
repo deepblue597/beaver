@@ -16,8 +16,7 @@ Pipeline :
 
     'pipeline' name = ID '{'
 
-        ('output_topic' ':' output_topic = STRING)? 
-        'consumer_group' ':' consumer_group = STRING 
+        ('output_topic' ':' output_topic = STRING)?  
         'data' ':' data = [Data]
         'algorithm' ':' algorithm = [Model]
         'metrics' ':' '['metrics += [Model][',']']'
@@ -43,10 +42,23 @@ Connector :
 
     'connector' '{' 
 
-        'broker' ':' broker=STRING
-        'connection_type' ':' connection_type = STRING 
-        ('username' ':' username = STRING)? 
-        ('password' ':' password = STRING)? 
+        'connection_params' '{'
+        
+            connection_params += Param[',']
+        
+        '}'
+
+        'kafka_params' '{'
+        
+            kafka_params += Param[',']
+        
+        '}'
+        
+        //'broker' ':' broker=STRING
+        //'consumer_group' ':' consumer_group = STRING
+        //'connection_type' ':' connection_type = STRING 
+        //('username' ':' username = STRING)? 
+        //('password' ':' password = STRING)? 
 
     '}'
 
@@ -57,7 +69,7 @@ Algorithms :
     'algorithms' '{'
     
         models += Model 
-        //TODO: models not model
+
     
     '}'
 ;
@@ -142,9 +154,11 @@ Reference : value = [Model] ;
 
 Features :
     'features' '{'
-        ('keep_features' ':' '[' features += ID[','] ']')?
-        ('drop_features' ':' '[' features += ID[','] ']')?
+        ('keep_features' ':' '[' keep_features += ID[','] ']')?
+        ('drop_features' ':' '[' drop_features += ID[','] ']')?
         ('generated_features'  ':' '{' assignments*= Assignment '}')? 
+        ('target_feature' ':' target_feature = ID )?
+        //FIXME: Check penguin.tx for correct implementation or preprocessing methods of River
     
     '}' 
 ;

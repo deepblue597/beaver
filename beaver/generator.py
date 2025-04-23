@@ -71,7 +71,7 @@ if __name__ == "__main__":
 
         # Access parsed data if the model is valid
         # print(f"Kafka Broker: {config.kafka.broker}")
-        print(config.connector.broker)
+        #print(config.connector.broker)
         print(config.preprocessors[0].models)
         print(config.pipeline[0].algorithm.type)
         #print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
