@@ -9,6 +9,10 @@ from quixstreams.kafka import ConnectionConfig
 from river import preprocessing
 {%- endif %}
 
+{%if file.composers -%}
+from river import compose
+{%- endif %}
+
 {%if file.optimizers -%}
 from river import optim
 {%- endif %}
@@ -63,6 +67,39 @@ from river import {{model.type}}
     "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
     {%-endfor-%}
     }
+    {%- elif param.value is string -%}
+    "{{param.value}}"
+    {%-else-%}
+    {{param.value}}
+    {%-endif%}{%- if not loop.last %},{%- endif -%} 
+    {%- endfor -%}
+)
+{%endfor%}
+{%- endif %}
+
+
+{%if file.composers -%}
+#Define composers
+{%for model in file.composers[0].models-%}
+{{model.name}} = {{model.type}}.{{model.nameR}}(
+    {%-for param in model.params%}
+    {{param.name}} =  
+    {%-if param.value.value-%}
+    {{param.value.value.name}}
+    {%-elif param.value.items -%}
+    {{param.value.items}}
+    {%-elif param.value.itemsD -%}
+    {
+    {%-for param in param.value.itemsD-%}
+    "{{param.name}}" : {{param.value}}{%- if not loop.last %},{%- endif -%} 
+    {%-endfor-%}
+    }
+    {%-elif param.value.itemsT -%}
+    (
+        {%-for param in param.value.itemsT-%}
+        {{param}}{%- if not loop.last %},{%- endif -%} 
+        {%-endfor-%}
+    )
     {%- elif param.value is string -%}
     "{{param.value}}"
     {%-else-%}

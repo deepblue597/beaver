@@ -7,6 +7,8 @@ from quixstreams.kafka import ConnectionConfig
 
 from river import preprocessing
 
+from river import compose
+
 from river import optim
 
 from river import metrics
@@ -33,6 +35,14 @@ preproc1 = preprocessing.AdaptiveStandardScaler(
 preproc2 = preprocessing.FeatureHasher(
     n_features =10,
     seed =42)
+
+
+
+#Define composers
+selectorNum = compose.SelectType(
+    types =(Number))
+selectorStr = compose.SelectType(
+    types =(str))
 
 
 

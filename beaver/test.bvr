@@ -46,7 +46,7 @@ data testData {
         }
     }
 
-    preprocessors : [ preproc1 , preproc2 ]
+    preprocessors : [[ preproc1 , preproc2 ]]
 }
 
 data testData2 { 
@@ -60,7 +60,7 @@ data testData2 {
         }
     }
 
-    preprocessors : [ preproc1 , preproc2 ]
+    preprocessors : [[ selectorNum , preproc1 ], [preproc2 ]]
 }
 
 
@@ -92,6 +92,23 @@ preprocessors {
         }
 }
 
+composers { 
+
+    model selectorNum  { 
+        type : compose  
+        name : SelectType 
+        params : { 
+            types = (Number) 
+        }
+    }
+    model selectorStr  { 
+        type : compose  
+        name : SelectType 
+        params : { 
+            types = (str) 
+        }
+    }
+}
 
 algorithms { 
 

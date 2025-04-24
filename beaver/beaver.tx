@@ -5,6 +5,7 @@ File :
     connector = Connector
     data += Data 
     preprocessors *= Preprocessors
+    composers *= Composers
     algorithms = Algorithms
     optimizers *= Optimizers 
     metrics = Metrics
@@ -32,7 +33,10 @@ Data :
 
         'input_topic' ':' input_topic=STRING 
         features = Features
-        'preprocessors' ':' '[' preprocessors *= [Model][','] ']'
+        'preprocessors' ':' '[' preprocessors *= List[','] ']'
+        //TODO: There needs to be a way to connect multiple preprocessors not just add them to the 
+        //pipeline with + 
+        //e.g preprocessor_1 = compose.SelectType(int) | preprocessing.StandardScaler()
         plots *= Plot
     
     '}'
@@ -53,12 +57,7 @@ Connector :
             kafka_params += Param[',']
         
         '}'
-        
-        //'broker' ':' broker=STRING
-        //'consumer_group' ':' consumer_group = STRING
-        //'connection_type' ':' connection_type = STRING 
-        //('username' ':' username = STRING)? 
-        //('password' ':' password = STRING)? 
+
 
     '}'
 
@@ -104,7 +103,14 @@ Metrics :
 
 ;
 
+Composers : 
 
+    'composers' '{'
+    
+        models += Model
+
+    '}'
+; 
 
 Model : 
 
@@ -130,10 +136,14 @@ List:
     '[' items*=ParamValue[','] ']'
 ;
 
-ParamValue : NUMBER | STRING | BOOL | Reference | List | Dict;
+ParamValue : NUMBER | STRING | BOOL | Reference | Tuple | List | Dict;
 
 
 // TODO: Learn how to raise errors in python
+Tuple:
+    '(' itemsT*=DictType[','] ')'
+;
+
 
 Dict:
     '{' itemsD*=DictItem[','] '}'
@@ -144,7 +154,7 @@ DictItem:
 ;
 
 DictType:
-    NUMBER | STRING | BOOL | Dict | List 
+    NUMBER | STRING | BOOL | Dict | List | ID
 ;
 
 
