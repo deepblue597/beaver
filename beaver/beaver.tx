@@ -1,7 +1,7 @@
 
 File : 
     
-    pipeline += Pipeline
+    pipelines += Pipeline
     connector = Connector
     data += Data 
     preprocessors *= Preprocessors
@@ -34,9 +34,6 @@ Data :
         'input_topic' ':' input_topic=STRING 
         features = Features
         'preprocessors' ':' '[' preprocessors *= List[','] ']'
-        //TODO: There needs to be a way to connect multiple preprocessors not just add them to the 
-        //pipeline with + 
-        //e.g preprocessor_1 = compose.SelectType(int) | preprocessing.StandardScaler()
         plots *= Plot
     
     '}'

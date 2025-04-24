@@ -11,8 +11,8 @@ pipeline testPipeline {
 pipeline testPipeline1 { 
 
     output_topic : 'tester_topic' 
-    data : testData
-    algorithm : testAlgo 
+    data : testData2
+    algorithm : testAlgo1 
     metrics : [testMetric1 , testMetric2] 
 }
 
@@ -46,7 +46,7 @@ data testData {
         }
     }
 
-    preprocessors : [[ preproc1 , preproc2 ]]
+    preprocessors : [[preproc1 , preproc2 ]]
 }
 
 data testData2 { 
@@ -98,7 +98,7 @@ composers {
         type : compose  
         name : SelectType 
         params : { 
-            types = (Number) 
+            types = (int) 
         }
     }
     model selectorStr  { 

@@ -3,7 +3,7 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
 from quixstreams.kafka import ConnectionConfig 
-
+from pipeline import * 
 
 {%if file.preprocessors -%}
 from river import preprocessing
@@ -222,3 +222,29 @@ sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
 {%- endif %}
 {%-endfor%}
 
+#Connect composers with preprocessors 
+{%for data in file.data-%}
+preprocessor_{{data.name}} = 
+{%-for preprocessors in data.preprocessors-%}
+{%-for model in preprocessors.items-%}
+{{model.value.name}}{%- if not loop.last %}|{%- endif -%}
+{%-endfor%}
+{%- if not loop.last %}+{%- endif -%}
+{%-endfor%}
+{%endfor%}
+
+#Pipeline definition 
+
+{%for pipeline in file.pipelines -%}
+
+{{pipeline.name}}_pipeline = preprocessor_{{pipeline.data.name}} | {{pipeline.algorithm.name}}
+
+{{pipeline.name}}_metrics = 
+    {%-for metric in pipeline.metrics-%}
+    {{metric.name}}{%- if not loop.last %}+{%- endif -%}
+    
+    {%-endfor%}
+
+{{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline , metrics = {{pipeline.name}}_metrics , name = "{{pipeline.name}}"{%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
+
+{% endfor -%}

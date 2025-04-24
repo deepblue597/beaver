@@ -3,7 +3,7 @@
 from quixstreams import Application
 from quixstreams.models import TopicConfig
 from quixstreams.kafka import ConnectionConfig 
-
+from pipeline import * 
 
 from river import preprocessing
 
@@ -40,7 +40,7 @@ preproc2 = preprocessing.FeatureHasher(
 
 #Define composers
 selectorNum = compose.SelectType(
-    types =(Number))
+    types =(int))
 selectorStr = compose.SelectType(
     types =(str))
 
@@ -86,4 +86,24 @@ sdf["generated1"]=((sdf["keep1"])-(2*sdf["keep2"]))
 sdf["generated2"]=((sdf["keep"]*sdf["keep"]))
 sdf["generated12"]=((sdf["keep1"])-(2*sdf["keep2"]))
 sdf["generated22"]=((sdf["keep"]*sdf["keep"]))
+
+
+#Connect composers with preprocessors 
+preprocessor_testData =preproc1|preproc2
+preprocessor_testData2 =selectorNum|preproc1+preproc2
+
+
+#Pipeline definition 
+
+testPipeline_pipeline = preprocessor_testData | testAlgo
+
+testPipeline_metrics =testMetric1+testMetric2
+
+testPipeline = Pipeline(model = testPipeline_pipeline , metrics = testPipeline_metrics , name = "testPipeline",output_topic="tester_topic")
+
+testPipeline1_pipeline = preprocessor_testData2 | testAlgo1
+
+testPipeline1_metrics =testMetric1+testMetric2
+
+testPipeline1 = Pipeline(model = testPipeline1_pipeline , metrics = testPipeline1_metrics , name = "testPipeline1",output_topic="tester_topic")
 

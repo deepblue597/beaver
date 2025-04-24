@@ -1,6 +1,7 @@
 #TODO: Create a pipeline class 
 import dill
 
+__all__ = ['Pipeline']
 class Pipeline:
     """
     A class to represent a machine learning pipeline.
