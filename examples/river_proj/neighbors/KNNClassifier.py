@@ -21,9 +21,16 @@ model = (
         )
     )
 )
-
+# %%
+metric = metrics.base.Metrics
+# %%
+metric.get()
+# %%
 metric_proba = metrics.CrossEntropy()
 metric = metrics.Accuracy()
+metric_proba.requires_labels
+# %%
+issubclass(metrics.MAE(), )
 # %%
 CrossEntropy = []
 Accuracy = []

@@ -27,13 +27,43 @@ class Pipeline:
 
     """
 
-    def __init__(self, model, metrics: Union[metrics.base.Metrics, metrics.base.Metric], name: str,  output_topic: str = None):
+    def __init__(self, model, metrics_list: list, name: str,  output_topic: str = None):
         self.model = model
         self.output_topic = output_topic
-        self.metrics = metrics
         self.name = name
-        self.metrics_values = {metric.__class__.__name__: []
-                               for metric in metrics}
+        self.metrics_list = metrics_list
+        """
+        Best Practices
+            - Group Metrics by Type:
+            - Use separate Metrics containers for classification, regression, and clustering metrics.
+            - Some classification metrics need probabilities these will have requires_labels → False     check KNNClassifier.py So 4th container probabilities_classification
+            TODO:The multioutput metrics cannot be added to one metric. Need to be separate.
+        """
+
+        self.classification_metrics = metrics.base.Metrics()
+        self.regression_metrics = metrics.base.Metrics()
+        self.clustering_metrics = metrics.base.Metrics()
+        for metric in self.metrics_list:
+            if not metric.requires_labels:
+                self.classification_metrics.__add__(metric)
+                try:
+                    # Check if model.predict_proba_one() is implemented
+                    model.predict_proba_one()
+                except NotImplementedError:
+                    raise NotImplementedError(
+                        f"{model.__class__.__name__} does not support probabilistic metrics.")
+            elif issubclass(metric, metrics.base.ClassificationMetric):
+                self.classification_metrics.__add__(metric)
+            elif issubclass(metric, metrics.base.RegressionMetric):
+                self.regression_metrics.__add__(metric)
+            elif issubclass(metric, metrics.base.ClusteringMetric):
+                self.clustering_metrics.__add__(metric)
+            else:
+                raise ValueError(
+                    f"Unknown metric type: {metric.__class__.__name__}")
+        self.metrics_values = {
+            metric.__class__.__name__: [] for metric in self.metrics_list
+        }
 
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
@@ -44,11 +74,22 @@ class Pipeline:
         Add the values of metrics into a list and return a dict containing the 
         input data the prediction and the metrics values.
         """
-        y = X[y]
-        X = {key: value for key, value in X.items() if key != self.y}
+        """TODO: We need to check if : 
+        
+        - [] model is supervised or not 
+        - [] the metrics are multiclass or not 
+        
+        """
+        if self.model._supervised:
+            # If the model is supervised, we need to separate the features and the target variable
+            y = X[y]
+            X = {key: value for key, value in X.items() if key != y}
 
         # Train the model
-        self.model.learn_one(X, y)
+        if self.model._supervised:
+            self.model.learn_one(X, y)
+        else:
+            self.model.learn_one(X)
 
         # Predict the class
         y_predicted = self.model.predict_one(X)
@@ -57,7 +98,7 @@ class Pipeline:
         self.metrics.update(y, y_predicted)
 
         # Store the metrics values
-        for metric in self.metrics:
+        for metric in self.metrics_list:
             self.metrics_values[metric.__class__.__name__].append(metric.get())
 
         # Save the model to a file

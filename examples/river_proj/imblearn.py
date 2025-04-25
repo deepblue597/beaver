@@ -1,5 +1,8 @@
-#%%
+# %%
 
+from river import multiclass
+from river import optim
+from river import linear_model
 from river import datasets
 from river import evaluate
 from river import imblearn
@@ -24,12 +27,6 @@ evaluate.progressive_val_score(
     print_every=500
 )
 # %%
-from river import datasets
-from river import evaluate
-from river import imblearn
-from river import metrics
-from river import preprocessing
-from river import rules
 
 model = (
     preprocessing.StandardScaler() |
@@ -47,13 +44,6 @@ evaluate.progressive_val_score(
     print_every=500
 )
 # %%
-from river import datasets
-from river import evaluate
-from river import imblearn
-from river import linear_model
-from river import metrics
-from river import optim
-from river import preprocessing
 
 model = (
     preprocessing.StandardScaler() |
@@ -64,7 +54,8 @@ model = (
         seed=42,
     )
 )
-
+model._supervised
+# %%
 evaluate.progressive_val_score(
     datasets.TrumpApproval(),
     model,
@@ -72,13 +63,6 @@ evaluate.progressive_val_score(
     print_every=500
 )
 # %%
-from river import datasets
-from river import evaluate
-from river import imblearn
-from river import linear_model
-from river import metrics
-from river import optim
-from river import preprocessing
 
 model = (
     preprocessing.StandardScaler() |
@@ -97,12 +81,6 @@ evaluate.progressive_val_score(
     print_every=500,
 )
 # %%
-from river import datasets
-from river import evaluate
-from river import imblearn
-from river import linear_model
-from river import metrics
-from river import preprocessing
 
 model = imblearn.RandomUnderSampler(
     (
@@ -119,12 +97,6 @@ metric = metrics.LogLoss()
 
 evaluate.progressive_val_score(dataset, model, metric)
 # %%
-from river import datasets
-from river import evaluate
-from river import imblearn
-from river import linear_model
-from river import metrics
-from river import preprocessing
 
 model = imblearn.RandomOverSampler(
     (
@@ -141,12 +113,6 @@ metric = metrics.LogLoss()
 
 evaluate.progressive_val_score(dataset, model, metric)
 # %%
-from river import datasets
-from river import evaluate
-from river import linear_model
-from river import metrics
-from river import multiclass
-from river import preprocessing
 
 dataset = datasets.ImageSegments()
 

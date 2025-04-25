@@ -107,14 +107,12 @@ preprocessor_testData2 =selectorNum|preproc1+preproc2
 
 testPipeline_pipeline = preprocessor_testData | testAlgo
 
-testPipeline_metrics =testMetric1+testMetric2
-
+testPipeline_metrics = [testMetric1,testMetric2]
 testPipeline = Pipeline(model = testPipeline_pipeline , metrics = testPipeline_metrics , name = "testPipeline",output_topic="tester_topic")
 
 testPipeline1_pipeline = preprocessor_testData2 | testAlgo1
 
-testPipeline1_metrics =testMetric1+testMetric2
-
+testPipeline1_metrics = [testMetric1,testMetric2]
 testPipeline1 = Pipeline(model = testPipeline1_pipeline , metrics = testPipeline1_metrics , name = "testPipeline1",output_topic="tester_topic")
 
 # Output topics initialization
