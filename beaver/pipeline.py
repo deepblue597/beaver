@@ -39,25 +39,37 @@ class Pipeline:
             - Some classification metrics need probabilities these will have requires_labels → False     check KNNClassifier.py So 4th container probabilities_classification
             TODO:The multioutput metrics cannot be added to one metric. Need to be separate.
         """
-
-        self.classification_metrics = metrics.base.Metrics()
-        self.regression_metrics = metrics.base.Metrics()
-        self.clustering_metrics = metrics.base.Metrics()
+        self.metrics = {
+            'classification': None,
+            'regression': None,
+            'clustering': None, }
+        self.probabilistc = False
+        # FIXME:
         for metric in self.metrics_list:
-            if not metric.requires_labels:
-                self.classification_metrics.__add__(metric)
+            if not metric.requires_labels and not self.probabilistc:
                 try:
                     # Check if model.predict_proba_one() is implemented
                     model.predict_proba_one()
                 except NotImplementedError:
                     raise NotImplementedError(
                         f"{model.__class__.__name__} does not support probabilistic metrics.")
+                self.probabilistc = True
+
             elif issubclass(metric, metrics.base.ClassificationMetric):
-                self.classification_metrics.__add__(metric)
+                if self.metrics['classification'] is None:
+                    self.metrics['classification'] = metric
+                else:
+                    self.metrics['classification'].__add__(metric)
             elif issubclass(metric, metrics.base.RegressionMetric):
-                self.regression_metrics.__add__(metric)
+                if self.regression_metrics is None:
+                    self.regression_metrics = metric
+                else:
+                    self.regression_metrics.__add__(metric)
             elif issubclass(metric, metrics.base.ClusteringMetric):
-                self.clustering_metrics.__add__(metric)
+                if self.clustering_metrics is None:
+                    self.clustering_metrics = metric
+                else:
+                    self.clustering_metrics.__add__(metric)
             else:
                 raise ValueError(
                     f"Unknown metric type: {metric.__class__.__name__}")

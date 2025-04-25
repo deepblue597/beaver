@@ -22,9 +22,9 @@ model = (
     )
 )
 # %%
-metric = metrics.base.Metrics
+metric
 # %%
-metric.get()
+metric = metrics.base.Metrics([metric, metrics.Accuracy()])
 # %%
 metric_proba = metrics.CrossEntropy()
 metric = metrics.Accuracy()

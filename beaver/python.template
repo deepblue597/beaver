@@ -281,4 +281,26 @@ preprocessor_{{data.name}} =
 output_topic_{{pipeline.name}} = app.topic({{pipeline.name}}.output_topic, value_deserializer="json")
 {%endif-%}
 
-{% endfor -%}
+{% endfor %}
+
+#Sdf for each pipeline 
+#Train and predict method calls for each pipeline
+#If the pipeline has an output topic then we call it 
+
+{%for pipeline in file.pipelines -%}
+
+sdf_{{pipeline.name}} = sdf_{{pipeline.data.name}}.apply({{pipeline.name}}.train_and_predict())
+{%-if pipeline.output_topic-%}
+.to_topic({{pipeline.name}}.output_topic)
+{%endif-%}
+
+{% endfor %}
+
+# Run Quix Streams 
+app.run()
+
+#Metric plots for each Pipeline
+{%for pipeline in file.pipelines -%}
+{{pipeline.name}}.metrics_plot()
+
+{% endfor %}
