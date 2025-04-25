@@ -222,6 +222,32 @@ sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
 {%- endif %}
 {%-endfor%}
 
+#Drop Features
+{%for data in file.data%}
+{%-if data.features.drop_features%}
+sdf_{{data.name}}.drop([
+    {%- for feature  in data.features.drop_features -%}
+    "{{feature}}"
+    {%- if not loop.last %},
+    {%- endif -%} 
+    {%- endfor -%}
+])
+{%endif-%}
+{%- endfor %}
+
+#Keep Features
+{%for data in file.data%}
+{%-if data.features.keep_features%}
+sdf_{{data.name}} = sdf_{{data.name}}[[
+    {%- for feature  in data.features.keep_features -%}
+    "{{feature}}"
+    {%- if not loop.last %},
+    {%- endif -%} 
+    {%- endfor -%}
+]]
+{%endif-%}
+{%- endfor %}
+
 #Connect composers with preprocessors 
 {%for data in file.data-%}
 preprocessor_{{data.name}} = 
@@ -246,5 +272,13 @@ preprocessor_{{data.name}} =
     {%-endfor%}
 
 {{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline , metrics = {{pipeline.name}}_metrics , name = "{{pipeline.name}}"{%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
+
+{% endfor -%}
+
+# Output topics initialization
+{%for pipeline in file.pipelines -%}
+{%-if pipeline.output_topic%}
+output_topic_{{pipeline.name}} = app.topic({{pipeline.name}}.output_topic, value_deserializer="json")
+{%endif-%}
 
 {% endfor -%}

@@ -88,6 +88,16 @@ sdf["generated12"]=((sdf["keep1"])-(2*sdf["keep2"]))
 sdf["generated22"]=((sdf["keep"]*sdf["keep"]))
 
 
+#Drop Features
+
+sdf_testData.drop(["drop1","drop2"])
+
+
+#Keep Features
+
+sdf_testData2 = sdf_testData2[["keep1","keep2"]]
+
+
 #Connect composers with preprocessors 
 preprocessor_testData =preproc1|preproc2
 preprocessor_testData2 =selectorNum|preproc1+preproc2
@@ -107,3 +117,8 @@ testPipeline1_metrics =testMetric1+testMetric2
 
 testPipeline1 = Pipeline(model = testPipeline1_pipeline , metrics = testPipeline1_metrics , name = "testPipeline1",output_topic="tester_topic")
 
+# Output topics initialization
+
+output_topic_testPipeline = app.topic(testPipeline.output_topic, value_deserializer="json")
+
+output_topic_testPipeline1 = app.topic(testPipeline1.output_topic, value_deserializer="json")

@@ -53,7 +53,7 @@ data testData2 {
 
     input_topic : 'test_input_topic'
     features { 
-        drop_features : [ drop1 , drop2 ]  
+        keep_features : [ keep1 , keep2 ]  
         generated_features : { 
             generated12 = keep1 - 2 * keep2; 
             generated22 = keep * keep;
