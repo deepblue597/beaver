@@ -82,10 +82,10 @@ sdf_testData2 = app.dataframe(topic=input_topic_testData2)
 #FIXME: The below code creates new features in a generic sdf which we might not want 
 # See how to fix that 
 # Define new features
-sdf["generated1"]=((sdf["keep1"])-(2*sdf["keep2"]))
-sdf["generated2"]=((sdf["keep"]*sdf["keep"]))
-sdf["generated12"]=((sdf["keep1"])-(2*sdf["keep2"]))
-sdf["generated22"]=((sdf["keep"]*sdf["keep"]))
+sdf_testData["generated1"]=sdf_testData["keep1"]-((sdf_testData["keep1"])+(sdf_testData["keep2"]))
+sdf_testData["generated2"]=sdf_testData["keep"]*sdf_testData["keep"]
+sdf_testData2["generated12"]=sdf_testData2["keep1"]-2*sdf_testData2["keep2"]
+sdf_testData2["generated22"]=sdf_testData2["keep"]*sdf_testData2["keep"]
 
 
 #Drop Features
@@ -126,8 +126,8 @@ output_topic_testPipeline1 = app.topic(testPipeline1.output_topic, value_deseria
 #Train and predict method calls for each pipeline
 #If the pipeline has an output topic then we call it 
 
-sdf_testPipeline = sdf_testData.apply(testPipeline.train_and_predict()).to_topic(testPipeline.output_topic)
-sdf_testPipeline1 = sdf_testData2.apply(testPipeline1.train_and_predict()).to_topic(testPipeline1.output_topic)
+sdf_testPipeline = sdf_testData.apply(testPipeline.train_and_predict()).to_topic(output_topic_testPipeline)
+sdf_testPipeline1 = sdf_testData2.apply(testPipeline1.train_and_predict()).to_topic(output_topic_testPipeline1)
 
 
 # Run Quix Streams 

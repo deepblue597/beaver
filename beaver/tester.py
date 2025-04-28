@@ -11,7 +11,7 @@ from calc import *
 def parse_command_line_arguments():
     parser = argparse.ArgumentParser(description='Pipeline generator')
 
-    parser.add_argument('--metamodel', default='general.jsl',
+    parser.add_argument('--metamodel', default='test.bvr',
                         help='the file in which your pipeline is configured', type=str)
     parser.add_argument('--generated_file_name', default='generated_pipeline.py',
                         help='Destination file name', type=str)
@@ -41,23 +41,15 @@ if __name__ == "__main__":
     # Parse the DSL configuration file
     config = ml_mm.model_from_file(args.metamodel)
 
-    # Access parsed data
-    #print(f"Pipeline Name: {config.name}")
-    #print(f"Kafka Broker: {config.kafka.broker}")
-    #print(f"Model Type: {config.model.name}")
-    #print(f"Features: {config.features.features}")
-    # print(f"Target: {config.target.name}")
-
     # %%
     # Load Jinja2 template
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('python.template')
 
-    flattened_list = flatten_nested_list(tester)
-    print(name)
-    # Render template with parsed configuration
+    flattened_dict = dict_flatten(outpout)
+
     generated_code = template.render(
-        file=config, assignments=flattened_list)
+        file=config, assignments=flattened_dict)
 
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:

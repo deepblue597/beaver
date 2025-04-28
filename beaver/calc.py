@@ -2,24 +2,24 @@
 
 __all__ = ["data_action",
            "assignment_action", "expression_action", "term_action",
-           "factor_action", "operand_action", "flatten_nested_list","tester","name"]
+           "factor_action", "operand_action", "flatten_nested_list", "outpout", "dict_flatten"]
 
-tester = []
-name = [] 
+
+outpout = {}
+
 
 def data_action(data):
-    name.append(data.name)
+
+    outpout[data.name] = data.features.assignments
 
 
 def assignment_action(assignment):
-
-    tester.append(assignment.variable)
-    tester.append('=')
-    tester.append(assignment.expression)
-    tester.append(';')
-
-    # for operand in assignment.expression:
-    #     tester.append(operand)
+    functionvar = []
+    functionvar.append(assignment.variable)
+    functionvar.append('=')
+    functionvar.append(assignment.expression)
+    functionvar.append(';')
+    return functionvar
 
 
 def expression_action(expression):
@@ -63,13 +63,25 @@ def operand_action(operand):
         return operand.op_expr
 
 
-def flatten_nested_list(nested_list):
+def dict_flatten(dict_list: dict):
+    result_dict = {}
+    for key, item in dict_list.items():
+
+        result_dict[key] = flatten_nested_list(item)
+    return result_dict
+
+
+def flatten_nested_list(nested_list, depth=0):
     result = []
     for item in nested_list:
         if isinstance(item, list):  # If the item is a list, recursively flatten it
-            result.append('(')  # Add opening parenthesis
-            result.extend(flatten_nested_list(item))  # Flatten the nested list
-            result.append(')')  # Add closing parenthesis
+            if depth >= 3:  # Add parentheses only if depth is greater than 3
+                result.append('(')  # Add opening parenthesis
+            result.extend(flatten_nested_list(
+                item, depth + 1))  # Increase depth
+            if depth >= 3:  # Add closing parenthesis only if depth is greater than 3
+                result.append(')')
         else:  # If the item is not a list, add it directly
             result.append(item)
+
     return result

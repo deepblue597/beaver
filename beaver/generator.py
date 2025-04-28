@@ -4,7 +4,7 @@ from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
 import textx.scoping.providers as scoping_providers
-from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester , name
+from calc import assignment_action, expression_action, factor_action, flatten_nested_list, operand_action, term_action, tester, name
 
 # %%
 
@@ -24,7 +24,7 @@ def validate_model(grammar_file, model_file):
     try:
         # Load the grammar
         ml_mm = metamodel_from_file(grammar_file)
-        
+
         # Parse the model file
         config = ml_mm.model_from_file(model_file)
 
@@ -48,16 +48,16 @@ if __name__ == "__main__":
     # metamodel.register_scope_providers({"*.*": scoping_providers.FQN()})
     # Validate the model
     config = validate_model('beaver.tx', args.metamodel)
-        # Load the DSL grammar
+    # Load the DSL grammar
     ml_mm = metamodel_from_file('beaver.tx')
-       # Parse the DSL configuration file
+    # Parse the DSL configuration file
     config = ml_mm.model_from_file(args.metamodel)
 
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('python.template')
 
     generated_code = template.render(
-        file =config)
+        file=config)
 
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:
@@ -71,11 +71,8 @@ if __name__ == "__main__":
 
         # Access parsed data if the model is valid
         # print(f"Kafka Broker: {config.kafka.broker}")
-        #print(config.connector.broker)
+        # print(config.connector.broker)
         print(config.preprocessors[0].models)
         print(config.pipeline[0].algorithm.type)
-        #print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
-        # TODO: if it's a Reference, we need the value.value not .value 
-        # if isinstance(config.pipeline[0].data.preprocessors[0].params[1].value , config._tx_model_repository.metamodel['Model']) :
-        #     print("The value is of type Model") 
+        # print(type(config.pipeline[0].data.preprocessors[0].params[1].value.value.name))
         print(config.pipeline[1].name)

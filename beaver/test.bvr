@@ -41,7 +41,7 @@ data testData {
     features { 
         drop_features : [ drop1 , drop2 ]  
         generated_features : { 
-            generated1 = keep1 - 2 * keep2; 
+            generated1 = keep1 - (keep1 + keep2); 
             generated2 = keep * keep;
         }
     }

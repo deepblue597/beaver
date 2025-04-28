@@ -40,21 +40,23 @@ class Pipeline:
             TODO:The multioutput metrics cannot be added to one metric. Need to be separate.
         """
         self.metrics = {
+            'probabilistic': None,
             'classification': None,
             'regression': None,
             'clustering': None, }
-        self.probabilistc = False
         # FIXME:
         for metric in self.metrics_list:
-            if not metric.requires_labels and not self.probabilistc:
-                try:
-                    # Check if model.predict_proba_one() is implemented
-                    model.predict_proba_one()
-                except NotImplementedError:
-                    raise NotImplementedError(
-                        f"{model.__class__.__name__} does not support probabilistic metrics.")
-                self.probabilistc = True
-
+            if not metric.requires_labels:
+                if self.metrics['probabilistic'] is None:
+                    try:
+                        # Check if model.predict_proba_one() is implemented
+                        model.predict_proba_one()
+                    except NotImplementedError:
+                        raise NotImplementedError(
+                            f"{model.__class__.__name__} does not support probabilistic metrics.")
+                    self.metrics['probabilistic'] = metric
+                else:
+                    self.metrics['probabilistic'].__add__(metric)
             elif issubclass(metric, metrics.base.ClassificationMetric):
                 if self.metrics['classification'] is None:
                     self.metrics['classification'] = metric
@@ -88,8 +90,8 @@ class Pipeline:
         """
         """TODO: We need to check if : 
         
-        - [] model is supervised or not 
-        - [] the metrics are multiclass or not 
+        - [X] model is supervised or not 
+        - [X] the metrics are multiclass or not 
         
         """
         if self.model._supervised:
@@ -103,11 +105,32 @@ class Pipeline:
         else:
             self.model.learn_one(X)
 
+        # There are classes that do not support predict_one.
+        # We need to support these classes too
+        """
+        - [] Forecaster -> def forecast(self, horizon: int, xs: list[dict] | None = None)
+        forecast = model.forecast(horizon=horizon)
+        - [X] Anomaly detection -> score_one(x: dict, y: base.typing.Target) 
+        
+        """
         # Predict the class
-        y_predicted = self.model.predict_one(X)
+        try:
+            y_predicted = self.model.predict_one(X)
+        except AttributeError:
+            y_predicted = self.model.score_one(X)
 
-        # Update metrics
-        self.metrics.update(y, y_predicted)
+        # Predict the probabilities
+        if self.metrics['probabilistic'] is not None:
+            y_predicted_proba = self.model.predict_proba_one(X)
+
+        for metric in self.metrics:
+            if self.metrics[metric] is not None:
+
+                if metric == 'probabilistic':
+                    # Update the probabilistic metrics
+                    self.metrics[metric].update(y, y_predicted_proba)
+                else:  # Update the metrics
+                    self.metrics[metric].update(y, y_predicted)
 
         # Store the metrics values
         for metric in self.metrics_list:
@@ -120,6 +143,7 @@ class Pipeline:
         return {
             **X,
             **({'y_true': y} if y is not None else {}),
+            **({'y_predicted_probabilites': y_predicted_proba} if y_predicted_proba is not None else {}),
             'y_predicted': y_predicted,
             'metrics': {metric.__class__.__name__: metric.get() for metric in self.metrics}
 
