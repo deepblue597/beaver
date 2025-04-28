@@ -18,15 +18,15 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    # dataset = datasets.Phishing()
+    dataset = datasets.Phishing()
     # dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
-    gen = synth.Agrawal(classification_function=0, seed=42)
+    # gen = synth.Agrawal(classification_function=0, seed=42)
     # gen = synth.ConceptDriftStream(stream=synth.SEA(seed=42, variant=0),
     #                                drift_stream=synth.SEA(seed=42, variant=1),
     #                                seed=1, position=500, width=50)
-    dataset = iter(gen.take(1000))
+    # dataset = iter(gen.take(1000))
     # dataset = synth.ConceptDriftStream(
     #    seed=42,
     #    position=500,

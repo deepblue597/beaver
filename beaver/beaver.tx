@@ -32,7 +32,7 @@ Data :
     'data' name = ID '{'
 
         'input_topic' ':' input_topic=STRING 
-        features = Features
+        features *= Features
         'preprocessors' ':' '[' preprocessors *= List[','] ']'
         plots *= Plot
     

@@ -205,7 +205,7 @@ input_topic_{{data.name}} = app.topic("{{data.input_topic}}", value_deserializer
 sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
 {%- endfor %}
 
-
+{% if assignments%}
 # Define new features
 {%for key, values in assignments.items() -%}
 {%for assignment in values-%}
@@ -222,7 +222,8 @@ sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
 {%- endif %}
 {%-endfor%}
 {%-endfor%}
-
+{%endif%}
+{%if file.data.features%}
 #Drop Features
 {%for data in file.data%}
 {%-if data.features.drop_features%}
@@ -237,7 +238,7 @@ sdf_{{data.name}}.drop([
 {%- endfor %}
 
 #Keep Features
-{%for data in file.data%}
+{%for data in file.data[0]%}
 {%-if data.features.keep_features%}
 sdf_{{data.name}} = sdf_{{data.name}}[[
     {%- for feature  in data.features.keep_features -%}
@@ -248,7 +249,7 @@ sdf_{{data.name}} = sdf_{{data.name}}[[
 ]]
 {%endif-%}
 {%- endfor %}
-
+{%endif%}
 #Connect composers with preprocessors 
 {%for data in file.data-%}
 preprocessor_{{data.name}} = 
@@ -290,7 +291,7 @@ output_topic_{{pipeline.name}} = app.topic({{pipeline.name}}.output_topic, value
 
 {%for pipeline in file.pipelines -%}
 
-sdf_{{pipeline.name}} = sdf_{{pipeline.data.name}}.apply({{pipeline.name}}.train_and_predict())
+sdf_{{pipeline.name}} = sdf_{{pipeline.data.name}}.apply({{pipeline.name}}.train_and_predict)
 {%-if pipeline.output_topic-%}
 .to_topic(output_topic_{{pipeline.name}})
 {%endif-%}

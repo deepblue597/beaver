@@ -3,6 +3,7 @@ from typing import Union
 import dill
 from matplotlib import pyplot as plt
 from river import metrics
+from typing import List
 
 __all__ = ['Pipeline']
 
@@ -27,7 +28,7 @@ class Pipeline:
 
     """
 
-    def __init__(self, model, metrics_list: list, name: str,  output_topic: str = None):
+    def __init__(self, model, metrics_list: List[metrics.base.Metric], name: str,  output_topic: str = None):
         self.model = model
         self.output_topic = output_topic
         self.name = name
@@ -37,15 +38,15 @@ class Pipeline:
             - Group Metrics by Type:
             - Use separate Metrics containers for classification, regression, and clustering metrics.
             - Some classification metrics need probabilities these will have requires_labels → False     check KNNClassifier.py So 4th container probabilities_classification
-            TODO:The multioutput metrics cannot be added to one metric. Need to be separate.
         """
         self.metrics = {
             'probabilistic': None,
             'classification': None,
             'regression': None,
             'clustering': None, }
-        # FIXME:
-        for metric in self.metrics_list:
+
+        for metric in metrics_list:
+            # print(metric)
             if not metric.requires_labels:
                 if self.metrics['probabilistic'] is None:
                     try:
@@ -56,22 +57,25 @@ class Pipeline:
                             f"{model.__class__.__name__} does not support probabilistic metrics.")
                     self.metrics['probabilistic'] = metric
                 else:
-                    self.metrics['probabilistic'].__add__(metric)
-            elif issubclass(metric, metrics.base.ClassificationMetric):
+                    self.metrics['probabilistic'] += metric
+            elif issubclass(metric.__class__, metrics.base.ClassificationMetric):
+
                 if self.metrics['classification'] is None:
+                    print(metric)
                     self.metrics['classification'] = metric
                 else:
-                    self.metrics['classification'].__add__(metric)
-            elif issubclass(metric, metrics.base.RegressionMetric):
+                    # print(metric)
+                    self.metrics['classification'] += metric
+            elif issubclass(metric.__class__, metrics.base.RegressionMetric):
                 if self.regression_metrics is None:
                     self.regression_metrics = metric
                 else:
-                    self.regression_metrics.__add__(metric)
-            elif issubclass(metric, metrics.base.ClusteringMetric):
+                    self.regression_metrics += metric
+            elif issubclass(metric.__class__, metrics.base.ClusteringMetric):
                 if self.clustering_metrics is None:
                     self.clustering_metrics = metric
                 else:
-                    self.clustering_metrics.__add__(metric)
+                    self.clustering_metrics += metric
             else:
                 raise ValueError(
                     f"Unknown metric type: {metric.__class__.__name__}")
@@ -83,6 +87,7 @@ class Pipeline:
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
 
     def train_and_predict(self, X, y: str = None) -> dict:
+        # TODO: y cannot be taken from the call of the function so we need to have it inside the pipeline.
         """
         Train the model on the input data and make predictions.
         Add the values of metrics into a list and return a dict containing the 
@@ -108,6 +113,7 @@ class Pipeline:
         # There are classes that do not support predict_one.
         # We need to support these classes too
         """
+        FIXME:
         - [] Forecaster -> def forecast(self, horizon: int, xs: list[dict] | None = None)
         forecast = model.forecast(horizon=horizon)
         - [X] Anomaly detection -> score_one(x: dict, y: base.typing.Target) 

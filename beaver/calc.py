@@ -10,7 +10,8 @@ outpout = {}
 
 def data_action(data):
 
-    outpout[data.name] = data.features.assignments
+    if len(data.features) > 0:
+        outpout[data.name] = data.features[0].assignments
 
 
 def assignment_action(assignment):

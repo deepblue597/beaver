@@ -2,8 +2,8 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from quixstreams.kafka import ConnectionConfig 
-from pipeline import * 
+from quixstreams.kafka import ConnectionConfig
+from pipeline import *
 
 from river import preprocessing
 
@@ -17,124 +17,126 @@ from river import drift
 from river import linear_model
 
 
-
-#Define optimizers
+# Define optimizers
 optim1 = optim.AdaDelta()
 
 
-
-#Define preprocessors
+# Define preprocessors
 preproc1 = preprocessing.AdaptiveStandardScaler(
-    lr =1,
-    optim =optim1,
-    param =0.2,
-    test =['model', 'model2'],
-    dict ={"true" : 1,"false" : 0},
-    problem =False,
-    string ="stringgg")
+    lr=1,
+    optim=optim1,
+    param=0.2,
+    test=['model', 'model2'],
+    dict={"true": 1, "false": 0},
+    problem=False,
+    string="stringgg")
 preproc2 = preprocessing.FeatureHasher(
-    n_features =10,
-    seed =42)
+    n_features=10,
+    seed=42)
 
 
-
-#Define composers
+# Define composers
 selectorNum = compose.SelectType(
-    types =(int))
+    types=(int))
 selectorStr = compose.SelectType(
-    types =(str))
+    types=(str))
 
 
-
-#Define metrics
+# Define metrics
 testMetric1 = metrics.AdjustedRand()
 testMetric2 = metrics.CohenKappa()
 
 
-#Define live data algorithms
+# Define live data algorithms
 testAlgo = drift.binary.DDM()
 testAlgo1 = linear_model.ALMAClassifier()
 
 
-#Connection Configuration for quixstreams
-connectionConfig = ConnectionConfig( 
-    
-    broker ="localhost:39092",
-    connection_type ="sasl_plaintext",
-    username ="username",
-    password ="admin_pass")
+# Connection Configuration for quixstreams
+connectionConfig = ConnectionConfig(
 
-#Connection to Kafka 
-app = Application( 
-    broker_address = connectionConfig,
-    consumer_group ="the_test_consumer_group")
+    broker="localhost:39092",
+    connection_type="sasl_plaintext",
+    username="username",
+    password="admin_pass")
 
-#Input topics 
+# Connection to Kafka
+app = Application(
+    broker_address=connectionConfig,
+    consumer_group="the_test_consumer_group")
+
+# Input topics
 
 input_topic_testData = app.topic("test_input_topic", value_deserializer="json")
-input_topic_testData2 = app.topic("test_input_topic", value_deserializer="json")
+input_topic_testData2 = app.topic(
+    "test_input_topic", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
 sdf_testData = app.dataframe(topic=input_topic_testData)
 sdf_testData2 = app.dataframe(topic=input_topic_testData2)
 
-#FIXME: The below code creates new features in a generic sdf which we might not want 
-# See how to fix that 
+
 # Define new features
-sdf_testData["generated1"]=sdf_testData["keep1"]-((sdf_testData["keep1"])+(sdf_testData["keep2"]))
-sdf_testData["generated2"]=sdf_testData["keep"]*sdf_testData["keep"]
-sdf_testData2["generated12"]=sdf_testData2["keep1"]-2*sdf_testData2["keep2"]
-sdf_testData2["generated22"]=sdf_testData2["keep"]*sdf_testData2["keep"]
+sdf_testData["generated1"] = sdf_testData["keep1"] - \
+    ((sdf_testData["keep1"])+(sdf_testData["keep2"]))
+sdf_testData["generated2"] = sdf_testData["keep"]*sdf_testData["keep"]
+sdf_testData2["generated12"] = sdf_testData2["keep1"]-2*sdf_testData2["keep2"]
+sdf_testData2["generated22"] = sdf_testData2["keep"]*sdf_testData2["keep"]
 
 
-#Drop Features
+# Drop Features
 
-sdf_testData.drop(["drop1","drop2"])
-
-
-#Keep Features
-
-sdf_testData2 = sdf_testData2[["keep1","keep2"]]
+sdf_testData.drop(["drop1", "drop2"])
 
 
-#Connect composers with preprocessors 
-preprocessor_testData =preproc1|preproc2
-preprocessor_testData2 =selectorNum|preproc1+preproc2
+# Keep Features
+
+sdf_testData2 = sdf_testData2[["keep1", "keep2"]]
 
 
-#Pipeline definition 
+# Connect composers with preprocessors
+preprocessor_testData = preproc1 | preproc2
+preprocessor_testData2 = selectorNum | preproc1+preproc2
+
+
+# Pipeline definition
 
 testPipeline_pipeline = preprocessor_testData | testAlgo
 
-testPipeline_metrics = [testMetric1,testMetric2]
-testPipeline = Pipeline(model = testPipeline_pipeline , metrics_list = testPipeline_metrics , name = "testPipeline",output_topic="tester_topic")
+testPipeline_metrics = [testMetric1, testMetric2]
+testPipeline = Pipeline(model=testPipeline_pipeline, metrics_list=testPipeline_metrics,
+                        name="testPipeline", output_topic="tester_topic")
 
 testPipeline1_pipeline = preprocessor_testData2 | testAlgo1
 
-testPipeline1_metrics = [testMetric1,testMetric2]
-testPipeline1 = Pipeline(model = testPipeline1_pipeline , metrics_list = testPipeline1_metrics , name = "testPipeline1",output_topic="tester_topic")
+testPipeline1_metrics = [testMetric1, testMetric2]
+testPipeline1 = Pipeline(model=testPipeline1_pipeline, metrics_list=testPipeline1_metrics,
+                         name="testPipeline1", output_topic="tester_topic")
 
 # Output topics initialization
 
-output_topic_testPipeline = app.topic(testPipeline.output_topic, value_deserializer="json")
+output_topic_testPipeline = app.topic(
+    testPipeline.output_topic, value_deserializer="json")
 
-output_topic_testPipeline1 = app.topic(testPipeline1.output_topic, value_deserializer="json")
-
-
-#Sdf for each pipeline 
-#Train and predict method calls for each pipeline
-#If the pipeline has an output topic then we call it 
-
-sdf_testPipeline = sdf_testData.apply(testPipeline.train_and_predict()).to_topic(output_topic_testPipeline)
-sdf_testPipeline1 = sdf_testData2.apply(testPipeline1.train_and_predict()).to_topic(output_topic_testPipeline1)
+output_topic_testPipeline1 = app.topic(
+    testPipeline1.output_topic, value_deserializer="json")
 
 
-# Run Quix Streams 
+# Sdf for each pipeline
+# Train and predict method calls for each pipeline
+# If the pipeline has an output topic then we call it
+
+sdf_testPipeline = sdf_testData.apply(
+    testPipeline.train_and_predict()).to_topic(output_topic_testPipeline)
+sdf_testPipeline1 = sdf_testData2.apply(
+    testPipeline1.train_and_predict()).to_topic(output_topic_testPipeline1)
+
+
+# Run Quix Streams
 app.run()
 
-#Metric plots for each Pipeline
+# Metric plots for each Pipeline
 testPipeline.metrics_plot()
 
 testPipeline1.metrics_plot()
-
