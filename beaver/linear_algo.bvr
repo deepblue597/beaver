@@ -31,6 +31,9 @@ connector {
 data phising { 
 
     input_topic : 'Phishing'
+    features {
+        target_feature : class
+    }
     preprocessors : [[standardScaler]]
 }
 

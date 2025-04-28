@@ -28,7 +28,8 @@ class Pipeline:
 
     """
 
-    def __init__(self, model, metrics_list: List[metrics.base.Metric], name: str,  output_topic: str = None):
+    def __init__(self, model, metrics_list: List[metrics.base.Metric], name: str, y: str = None, output_topic: str = None):
+        self.y = y
         self.model = model
         self.output_topic = output_topic
         self.name = name
@@ -86,8 +87,7 @@ class Pipeline:
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
 
-    def train_and_predict(self, X, y: str = None) -> dict:
-        # TODO: y cannot be taken from the call of the function so we need to have it inside the pipeline.
+    def train_and_predict(self, X) -> dict:
         """
         Train the model on the input data and make predictions.
         Add the values of metrics into a list and return a dict containing the 
@@ -99,10 +99,12 @@ class Pipeline:
         - [X] the metrics are multiclass or not 
         
         """
+        y = None
+        y_predicted_proba = None
         if self.model._supervised:
             # If the model is supervised, we need to separate the features and the target variable
-            y = X[y]
-            X = {key: value for key, value in X.items() if key != y}
+            y = X[self.y]
+            X = {key: value for key, value in X.items() if key != self.y}
 
         # Train the model
         if self.model._supervised:
@@ -145,13 +147,13 @@ class Pipeline:
         # Save the model to a file
         with open(f'{self.name}.pkl', 'wb') as model_file:
             dill.dump(self.model, model_file)
-
+        # print('hi')
         return {
             **X,
             **({'y_true': y} if y is not None else {}),
             **({'y_predicted_probabilites': y_predicted_proba} if y_predicted_proba is not None else {}),
             'y_predicted': y_predicted,
-            'metrics': {metric.__class__.__name__: metric.get() for metric in self.metrics}
+            "metrics": {key: values[-1] for key, values in self.metrics_values.items()}
 
         }
 
