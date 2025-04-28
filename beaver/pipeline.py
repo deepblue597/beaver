@@ -23,6 +23,8 @@ class Pipeline:
         A list of metrics to evaluate the model's performance.
     name : str
         The name of the pipeline.
+    y : str, optional 
+        The target y value
     output_topic : str, optional
         The Kafka topic to which the output will be sent. Default is None.
 
@@ -147,7 +149,7 @@ class Pipeline:
         # Save the model to a file
         with open(f'{self.name}.pkl', 'wb') as model_file:
             dill.dump(self.model, model_file)
-        # print('hi')
+
         return {
             **X,
             **({'y_true': y} if y is not None else {}),

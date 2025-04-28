@@ -26,7 +26,7 @@
 
 ## :memo: Description
 
-Penguin is a DSL language designed for machine learning in live data. It is designed to make the process of retrieving, storing, filtering data as well as training models easy and accessible to everybody.
+Beaver is a DSL language designed for machine learning in live data. It is designed to make the process of retrieving, storing, filtering data as well as training models easy and accessible to everybody.
 
 ## Prerequisites
 
@@ -60,78 +60,95 @@ Penguin is a DSL language designed for machine learning in live data. It is desi
 
 To create your first pipeline we will start with a classification example which can be found in `classification.peng`
 
-```plaintext
-pipeline MyPipeline {
-    kafka {
-        broker: "localhost:39092"
-        input_topic: "wikipedia-events"
-        output_topic: "filtered-wikipedia-events"
-        consumer_group: "wikipedia-model"
-    }
-    model {
-        preprocessing : {
-
-            preprocesor {
-                name : OneHotEncoder
-                feature_type : str
-            }
-
-            preprocesor {
-                name : StandardScaler
-                feature_type : int
-            }
-        }
-        type : linear_model
-        name: LogisticRegression
-
-        optimizer {
-
-        name : Adam
-
-        }
-    }
-
-    features {
-
-        generated_features: {
+```yaml
 
 
-            len_diff = new_length - old_length;
-        }
+pipeline linear_algorithm {
 
-    }
-
-
-
-    metrics : {
-        MAE
-        MSE
-    }
-
-    target : {
-        name: "user_type"
-        mapping {
-            bot: 1
-            human: 0
-        }
-    }
-
-    plot: {
-        type: heatmap
-    }
+    output_topic : 'ALMAClassifierBVR'
+    data : phising
+    algorithm : alma
+    metrics : [accuracy]
 }
+
+
+
+connector {
+
+    connection_params {
+
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params {
+
+        consumer_group = 'test_consoumers'
+
+    }
+
+}
+
+data phising {
+
+    input_topic : 'Phishing'
+    features {
+        target_feature : class
+    }
+    preprocessors : [[standardScaler]]
+}
+
+
+preprocessors {
+
+        model standardScaler {
+
+            type : preprocessing
+            name : StandardScaler
+
+        }
+
+}
+
+
+algorithms {
+
+    model alma {
+
+            type : linear_model
+            name : ALMAClassifier
+        }
+
+
+}
+
+
+
+
+metrics {
+
+    model accuracy {
+
+            type : metrics
+            name : Accuracy
+        }
+
+}
+
 ```
 
-To run this code, save it as `<name>.peng`, go to the penguin folder by typing:
+To run this code, save it as `<name>.bvr`, go to the beaver folder by typing:
 
 ```bash
-cd penguin
+cd beaver
 ```
 
 and then type in your terminal:
 
 ```bash
-python3 generator.py --metamodel <name>.peng --generated_file_name <pipeline>.py
+python3 generator.py --metamodel <name>.bvr --generated_file_name <pipeline>.py
 ```
 
 This will create your pipeline at `<pipeline>.py`. Then you can type:
@@ -175,161 +192,331 @@ model preproc1 {
 }
 ```
 
-### Kafka
+### Param
 
-The `Kafka` component specifies the Kafka configuration for the pipeline.
+Are the parameters of the models
 
-```plaintext
-kafka {
-    broker: "<broker>"
-    input_topic: "<input_topic>"
-    output_topic: "<output_topic>"
-    consumer_group: "<consumer_group>"
-}
-```
+can be numbers, strings, dicts, lists and even references to models
 
-### Model
+We have 2 parameters
 
-The `Model` component defines the machine learning model used in the pipeline. It can optionally include an ensemble configuration and preprocessing steps.
+- name : the name of the variable
+- value : the value of
 
-```plaintext
-model {
-    ensemble: {
-        algorithm: <algorithm>
-        number_of_models: <num>
-        seed: <seed>
-    }?
-    multiclass: {
-        name: <name>
-        params: {
-            <param_name> = <param_value>
-        }?
-        coding_method: <coding_method>?
-    }?
-    preprocessing: {
-        preprocesor {
-            name: <name>
-            feature_for_process: <process_feature>?
-            feature_type: <feature_type>?
-            params: {
-                <param_name> = <param_value>
-            }?
-        }+
-    }?
-    type: <type>
-    name: <name>
-    probabilistic: <proba>?
-    params: {
-        <param_name> = <param_value>
-    }?
-    optimizer: {
-        name: <name>
-        params: {
-            <param_name> = <param_value>
-        }?
-    }?
-}
-```
+To be able to cover all types of parameters we have created the ParamValue component. inside it there are Models for dicts & lists and references.
 
-### Features
+Note: In ParamValue there is the Reference component which has been created exclusively to be able to Reference other Models. I tried to omit the Reference Model and include it directly in ParamValue but it throws an error. I'll look into it more to see if I can fix it.
 
-The `Feature` component specifies the raw and generated features used in the model.
+Example of the Params component is shown in the example above
 
-```plaintext
-features {
-    raw_features: {
-        <feature1> <feature2> ...
+The component Model uses 4 pieces of language that the user will write
+
+- preprocessors
+- algorithms
+- optimizers
+- metrics
+
+Why I separated them like this
+
+1. seperation of concerns : The user can define as many models processors optimizers algorithms algorithms etc as he wants. To be able to separate them better and to know where each model is defined I put them in separate components. This will also help in the final stage of defining the pipelines
+2. It is similar to the components that make up a data pipeline. we have models for preprocessing for the algorithms, optimizers and metrics.
+
+### data
+
+Contains all the information for defining and processing the data
+
+parameters
+
+- name → id of the component
+- input topic → where to get the data from
+- features → the data elements divided into
+  - drop_features → the ones we won't need so we filter them out
+  - generated_featrures → elements generated from already existing elements. these are Assigment components which I summarize below.
+  - keep features → if we want to define the elements we want to keep.
+  - target feature → the y
+- preprocessors → ID of the preprocessors we want to use in the data. **Caution**! here we do not define the preprocessors but only their ID for reference.
+
+Example:
+
+```yaml
+data testData {
+
+    input_topic : 'test_input_topic'
+
+    features {
+        drop_features : [ drop1 , drop2 ]
+        generated_features : {
+            generated1 = keep1 - 2 * keep2;
+            generated2 = keep * keep;
+        }
     }
-    generated_features: {
-        <assignment1>
-        <assignment2>
-        ...
-    }?
+
+    preprocessors : [ preproc1 , preproc2 ]
+}
+
+```
+
+### Assignments
+
+the component for defining functions for features; consists of other components that define variables, operations and the hierarchy in which the translator must translate them.
+
+Example assignment definition is shown in the above example in the generated features.
+
+### Connector
+
+connector is the component that connects the database to our application
+
+It is divided into 2 parts
+
+- connection_params → the parameters for the connection (broker , connection_type , username , password etc )
+- kafka_params → the parameters of kafka ( e.g consumer_group )
+
+example
+
+```yaml
+connector {
+
+connection_params {
+
+broker = "localhost:39092",
+connection_type = "sasl_plaintext",
+username = "username",
+password = "admin_pass"
+
+}
+
+kafka_params {
+
+consumer_group = 'the_test_consumer_group'
+
+}
+
 }
 ```
 
-### Metrics
+### Pipeline
 
-The `Metric` component specifies the metrics used to evaluate the model.
+It is the overall pipeline that will be used to retrieve and process the data, learn the algorithm and the metrics to be used.
 
-```plaintext
-metrics: {
-    <metric1> <metric2> ...
+It consists of the following parameters
+
+- name → id of the component
+- output_topic → optional for where the data will be sent
+- data → reference to the data component we have defined
+- algorithm → reference to the algorithm component we have defined
+- metric → reference to 1 or more metric components that we have defined
+
+example
+
+```yaml
+pipeline testPipeline1 {
+
+    output_topic : 'tester_topic'
+    data : testData
+    algorithm : testAlgo
+    metrics : [testMetric1 , testMetric2]
 }
 ```
 
-### Metrics
+The definition of components in the .bvr file follows the following order
 
-The Metric component specifies the metrics used to evaluate the model.
+```yaml
+File :
 
+    pipeline += Pipeline
+    connector = Connector
+    data += Data
+    preprocessors *= Preprocessors
+    algorithms = Algorithms
+    optimizers *= Optimizers
+    metrics = Metrics
+
+;
 ```
-metrics: {
-    <metric1> <metric2> ...
+
+Complete example of a `.bvr` file
+
+```yaml
+
+
+pipeline testPipeline {
+
+    output_topic : 'tester_topic'
+    data : testData
+    algorithm : testAlgo
+    metrics : [testMetric1 , testMetric2]
 }
-```
 
-### Optimizer
+pipeline testPipeline1 {
 
-The Optimizer component specifies the optimizer used for training the model.
-
-```
-optimizer: {
-    name: <name>
-    params: {
-        <param_name> = <param_value>
-    }?
+    output_topic : 'tester_topic'
+    data : testData
+    algorithm : testAlgo
+    metrics : [testMetric1 , testMetric2]
 }
-```
 
-### Ensemble
+connector {
 
-The Ensemble component specifies the configuration for an ensemble model.
+    connection_params {
 
-```
-ensemble: {
-    algorithm: <algorithm>
-    number_of_models: <num>
-    seed: <seed>
+        broker = "localhost:39092",
+        connection_type = "sasl_plaintext",
+        username = "username",
+        password = "admin_pass"
+
+    }
+
+    kafka_params {
+
+        consumer_group = 'the_test_consumer_group'
+
+    }
+
 }
-```
 
-### Multiclass
+data testData {
 
-The Multiclass component specifies the configuration for a multiclass classification model.
+    input_topic : 'test_input_topic'
+    features {
+        drop_features : [ drop1 , drop2 ]
+        generated_features : {
+            generated1 = keep1 - 2 * keep2;
+            generated2 = keep * keep;
+        }
+    }
 
-```
-multiclass: {
-    name: <name>
-    params: {
-        <param_name> = <param_value>
-    }?
-    coding_method: <coding_method>?
+    preprocessors : [ preproc1 , preproc2 ]
 }
-```
 
-### Target
+data testData2 {
 
-The `Target` component defines the target variable for the model and optionally includes mappings.
+    input_topic : 'test_input_topic'
+    features {
+        drop_features : [ drop1 , drop2 ]
+        generated_features : {
+            generated12 = keep1 - 2 * keep2;
+            generated22 = keep * keep;
+        }
+    }
 
-```plaintext
-target {
-    name: "<name>"
-    mapping {
-        <key>: <value>
-    }?
+    preprocessors : [ preproc1 , preproc2 ]
 }
-```
 
-### Plot
 
-The `Plot` component specifies the plot configuration for visualizing the results.
+preprocessors {
 
-```plaintext
-plot: {
-    type: <type>
-    x: "<x_axis>"
+        model preproc1 {
+
+            type : preprocessing
+            name : AdaptiveStandardScaler
+            params : {
+                lr = 1,
+                optim = optim1,
+                param = 0.2,
+                test = ["model" , "model2"],
+                dict = { "true" : 1  , 'false' : 0},
+                problem = false,
+                string = "stringgg"
+            }
+        }
+
+        model preproc2 {
+
+            type : preprocessing
+            name : FeatureHasher
+            params : {
+                n_features=10,
+                seed=42
+            }
+        }
 }
+
+
+algorithms {
+
+    model testAlgo {
+
+            type : drift
+            subtype : binary
+            name : DDM
+        }
+
+    model testAlgo1 {
+
+            type : linear_model
+            name : ALMAClassifier
+        }
+
+
+}
+
+
+optimizers {
+
+    model optim1 {
+
+            type : optim
+            name : AdaDelta
+        }
+
+
+
+
+}
+
+
+
+metrics {
+
+    model testMetric1 {
+
+            type : metrics
+            name : AdjustedRand
+        }
+
+    model testMetric2 {
+
+            type : metrics
+            name : CohenKappa
+
+        }
+
+
+}
+
 ```
+
+## Pipeline class
+
+During the development of the pipeline it became obvious that we will need a pipeline class which will contain all the metrics, the output topic, the y and our model.
+
+so the `Pipeline` class was created
+
+### **\_\_init\_\_**()
+
+In the init function we have the definition of the class parameters and the separation of the metrics.
+
+Why do we separate the metrics ?
+
+When the user adds metrics to the pipeline it does not separate them based on an attribute. In river 'but not all metrics can be put into a Wrapper class as they are not all compatible with each other. To make it easier for the user (and for extensibility reasons) we separate the metrics within the pipeline class. They are stored in a dict and separated into 4 keys
+
+- probabilistic → handle the predict_proba_one function; here we also do a check if the model supports this function. If not it will throw an error saying that the model does not support this metric
+- classifiaction
+- regression
+- clustering
+
+if it is not in one of these families it will throw an error (in case some metric types are overlooked we can add them later)
+
+### train_and_predict(X)
+
+here it becomes
+
+- the learning of the hologram
+- the predictions of
+- updating the metrics
+- returning the dict we want to send to the output topic (if there is one)
+
+We first check if the model is supervised. If so we need to extract the y from the json file that
 
 ## :droplet: River support
 
@@ -382,12 +569,6 @@ A table of the supported functionalities the DSL has for River
 ⬜ : Not supported yet \
 ❌ : Will not get support
 
-\*PARegressor is not yet supported \
-\*\* Some metrics are not compatible with the plots and the kafka configuration \
-\*\*\* Averager not supported \
-\*4 iSOUPTreeRegressor partial support (leaf_model)
-\*5 Only support KMeans ( others don't support metrics )
-
 ## :computer: Usage
 
 The `examples` folder contains several projects that demonstrate how to use the Penguin DSL for different machine learning tasks. Below is a brief description of each project:
@@ -429,6 +610,7 @@ The House Prices project demonstrates how to use the Penguin DSL for predicting 
 - River
 - Docker
 - Text-X
+- Jinja
 
 ## :eyes: Visual Representation
 
