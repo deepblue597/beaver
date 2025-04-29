@@ -18,8 +18,8 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    dataset = datasets.Phishing()
-    # dataset = datasets.TrumpApproval()
+    # dataset = datasets.Phishing()
+    dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
     # gen = synth.Agrawal(classification_function=0, seed=42)
@@ -49,8 +49,10 @@ if __name__ == "__main__":
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
-    # df = pd.read_csv(dataset.path)
-    df = pd.DataFrame(dataset)
+    # Trump approval
+    df = pd.read_csv(dataset.path)
+    #
+    # df = pd.DataFrame(dataset)
 # %%
     df
 # %%
@@ -59,11 +61,11 @@ if __name__ == "__main__":
 
     for idx, row in df.iterrows():
 
-        sample_dict = {**row[0], 'class': row[1]}
+        # sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
 
-        # json_message = row.to_json()
-        json_message = json.dumps(sample_dict)
+        json_message = row.to_json()
+        # json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

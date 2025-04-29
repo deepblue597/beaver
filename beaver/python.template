@@ -19,9 +19,13 @@ from river import optim
 
 from river import metrics
 
-{%for model in file.algorithms.models-%}
+{% set unique_modules = [] %}
+{% for model in file.algorithms.models -%}
+{% if model.type not in unique_modules -%}
+{% set _ = unique_modules.append(model.type)  -%}
 from river import {{model.type}}
-{%endfor%}
+{% endif -%}
+{% endfor %}
 
 
 {%if file.optimizers -%}

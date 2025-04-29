@@ -50,7 +50,7 @@ class Pipeline:
 
         for metric in metrics_list:
             # print(metric)
-            if not metric.requires_labels:
+            if hasattr(metric, "requires_labels") and not metric.requires_labels:
                 if self.metrics['probabilistic'] is None:
                     try:
                         # Check if model.predict_proba_one() is implemented
@@ -70,15 +70,15 @@ class Pipeline:
                     # print(metric)
                     self.metrics['classification'] += metric
             elif issubclass(metric.__class__, metrics.base.RegressionMetric):
-                if self.regression_metrics is None:
-                    self.regression_metrics = metric
+                if self.metrics['regression'] is None:
+                    self.metrics['regression'] = metric
                 else:
-                    self.regression_metrics += metric
+                    self.metrics['regression'] += metric
             elif issubclass(metric.__class__, metrics.base.ClusteringMetric):
-                if self.clustering_metrics is None:
-                    self.clustering_metrics = metric
+                if self.metrics['clustering'] is None:
+                    self.metrics['clustering'] = metric
                 else:
-                    self.clustering_metrics += metric
+                    self.metrics['clustering'] += metric
             else:
                 raise ValueError(
                     f"Unknown metric type: {metric.__class__.__name__}")
@@ -149,7 +149,7 @@ class Pipeline:
         # Save the model to a file
         with open(f'{self.name}.pkl', 'wb') as model_file:
             dill.dump(self.model, model_file)
-
+        # print('hi')
         return {
             **X,
             **({'y_true': y} if y is not None else {}),
@@ -165,5 +165,6 @@ class Pipeline:
         """
         for metric_name, values in self.metrics_values.items():
             plt.plot(values, label=metric_name)
+            plt.title(f"{self.name} - {metric_name}")
         plt.legend()
         plt.show()
