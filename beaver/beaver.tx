@@ -33,7 +33,7 @@ Data :
 
         'input_topic' ':' input_topic=STRING 
         features *= Features
-        'preprocessors' ':' '[' preprocessors *= List[','] ']'
+        ('preprocessors' ':' '[' preprocessors += List[','] ']')?
         plots *= Plot
     
     '}'

@@ -1,0 +1,152 @@
+
+
+pipeline AMFClassifierPipe { 
+
+    output_topic : 'AMFClassifierBVR' 
+    data : bananas
+    algorithm : AMFClassifier 
+    metrics : [accuracy] 
+}
+
+pipeline AMFRegressorPipel { 
+
+    output_topic : 'AMFRegressorBVR' 
+    data : trumpApproval
+    algorithm : AMFRegressor 
+    metrics : [mae] 
+}
+
+
+
+connector {
+
+    connection_params { 
+        
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'forestts',
+        auto_offset_reset="earliest"
+    
+    }
+
+}
+
+data bananas { 
+
+    input_topic : 'Bananas'
+    features {
+        target_feature : class
+    }
+    
+    
+}
+
+data trumpApproval { 
+
+    input_topic : 'TrumpApproval'
+    features {
+        target_feature : five_thirty_eight
+    }
+    
+}
+
+
+preprocessors { 
+
+        model standardScaler {
+
+            type : preprocessing
+            name : StandardScaler
+
+        }
+
+}
+
+
+algorithms { 
+
+    model AMFClassifier {
+
+            type : forest
+            name : AMFClassifier
+            params :  { 
+                n_estimators=10,
+                use_aggregation=True,
+                dirichlet=0.5,
+                seed=1
+            }
+        }
+
+    model AMFRegressor {
+
+            type : forest
+            name : AMFRegressor
+            params : { 
+                seed=42
+            }
+        }
+
+    model ARFClassifier { 
+        type : forest
+        name : ARFClassifier
+        params : { 
+            seed=8, 
+            leaf_prediction="mc"
+        }
+
+    }
+
+    model ARFRegressor { 
+        type : forest
+        name : ARFRegressor
+        params : { 
+            seed=42
+        }
+    }
+
+    model OXTRegressor { 
+        type : forest
+        name : OXTRegressor
+        params : { 
+            n_models=3, 
+            seed=42
+        }
+    }
+
+}
+
+ 
+metrics { 
+
+    model accuracy {
+
+            type : metrics
+            name : Accuracy
+        }
+
+    model mae { 
+        type : metrics
+        name : MAE
+    }
+
+    model rmse { 
+        type : metrics
+        name : RMSE
+    }
+
+}
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+

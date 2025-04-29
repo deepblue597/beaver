@@ -1,7 +1,7 @@
-# :penguin: Penguin
+# 🦫 Beaver
 
 <p align="center">
-  <img src="logos/pinguin_logo_2.png" />
+  <img src="logos/beaver.png" width="200" />
 </p>
 
 ## Table of Contents
@@ -528,35 +528,35 @@ A table of the supported functionalities the DSL has for River
 | Feature            | Supported? |
 | ------------------ | ---------- |
 | active             | ⬜         |
-| anomaly            | 🚧         |
+| anomaly            | ⬜         |
 | bandit             | ⬜         |
 | base               | ⬜         |
-| cluster            | 🚧\*5      |
-| compat             | ❌         |
-| compose            | 🚧         |
+| cluster            | ⬜         |
+| compat             | ⬜         |
+| compose            | ⬜         |
 | conf               | ⬜         |
 | covariance         | ⬜         |
-| datasets           | ✅         |
+| datasets           | ⬜         |
 | drift              | ⬜         |
-| dummy              | ✅         |
-| ensemble           | 🚧         |
+| dummy              | ⬜         |
+| ensemble           | ⬜         |
 | evaluate           | ⬜         |
 | facto              | ⬜         |
 | feature_extraction | ⬜         |
 | feature_selection  | ⬜         |
-| forest             | ✅         |
+| forest             | ⬜         |
 | imblearn           | ⬜         |
-| linear_model       | ✅\*       |
-| metrics            | 🚧\*\*     |
+| linear_model       | ✅         |
+| metrics            | ⬜         |
 | misc               | ⬜         |
 | model_selection    | ⬜         |
-| multiclass         | ✅         |
+| multiclass         | ⬜         |
 | multioutput        | ⬜         |
 | naive_bayes        | ⬜         |
-| neighbors          | 🚧         |
+| neighbors          | ⬜         |
 | neural_net         | ⬜         |
-| optim              | ✅\*\*\*   |
-| preprocessing      | 🚧         |
+| optim              | ⬜         |
+| preprocessing      | ⬜         |
 | proba              | ⬜         |
 | reco               | ⬜         |
 | rules              | ⬜         |
@@ -564,7 +564,7 @@ A table of the supported functionalities the DSL has for River
 | stats              | ⬜         |
 | stream             | ⬜         |
 | time_series        | ⬜         |
-| tree               | ✅ \*4     |
+| tree               | ⬜         |
 | utils              | ⬜         |
 
 ✅ : Full support \

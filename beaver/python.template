@@ -256,6 +256,7 @@ sdf_{{data.name}} = sdf_{{data.name}}[[
 {%endif%}
 #Connect composers with preprocessors 
 {%for data in file.data-%}
+{%if data.preprocessors%}
 preprocessor_{{data.name}} = 
 {%-for preprocessors in data.preprocessors-%}
 {%-for model in preprocessors.items-%}
@@ -263,13 +264,14 @@ preprocessor_{{data.name}} =
 {%-endfor%}
 {%- if not loop.last %}+{%- endif -%}
 {%-endfor%}
+{%endif%}
 {%endfor%}
 
 #Pipeline definition 
 
 {%for pipeline in file.pipelines -%}
 
-{{pipeline.name}}_pipeline = preprocessor_{{pipeline.data.name}} | {{pipeline.algorithm.name}}
+{{pipeline.name}}_pipeline = {%-if pipeline.data.preprocessors%} preprocessor_{{pipeline.data.name}} | {%- endif -%}{{pipeline.algorithm.name}}
 
 {{pipeline.name}}_metrics = [
     {%-for metric in pipeline.metrics-%}

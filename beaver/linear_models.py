@@ -2,11 +2,10 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from quixstreams.kafka import ConnectionConfig 
-from pipeline import * 
+from quixstreams.kafka import ConnectionConfig
+from pipeline import *
 
 from river import preprocessing
-
 
 
 from river import optim
@@ -17,51 +16,46 @@ from river import metrics
 from river import linear_model
 
 
-
-#Define optimizers
+# Define optimizers
 SGD = optim.SGD(
-    lr =0.1)
+    lr=0.1)
 
 
-
-#Define preprocessors
+# Define preprocessors
 standardScaler = preprocessing.StandardScaler()
 
 
-
-
-
-
-#Define metrics
+# Define metrics
 accuracy = metrics.Accuracy()
 mae = metrics.MAE()
 
 
-#Define live data algorithms
+# Define live data algorithms
 log_reg = linear_model.LogisticRegression(
-    optimizer =SGD)
+    optimizer=SGD)
 alma = linear_model.ALMAClassifier()
 bayesian = linear_model.BayesianLinearRegression()
 linearReg = linear_model.LinearRegression(
-    intercept_lr =0.1)
+    intercept_lr=0.1)
 
 
-#Connection Configuration for quixstreams
-connectionConfig = ConnectionConfig( 
-    
-    bootstrap_servers ="localhost:39092",
-    security_protocol ="plaintext")
+# Connection Configuration for quixstreams
+connectionConfig = ConnectionConfig(
 
-#Connection to Kafka 
-app = Application( 
-    broker_address = connectionConfig,
-    consumer_group ="linear_models",
-    auto_offset_reset ="earliest")
+    bootstrap_servers="localhost:39092",
+    security_protocol="plaintext")
 
-#Input topics 
+# Connection to Kafka
+app = Application(
+    broker_address=connectionConfig,
+    consumer_group="linear_modelss",
+    auto_offset_reset="earliest")
+
+# Input topics
 
 input_topic_phishing = app.topic("Phishing", value_deserializer="json")
-input_topic_trumpApproval = app.topic("TrumpApproval", value_deserializer="json")
+input_topic_trumpApproval = app.topic(
+    "TrumpApproval", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
@@ -72,59 +66,70 @@ sdf_trumpApproval = app.dataframe(topic=input_topic_trumpApproval)
 # Define new features
 
 
+# Connect composers with preprocessors
+preprocessor_phishing = standardScaler
+preprocessor_trumpApproval = standardScaler
 
-#Connect composers with preprocessors 
-preprocessor_phishing =standardScaler
-preprocessor_trumpApproval =standardScaler
 
-
-#Pipeline definition 
+# Pipeline definition
 
 LogisticRegression_pipeline = preprocessor_phishing | log_reg
 
 LogisticRegression_metrics = [accuracy]
-LogisticRegression = Pipeline(model = LogisticRegression_pipeline , metrics_list = LogisticRegression_metrics , name = "LogisticRegression",y="class",output_topic="LogisticRegressionBVR")
+LogisticRegression = Pipeline(model=LogisticRegression_pipeline, metrics_list=LogisticRegression_metrics,
+                              name="LogisticRegression", y="class", output_topic="LogisticRegressionBVR")
 
 ALMAClassifier_pipeline = preprocessor_phishing | alma
 
 ALMAClassifier_metrics = [accuracy]
-ALMAClassifier = Pipeline(model = ALMAClassifier_pipeline , metrics_list = ALMAClassifier_metrics , name = "ALMAClassifier",y="class",output_topic="ALMAClassifierBVR")
+ALMAClassifier = Pipeline(model=ALMAClassifier_pipeline, metrics_list=ALMAClassifier_metrics,
+                          name="ALMAClassifier", y="class", output_topic="ALMAClassifierBVR")
 
 BayesianLinearReg_pipeline = preprocessor_trumpApproval | bayesian
 
 BayesianLinearReg_metrics = [mae]
-BayesianLinearReg = Pipeline(model = BayesianLinearReg_pipeline , metrics_list = BayesianLinearReg_metrics , name = "BayesianLinearReg",y="five_thirty_eight",output_topic="BayesianLinearRegBVR")
+BayesianLinearReg = Pipeline(model=BayesianLinearReg_pipeline, metrics_list=BayesianLinearReg_metrics,
+                             name="BayesianLinearReg", y="five_thirty_eight", output_topic="BayesianLinearRegBVR")
 
 linearRegPipe_pipeline = preprocessor_trumpApproval | linearReg
 
 linearRegPipe_metrics = [mae]
-linearRegPipe = Pipeline(model = linearRegPipe_pipeline , metrics_list = linearRegPipe_metrics , name = "linearRegPipe",y="five_thirty_eight",output_topic="linearRegBVR")
+linearRegPipe = Pipeline(model=linearRegPipe_pipeline, metrics_list=linearRegPipe_metrics,
+                         name="linearRegPipe", y="five_thirty_eight", output_topic="linearRegBVR")
 
 # Output topics initialization
 
-output_topic_LogisticRegression = app.topic(LogisticRegression.output_topic, value_deserializer="json")
+output_topic_LogisticRegression = app.topic(
+    LogisticRegression.output_topic, value_deserializer="json")
 
-output_topic_ALMAClassifier = app.topic(ALMAClassifier.output_topic, value_deserializer="json")
+output_topic_ALMAClassifier = app.topic(
+    ALMAClassifier.output_topic, value_deserializer="json")
 
-output_topic_BayesianLinearReg = app.topic(BayesianLinearReg.output_topic, value_deserializer="json")
+output_topic_BayesianLinearReg = app.topic(
+    BayesianLinearReg.output_topic, value_deserializer="json")
 
-output_topic_linearRegPipe = app.topic(linearRegPipe.output_topic, value_deserializer="json")
-
-
-#Sdf for each pipeline 
-#Train and predict method calls for each pipeline
-#If the pipeline has an output topic then we call it 
-
-sdf_LogisticRegression = sdf_phishing.apply(LogisticRegression.train_and_predict).to_topic(output_topic_LogisticRegression)
-sdf_ALMAClassifier = sdf_phishing.apply(ALMAClassifier.train_and_predict).to_topic(output_topic_ALMAClassifier)
-sdf_BayesianLinearReg = sdf_trumpApproval.apply(BayesianLinearReg.train_and_predict).to_topic(output_topic_BayesianLinearReg)
-sdf_linearRegPipe = sdf_trumpApproval.apply(linearRegPipe.train_and_predict).to_topic(output_topic_linearRegPipe)
+output_topic_linearRegPipe = app.topic(
+    linearRegPipe.output_topic, value_deserializer="json")
 
 
-# Run Quix Streams 
+# Sdf for each pipeline
+# Train and predict method calls for each pipeline
+# If the pipeline has an output topic then we call it
+
+sdf_LogisticRegression = sdf_phishing.apply(
+    LogisticRegression.train_and_predict).to_topic(output_topic_LogisticRegression)
+sdf_ALMAClassifier = sdf_phishing.apply(
+    ALMAClassifier.train_and_predict).to_topic(output_topic_ALMAClassifier)
+sdf_BayesianLinearReg = sdf_trumpApproval.apply(
+    BayesianLinearReg.train_and_predict).to_topic(output_topic_BayesianLinearReg)
+sdf_linearRegPipe = sdf_trumpApproval.apply(
+    linearRegPipe.train_and_predict).to_topic(output_topic_linearRegPipe)
+
+
+# Run Quix Streams
 app.run()
 
-#Metric plots for each Pipeline
+# Metric plots for each Pipeline
 LogisticRegression.metrics_plot()
 
 ALMAClassifier.metrics_plot()
@@ -132,4 +137,3 @@ ALMAClassifier.metrics_plot()
 BayesianLinearReg.metrics_plot()
 
 linearRegPipe.metrics_plot()
-

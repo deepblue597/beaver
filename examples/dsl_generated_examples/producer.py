@@ -51,7 +51,7 @@ if __name__ == "__main__":
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval
     df = pd.read_csv(dataset.path)
-    #
+    # Bananas
     # df = pd.DataFrame(dataset)
 # %%
     df
@@ -61,9 +61,10 @@ if __name__ == "__main__":
 
     for idx, row in df.iterrows():
 
+        # bananas
         # sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
-
+        # TRump
         json_message = row.to_json()
         # json_message = json.dumps(sample_dict)
 
