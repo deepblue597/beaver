@@ -12,6 +12,7 @@ from river import compose
 
 x = {'date': '2019-02-14'}
 
+#%%
 
 def parse_date(x):
     date = dt.datetime.strptime(x['date'], '%Y-%m-%d')
@@ -120,13 +121,18 @@ x
 # %%
 
 x = {'a': 42, 'b': 12}
+pref = compose.Prefixer('prefix_')
+model = pref | linear_model.LogisticRegression()
+
+print(model.learn_one(x, 1))
 compose.Prefixer('prefix_').transform_one(x)
 # %%
 
 x = {'a': 42, 'b': 12}
 compose.Suffixer('_suffix').transform_one(x)
 # %%
-
+composer = compose.SelectType((str))
+#%%
 num = compose.SelectType(numbers.Number) | preprocessing.StandardScaler()
 cat = compose.SelectType(str) | preprocessing.OneHotEncoder()
 model = (num + cat) | linear_model.LogisticRegression()

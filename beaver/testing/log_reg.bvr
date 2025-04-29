@@ -1,0 +1,97 @@
+
+
+pipeline linear_algorithm { 
+
+    output_topic : 'LogisticRegressionBVR' 
+    data : phishing
+    algorithm : log_reg 
+    metrics : [accuracy] 
+}
+
+
+
+connector {
+
+    connection_params { 
+        
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'log_reg_cons',
+        auto_offset_reset="earliest"
+    
+    }
+
+}
+
+data phishing { 
+
+    input_topic : 'Phishing'
+    features {
+        target_feature : class
+    }
+    preprocessors : [[standardScaler]]
+}
+
+
+preprocessors { 
+
+        model standardScaler {
+
+            type : preprocessing
+            name : StandardScaler
+
+        }
+
+}
+
+
+algorithms { 
+
+    model log_reg {
+
+            type : linear_model
+            name : LogisticRegression
+            params :  { 
+                optimizer = SGD
+            }
+        }
+
+
+}
+
+
+optimizers { 
+
+    model SGD { 
+        type : optim 
+        name : SGD 
+        params : { 
+            lr = 0.1
+        }
+    }
+}
+ 
+metrics { 
+
+    model accuracy {
+
+            type : metrics
+            name : Accuracy
+        }
+
+}
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+
