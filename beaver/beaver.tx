@@ -136,7 +136,6 @@ List:
 ParamValue : NUMBER | STRING | BOOL | Reference | Tuple | List | Dict;
 
 
-// TODO: Learn how to raise errors in python
 Tuple:
     '(' itemsT*=DictType[','] ')'
 ;
@@ -165,7 +164,7 @@ Features :
         ('drop_features' ':' '[' drop_features += ID[','] ']')?
         ('generated_features'  ':' '{' assignments*= Assignment '}')? 
         ('target_feature' ':' target_feature = ID )?
-        //FIXME: Check penguin.tx for correct implementation or preprocessing methods of River
+        
     
     '}' 
 ;

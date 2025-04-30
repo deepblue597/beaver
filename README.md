@@ -224,7 +224,7 @@ Why I separated them like this
 1. seperation of concerns : The user can define as many models processors optimizers algorithms algorithms etc as he wants. To be able to separate them better and to know where each model is defined I put them in separate components. This will also help in the final stage of defining the pipelines
 2. It is similar to the components that make up a data pipeline. we have models for preprocessing for the algorithms, optimizers and metrics.
 
-### data
+### Data
 
 Contains all the information for defining and processing the data
 
@@ -252,16 +252,17 @@ data testData {
             generated1 = keep1 - 2 * keep2;
             generated2 = keep * keep;
         }
+        target_feature : class
     }
 
-    preprocessors : [ preproc1 , preproc2 ]
+    preprocessors : [[preproc1 , preproc2 ]]
 }
 
 ```
 
 ### Assignments
 
-the component for defining functions for features; consists of other components that define variables, operations and the hierarchy in which the translator must translate them.
+The component is used for defining functions for features; consists of other components that define variables, operations and the hierarchy in which the translator must translate them.
 
 Example assignment definition is shown in the above example in the generated features.
 
@@ -281,10 +282,10 @@ connector {
 
 connection_params {
 
-broker = "localhost:39092",
-connection_type = "sasl_plaintext",
-username = "username",
-password = "admin_pass"
+bootstrap_servers = "localhost:39092",
+security_protocol = "sasl_plaintext",
+sasl_username = "username",
+sasl_password = "admin_pass"
 
 }
 
@@ -307,7 +308,7 @@ It consists of the following parameters
 - output_topic → optional for where the data will be sent
 - data → reference to the data component we have defined
 - algorithm → reference to the algorithm component we have defined
-- metric → reference to 1 or more metric components that we have defined
+- metrics → reference to 1 or more metric components that we have defined
 
 example
 
@@ -320,6 +321,8 @@ pipeline testPipeline1 {
     metrics : [testMetric1 , testMetric2]
 }
 ```
+
+### File
 
 The definition of components in the .bvr file follows the following order
 
@@ -503,23 +506,27 @@ Why do we separate the metrics ?
 
 When the user adds metrics to the pipeline it does not separate them based on an attribute. In river 'but not all metrics can be put into a Wrapper class as they are not all compatible with each other. To make it easier for the user (and for extensibility reasons) we separate the metrics within the pipeline class. They are stored in a dict and separated into 4 keys
 
-- probabilistic → handle the predict_proba_one function; here we also do a check if the model supports this function. If not it will throw an error saying that the model does not support this metric
-- classifiaction
-- regression
-- clustering
+- Probabilistic → handle the predict_proba_one function; here we also do a check if the model supports this function. If not it will throw an error saying that the model does not support this metric
+- Classification
+- Regression
+- Clustering
 
 if it is not in one of these families it will throw an error (in case some metric types are overlooked we can add them later)
 
 ### train_and_predict(X)
 
-here it becomes
+The function that will be called when the pipeline is run. It will do the following
 
-- the learning of the hologram
-- the predictions of
+- the training of the algorithm
+- the predictions of the algorithm
 - updating the metrics
 - returning the dict we want to send to the output topic (if there is one)
 
-We first check if the model is supervised. If so we need to extract the y from the json file that
+We first check if the model is supervised. If so, we should take the y out of the json file that comes to us from kafka and use it in learn_one. if not, we take the X as it is and put it in the learn_one. Then we update the metrics. If the metric is in the 'probabilistic' group, it will use y_predicted_proba otherwise it will use y_predicted. Then we update with the new prices the self.metrics_values which will be used to make the plots of the metrics. Then we update the model that we store in a `.pkl` file and return a dict with the predictions ( y_predicted , y_predicted_proba), y, and the new values of the metrics.
+
+### metrics_plot()
+
+The function is called to plot the metrics of each pipeline
 
 ## :droplet: River support
 
@@ -544,7 +551,7 @@ A table of the supported functionalities the DSL has for River
 | facto              | ⬜         |
 | feature_extraction | ⬜         |
 | feature_selection  | ⬜         |
-| forest             | ⬜         |
+| forest             | ✅         |
 | imblearn           | ⬜         |
 | linear_model       | ✅         |
 | metrics            | ⬜         |

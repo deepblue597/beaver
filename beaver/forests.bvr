@@ -16,6 +16,29 @@ pipeline AMFRegressorPipel {
     metrics : [mae] 
 }
 
+pipeline ARFClassifierPipe { 
+
+    output_topic : 'ARFClassifierBVR' 
+    data : bananas
+    algorithm : ARFClassifier 
+    metrics : [accuracy] 
+}
+
+pipeline ARFRegressorPipel { 
+
+    output_topic : 'ARFRegressorBVR' 
+    data : trumpApproval
+    algorithm : ARFRegressor 
+    metrics : [mae] 
+}
+
+pipeline OXTRegressorPipe { 
+
+    output_topic : 'OXTRegressorBVR' 
+    data : trumpApproval
+    algorithm : OXTRegressor 
+    metrics : [rmse] 
+}
 
 
 connector {
@@ -30,7 +53,7 @@ connector {
 
     kafka_params { 
 
-        consumer_group = 'forestts',
+        consumer_group = 'forest_models2',
         auto_offset_reset="earliest"
     
     }
@@ -53,7 +76,7 @@ data trumpApproval {
     features {
         target_feature : five_thirty_eight
     }
-    
+    preprocessors : [[standardScaler]]
 }
 
 

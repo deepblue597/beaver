@@ -1,4 +1,3 @@
-# TODO: Create a pipeline class
 from typing import Union
 import dill
 from matplotlib import pyplot as plt
@@ -47,7 +46,7 @@ class Pipeline:
             'classification': None,
             'regression': None,
             'clustering': None, }
-
+        # print(self.model)
         for metric in metrics_list:
             # print(metric)
             if hasattr(metric, "requires_labels") and not metric.requires_labels:
@@ -131,6 +130,7 @@ class Pipeline:
 
         # Predict the probabilities
         if self.metrics['probabilistic'] is not None:
+            print(self.model)
             y_predicted_proba = self.model.predict_proba_one(X)
 
         for metric in self.metrics:
@@ -144,6 +144,7 @@ class Pipeline:
 
         # Store the metrics values
         for metric in self.metrics_list:
+            # print(f"{metric.__class__.__name__}:{metric.get()}")
             self.metrics_values[metric.__class__.__name__].append(metric.get())
 
         # Save the model to a file

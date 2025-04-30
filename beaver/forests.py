@@ -62,7 +62,7 @@ connectionConfig = ConnectionConfig(
 #Connection to Kafka 
 app = Application( 
     broker_address = connectionConfig,
-    consumer_group ="forestts",
+    consumer_group ="forest_models2",
     auto_offset_reset ="earliest")
 
 #Input topics 
@@ -83,6 +83,8 @@ sdf_trumpApproval = app.dataframe(topic=input_topic_trumpApproval)
 #Connect composers with preprocessors 
 
 
+preprocessor_trumpApproval =standardScaler
+
 
 
 #Pipeline definition 
@@ -92,16 +94,37 @@ AMFClassifierPipe_pipeline =AMFClassifier
 AMFClassifierPipe_metrics = [accuracy]
 AMFClassifierPipe = Pipeline(model = AMFClassifierPipe_pipeline , metrics_list = AMFClassifierPipe_metrics , name = "AMFClassifierPipe",y="class",output_topic="AMFClassifierBVR")
 
-AMFRegressorPipel_pipeline =AMFRegressor
+AMFRegressorPipel_pipeline = preprocessor_trumpApproval |AMFRegressor
 
 AMFRegressorPipel_metrics = [mae]
 AMFRegressorPipel = Pipeline(model = AMFRegressorPipel_pipeline , metrics_list = AMFRegressorPipel_metrics , name = "AMFRegressorPipel",y="five_thirty_eight",output_topic="AMFRegressorBVR")
+
+ARFClassifierPipe_pipeline =ARFClassifier
+
+ARFClassifierPipe_metrics = [accuracy]
+ARFClassifierPipe = Pipeline(model = ARFClassifierPipe_pipeline , metrics_list = ARFClassifierPipe_metrics , name = "ARFClassifierPipe",y="class",output_topic="ARFClassifierBVR")
+
+ARFRegressorPipel_pipeline = preprocessor_trumpApproval |ARFRegressor
+
+ARFRegressorPipel_metrics = [mae]
+ARFRegressorPipel = Pipeline(model = ARFRegressorPipel_pipeline , metrics_list = ARFRegressorPipel_metrics , name = "ARFRegressorPipel",y="five_thirty_eight",output_topic="ARFRegressorBVR")
+
+OXTRegressorPipe_pipeline = preprocessor_trumpApproval |OXTRegressor
+
+OXTRegressorPipe_metrics = [rmse]
+OXTRegressorPipe = Pipeline(model = OXTRegressorPipe_pipeline , metrics_list = OXTRegressorPipe_metrics , name = "OXTRegressorPipe",y="five_thirty_eight",output_topic="OXTRegressorBVR")
 
 # Output topics initialization
 
 output_topic_AMFClassifierPipe = app.topic(AMFClassifierPipe.output_topic, value_deserializer="json")
 
 output_topic_AMFRegressorPipel = app.topic(AMFRegressorPipel.output_topic, value_deserializer="json")
+
+output_topic_ARFClassifierPipe = app.topic(ARFClassifierPipe.output_topic, value_deserializer="json")
+
+output_topic_ARFRegressorPipel = app.topic(ARFRegressorPipel.output_topic, value_deserializer="json")
+
+output_topic_OXTRegressorPipe = app.topic(OXTRegressorPipe.output_topic, value_deserializer="json")
 
 
 #Sdf for each pipeline 
@@ -110,6 +133,9 @@ output_topic_AMFRegressorPipel = app.topic(AMFRegressorPipel.output_topic, value
 
 sdf_AMFClassifierPipe = sdf_bananas.apply(AMFClassifierPipe.train_and_predict).to_topic(output_topic_AMFClassifierPipe)
 sdf_AMFRegressorPipel = sdf_trumpApproval.apply(AMFRegressorPipel.train_and_predict).to_topic(output_topic_AMFRegressorPipel)
+sdf_ARFClassifierPipe = sdf_bananas.apply(ARFClassifierPipe.train_and_predict).to_topic(output_topic_ARFClassifierPipe)
+sdf_ARFRegressorPipel = sdf_trumpApproval.apply(ARFRegressorPipel.train_and_predict).to_topic(output_topic_ARFRegressorPipel)
+sdf_OXTRegressorPipe = sdf_trumpApproval.apply(OXTRegressorPipe.train_and_predict).to_topic(output_topic_OXTRegressorPipe)
 
 
 # Run Quix Streams 
@@ -119,4 +145,10 @@ app.run()
 AMFClassifierPipe.metrics_plot()
 
 AMFRegressorPipel.metrics_plot()
+
+ARFClassifierPipe.metrics_plot()
+
+ARFRegressorPipel.metrics_plot()
+
+OXTRegressorPipe.metrics_plot()
 
