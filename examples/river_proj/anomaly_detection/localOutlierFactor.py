@@ -2,6 +2,7 @@
 import pandas as pd
 from river import anomaly
 from river import datasets
+from river import evaluate
 
 cc_df = pd.DataFrame(datasets.CreditCard())
 
@@ -36,3 +37,4 @@ for x in X:
         f'Anomaly score for x={x:.3f}: {lof.score_one(features):.3f}')
     lof.learn_one(features)
 # %%
+evaluate.progressive_val_score

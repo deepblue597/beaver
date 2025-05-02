@@ -32,17 +32,17 @@ if __name__ == "__main__":
     #    position=500,
     #    width=40).take(1000)
     # dataset = datasets.Bananas().take(500)
-    # dataset = [
-    #     [1, 2],
-    #     [1, 4],
-    #     [1, 0],
-    #     [-4, 2],
-    #     [-4, 4],
-    #     [-4, 0],
-    #     [5, 0],
-    #     [5, 2],
-    #     [5, 4]
-    # ]
+    dataset = [
+        [1, 2],
+        [1, 4],
+        [1, 0],
+        [-4, 2],
+        [-4, 4],
+        [-4, 0],
+        [5, 0],
+        [5, 2],
+        [5, 4]
+    ]
 
 # %%
     dataset
@@ -50,9 +50,9 @@ if __name__ == "__main__":
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval
-    df = pd.read_csv(dataset.path)
-    # Bananas
-    # df = pd.DataFrame(dataset)
+    # df = pd.read_csv(dataset.path)
+    # Bananas, Clustering
+    df = pd.DataFrame(dataset)
 # %%
     df
 # %%

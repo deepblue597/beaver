@@ -5,24 +5,46 @@ from river import metrics
 from river import time_series, datasets
 import datetime as dt
 import matplotlib.pyplot as plt
-
+from collections import deque
 
 # Load the AirlinePassengers dataset
 dataset = datasets.AirlinePassengers()
 horizon = 12
 # Initialize the Holt-Winters model with monthly seasonality (m=12)
-model = time_series.HoltWinters(
-    alpha=0.3,
-    beta=0.1,
-    gamma=0.6,
-    seasonality=12,
-    multiplicative=True
-)
+# model = time_series.HoltWinters(
+#     alpha=0.3,
+#     beta=0.1,
+#     gamma=0.6,
+#     seasonality=12,
+#     multiplicative=True
+# )
 
+period = 12
+model = time_series.SNARIMAX(
+    p=period,
+    d=1,
+    q=period,
+    m=period,
+    sd=1
+)
+y_pred_queue = deque(maxlen=2)
+metric = metrics.MAE()
 # Train the model on the dataset
 for t, (x, y) in enumerate(datasets.AirlinePassengers()):
-    model.learn_one(y)
+    model.learn_one(x=x, y=y)
+    # model.forecast(horizon=1)
+    # metric.update(y, model.forecast(horizon=1)[0])
+    if t > model.m:
+        # print('y', y)
+        y_pred_queue.append(model.forecast(horizon=1)[0])
+        # print(y_pred[-1][0])
+    if t > model.m + 1:
+        y_pred = y_pred_queue.popleft()
+        metric.update(y, y_pred)
+        print(metric)
+        # time_series.evaluate((x, y), model, horizon=12, metric=metric)
 
+# %%
 # Forecast the next 12 months (next year)
 forecast = [model.forecast(horizon=k) for k in range(1, horizon+1)]
 

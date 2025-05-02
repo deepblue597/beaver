@@ -8,7 +8,7 @@ File :
     composers *= Composers
     algorithms = Algorithms
     optimizers *= Optimizers 
-    metrics = Metrics
+    metrics *= Metrics
     //TODO: Add plot 
 
 ;
@@ -20,7 +20,7 @@ Pipeline :
         ('output_topic' ':' output_topic = STRING)?  
         'data' ':' data = [Data]
         'algorithm' ':' algorithm = [Model]
-        'metrics' ':' '['metrics += [Model][',']']'
+        ('metrics' ':' '['metrics += [Model][',']']')?
 
     
     '}'
@@ -124,6 +124,7 @@ Model :
     '}'
 ; 
 
+//TODO: Parameters can also be functions. Add this support. e.g l1_dist in KNNClassifier 
 
 Param : 
 
