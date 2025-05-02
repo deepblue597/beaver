@@ -19,7 +19,7 @@ class Pipeline:
     ----------
     model : object
         The machine learning model to be used in the pipeline.
-    metrics : list
+    metrics : list, Optional
         A list of metrics to evaluate the model's performance.
     name : str
         The name of the pipeline.
@@ -50,7 +50,15 @@ class Pipeline:
                 'classification': None,
                 'regression': None,
                 'clustering': None, }
-            # print(self.model)
+
+            # Mapping metric types to categories
+            metric_type_mapping = {
+                metrics.base.ClassificationMetric: 'classification',
+                metrics.base.RegressionMetric: 'regression',
+                metrics.base.ClusteringMetric: 'clustering',
+            }
+            self.metrics_values = {}
+
             for metric in metrics_list:
                 # print(metric)
                 if hasattr(metric, "requires_labels") and not metric.requires_labels:
@@ -61,33 +69,18 @@ class Pipeline:
                         except NotImplementedError:
                             raise NotImplementedError(
                                 f"{model.__class__.__name__} does not support probabilistic metrics.")
-                        self.metrics['probabilistic'] = metric
-                    else:
-                        self.metrics['probabilistic'] += metric
-                elif issubclass(metric.__class__, metrics.base.ClassificationMetric):
-
-                    if self.metrics['classification'] is None:
-                        print(metric)
-                        self.metrics['classification'] = metric
-                    else:
-                        # print(metric)
-                        self.metrics['classification'] += metric
-                elif issubclass(metric.__class__, metrics.base.RegressionMetric):
-                    if self.metrics['regression'] is None:
-                        self.metrics['regression'] = metric
-                    else:
-                        self.metrics['regression'] += metric
-                elif issubclass(metric.__class__, metrics.base.ClusteringMetric):
-                    if self.metrics['clustering'] is None:
-                        self.metrics['clustering'] = metric
-                    else:
-                        self.metrics['clustering'] += metric
+                    self._add_metric(metric, 'probabilistic')
                 else:
-                    raise ValueError(
-                        f"Unknown metric type: {metric.__class__.__name__}")
-            self.metrics_values = {
-                metric.__class__.__name__: [] for metric in self.metrics_list
-            }
+                    # Handle other metric types using the mapping
+                    for metric_class, category in metric_type_mapping.items():
+                        if isinstance(metric, metric_class):
+                            self._add_metric(metric, category)
+                            break
+                    else:
+                        raise ValueError(
+                            f"Unknown metric type: {metric.__class__.__name__}")
+
+                self.metrics_values[metric.__class__.__name__] = []
 
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
@@ -145,6 +138,8 @@ class Pipeline:
         also if there are no predictions we dont run this code 
         """
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None):
+            # TODO: Add this to function and remove the for loop
+            # latest_metrics = self.update_metrics(y , y_predicted , y_predicted_proba)
             for metric in self.metrics:
                 if self.metrics[metric] is not None:
 
@@ -171,6 +166,8 @@ class Pipeline:
         if y_predicted is not None:
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None:
+            # TODO: add this and remove the for loop
+            # output['metrics'] = latest_metrics
             output['metrics'] = {key: values[-1]
                                  for key, values in self.metrics_values.items()}
 
@@ -186,7 +183,7 @@ class Pipeline:
         plt.legend()
         plt.show()
 
-    def predict(self, X) -> Union[float, List[float]]:
+    def _predict(self, X) -> Union[float, List[float]]:
         """
         The are 3 main cases: 
 
@@ -225,8 +222,12 @@ class Pipeline:
             y_predicted = self.model.score_one(X)
 
         elif hasattr(self.model, "forecast"):
-            seasonal_pattern = self.model.seasonality if hasattr(
-                self.model, "seasonality") else self.model.m
+            try:
+                seasonal_pattern = self.model.seasonality if hasattr(
+                    self.model, "seasonality") else self.model.m
+            except NotImplementedError:
+                raise NotImplementedError(
+                    f"{self.model.__class__.__name__} forecaster is not supported by beaver. Please create an issue on github.")
             if self.passed_seasonality > seasonal_pattern:
                 self.forecast_queue.append(self.model.forecast(horizon=1)[0])
             if self.passed_seasonality > seasonal_pattern + 1:
@@ -237,3 +238,30 @@ class Pipeline:
             y_predicted_proba = self.model.predict_proba_one(X)
 
         return y_predicted, y_predicted_proba
+
+    def _update_metrics(self, y, y_predicted, y_predicted_proba=None) -> dict:
+        latest_metrics = {}
+        for metric in self.metrics:
+            if self.metrics[metric] is not None:
+
+                if metric == 'probabilistic':
+                    # Update the probabilistic metrics
+                    self.metrics[metric].update(y, y_predicted_proba)
+                else:  # Update the metrics
+                    self.metrics[metric].update(y, y_predicted)
+
+        # Store the metrics values
+        for metric in self.metrics_list:
+            metric_name = metric.__class__.__name__
+            latest_value = metric.get()
+            self.metrics_values[metric_name].append(latest_value)
+            latest_metrics[metric_name] = latest_value
+
+        return latest_metrics
+
+    def _add_metric(self, metric, category):
+        """Helper function to add a metric to the appropriate category."""
+        if self.metrics[category] is None:
+            self.metrics[category] = metric
+        else:
+            self.metrics[category] += metric
