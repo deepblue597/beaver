@@ -10,6 +10,14 @@ pipeline KNNRegressorPipe {
     metrics : [rmse] 
 }
 
+pipeline KNNClassifierPipe { 
+
+    output_topic : 'KNNClassifierBVR' 
+    data : Phishing
+    algorithm : KNNClassifier 
+    metrics : [accuracy] 
+}
+
 
 
 connector {

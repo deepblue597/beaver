@@ -83,9 +83,15 @@ KNNRegressorPipe_pipeline =KNNRegressor
 KNNRegressorPipe_metrics = [rmse]
 KNNRegressorPipe = Pipeline(model = KNNRegressorPipe_pipeline , metrics_list = KNNRegressorPipe_metrics , name = "KNNRegressorPipe",y="five_thirty_eight",output_topic="KNNRegressorBVR")
 
+KNNClassifierPipe_pipeline = preprocessor_Phishing |KNNClassifier
+KNNClassifierPipe_metrics = [accuracy]
+KNNClassifierPipe = Pipeline(model = KNNClassifierPipe_pipeline , metrics_list = KNNClassifierPipe_metrics , name = "KNNClassifierPipe",y="class",output_topic="KNNClassifierBVR")
+
 # Output topics initialization
 
 output_topic_KNNRegressorPipe = app.topic(KNNRegressorPipe.output_topic, value_deserializer="json")
+
+output_topic_KNNClassifierPipe = app.topic(KNNClassifierPipe.output_topic, value_deserializer="json")
 
 
 #Sdf for each pipeline 
@@ -93,6 +99,7 @@ output_topic_KNNRegressorPipe = app.topic(KNNRegressorPipe.output_topic, value_d
 #If the pipeline has an output topic then we call it 
 
 sdf_KNNRegressorPipe = sdf_TrumpApproval.apply(KNNRegressorPipe.train_and_predict).to_topic(output_topic_KNNRegressorPipe)
+sdf_KNNClassifierPipe = sdf_Phishing.apply(KNNClassifierPipe.train_and_predict).to_topic(output_topic_KNNClassifierPipe)
 
 
 # Run Quix Streams 
@@ -100,4 +107,6 @@ app.run()
 
 #Metric plots for each Pipeline
 KNNRegressorPipe.metrics_plot()
+
+KNNClassifierPipe.metrics_plot()
 

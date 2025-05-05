@@ -9,20 +9,20 @@ from pipeline import *
 from river import preprocessing
 {%- endif %}
 
-{%if file.composers -%}
+{%-if file.composers -%}
 from river import compose
 {%- endif %}
 
-{%if file.optimizers -%}
+{%-if file.optimizers -%}
 from river import optim
 {%- endif %}
 
-{%if file.metrics -%}
+{%-if file.metrics -%}
 from river import metrics
 {%- endif %}
 
 
-{% set unique_modules = [] %}
+{%- set unique_modules = [] %}
 {% for model in file.algorithms.models -%}
 {% if model.type not in unique_modules -%}
 {% set _ = unique_modules.append(model.type)  -%}
@@ -284,9 +284,9 @@ preprocessor_{{data.name}} =
     
     {%-endfor-%}
 ]
-{%endif-%}
+{%endif%}
 
-{{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline , metrics_list = {{pipeline.name}}_metrics , name = "{{pipeline.name}}"{%-if pipeline.data.features[0].target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
+{{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline {%-if pipeline.metrics%} , metrics_list = {{pipeline.name}}_metrics{%endif%} , name = "{{pipeline.name}}"{%-if pipeline.data.features and pipeline.data.features[0].target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
 
 {% endfor -%}
 
@@ -316,6 +316,7 @@ app.run()
 
 #Metric plots for each Pipeline
 {%for pipeline in file.pipelines -%}
+{%-if pipeline.metrics%}
 {{pipeline.name}}.metrics_plot()
-
+{%endif%}
 {% endfor %}

@@ -1,9 +1,11 @@
-from typing import Union
+from collections import deque
+from typing import List, Union
+
 import dill
 from matplotlib import pyplot as plt
 from river import metrics
-from typing import List
-from collections import deque
+import warnings
+from errors import PredictionWarning
 
 __all__ = ['Pipeline']
 
@@ -42,7 +44,8 @@ class Pipeline:
         Best Practices
             - Group Metrics by Type:
             - Use separate Metrics containers for classification, regression, and clustering metrics.
-            - Some classification metrics need probabilities these will have requires_labels → False     check KNNClassifier.py So 4th container probabilities_classification
+            - Some classification metrics need probabilities these will have requires_labels → False     
+                check KNNClassifier.py So 4th container probabilities_classification
         """
         if self.metrics_list is not None:
             self.metrics = {
@@ -66,9 +69,10 @@ class Pipeline:
                         try:
                             # Check if model.predict_proba_one() is implemented
                             model.predict_proba_one()
-                        except NotImplementedError:
+                        except NotImplementedError as exc:
                             raise NotImplementedError(
-                                f"{model.__class__.__name__} does not support probabilistic metrics.")
+                                f"{model.__class__.__name__} does not support probabilistic metrics."
+                            ) from exc
                     self._add_metric(metric, 'probabilistic')
                 else:
                     # Handle other metric types using the mapping
@@ -91,85 +95,36 @@ class Pipeline:
         Add the values of metrics into a list and return a dict containing the 
         input data the prediction and the metrics values.
         """
-        """We need to check if : 
         
-        - [X] model is supervised or not 
-        - [X] the metrics are multiclass or not 
-        
-        """
-        y = None
-        y_predicted_proba = None
+        y_predicted, y_predicted_proba = self._predict(X)
         # If y exists we need to seperate it from the data
         if self.y:
-            # If the model is supervised, we need to separate the features and the target variable
             y = X[self.y]
             X = {key: value for key, value in X.items() if key != self.y}
 
         # Train the model
-        if self.model._supervised:
+        if self.model._supervised: 
             self.model.learn_one(x=X, y=y)
         else:
             self.model.learn_one(x=X)
 
-        # There are classes that do not support predict_one.
-        # We need to support these classes too
-        """
-        FIXME:
-        - [] Forecaster -> def forecast(self, horizon: int, xs: list[dict] | None = None)
-        forecast = model.forecast(horizon=horizon)
-        - [X] Anomaly detection -> score_one(x: dict, y: base.typing.Target) 
-        
-        """
-        # Predict the class
-        try:
-            y_predicted = self.model.predict_one(X)
-        except AttributeError:
-            y_predicted = self.model.score_one(X)
-
-        # Predict the probabilities
-        if self.metrics['probabilistic'] is not None:
-            y_predicted_proba = self.model.predict_proba_one(X)
-
-        # TODO: Add this to function and remove the predict_class part
-        # y_predicted, y_predicted_proba = self.predict(X)
-
-        """
-        If there are not metrics we dont run this code 
-        also if there are no predictions we dont run this code 
-        """
-        if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None):
-            # TODO: Add this to function and remove the for loop
-            # latest_metrics = self.update_metrics(y , y_predicted , y_predicted_proba)
-            for metric in self.metrics:
-                if self.metrics[metric] is not None:
-
-                    if metric == 'probabilistic':
-                        # Update the probabilistic metrics
-                        self.metrics[metric].update(y, y_predicted_proba)
-                    else:  # Update the metrics
-                        self.metrics[metric].update(y, y_predicted)
-
-        # Store the metrics values
-        for metric in self.metrics_list:
-            # print(f"{metric.__class__.__name__}:{metric.get()}")
-            self.metrics_values[metric.__class__.__name__].append(metric.get())
-
+        if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None): 
+           
+            latest_metrics = self._update_metrics(y , y_predicted , y_predicted_proba)
+           
         # Save the model to a file
         with open(f'{self.name}.pkl', 'wb') as model_file:
             dill.dump(self.model, model_file)
 
         output = {**X}
-        if y is not None:
+        if self.y:
             output['y_true'] = y
         if y_predicted_proba is not None:
             output['y_predicted_probabilities'] = y_predicted_proba
         if y_predicted is not None:
             output['y_predicted'] = y_predicted
-        if self.metrics_list is not None:
-            # TODO: add this and remove the for loop
-            # output['metrics'] = latest_metrics
-            output['metrics'] = {key: values[-1]
-                                 for key, values in self.metrics_values.items()}
+        if self.metrics_list is not None and (latest_metrics := self._update_metrics(y , y_predicted , y_predicted_proba)) :
+            output['metrics'] = latest_metrics
 
         return output
 
@@ -180,6 +135,8 @@ class Pipeline:
         for metric_name, values in self.metrics_values.items():
             plt.plot(values, label=metric_name)
             plt.title(f"{self.name} - {metric_name}")
+        plt.xlabel('iterations')
+        plt.ylabel('values')
         plt.legend()
         plt.show()
 
@@ -213,10 +170,15 @@ class Pipeline:
         raise an error if the variable name is different for the seasonal pattern. 
 
         """
-        y_predicted, y_predicted_proba = None
+        
+        y_predicted, y_predicted_proba = None, None
         self.passed_seasonality += 1
         if hasattr(self.model, "predict_one"):
             y_predicted = self.model.predict_one(X)
+            
+            # For probabilistic metrics
+            if self.metrics['probabilistic'] is not None:
+                y_predicted_proba = self.model.predict_proba_one(X)
 
         elif hasattr(self.model, "score_one"):
             y_predicted = self.model.score_one(X)
@@ -225,30 +187,34 @@ class Pipeline:
             try:
                 seasonal_pattern = self.model.seasonality if hasattr(
                     self.model, "seasonality") else self.model.m
-            except NotImplementedError:
+            except NotImplementedError as exc:
                 raise NotImplementedError(
-                    f"{self.model.__class__.__name__} forecaster is not supported by beaver. Please create an issue on github.")
+                    f"{self.model.__class__.__name__} forecaster is not supported by beaver. Please create an issue on github.") from exc
             if self.passed_seasonality > seasonal_pattern:
                 self.forecast_queue.append(self.model.forecast(horizon=1)[0])
             if self.passed_seasonality > seasonal_pattern + 1:
                 y_predicted = self.forecast_queue.popleft()
+        else : 
+            raise NotImplementedError(f"{self.model.__class__.__name__} is not supported by beaver. Please create an issue on github.")
+        
 
-        # For probabilistic metrics
-        if self.metrics['probabilistic'] is not None:
-            y_predicted_proba = self.model.predict_proba_one(X)
-
+        
+        if y_predicted is None and y_predicted_proba is None : 
+            PredictionWarning()
+        
+        #print(y_predicted , y_predicted_proba)
         return y_predicted, y_predicted_proba
 
     def _update_metrics(self, y, y_predicted, y_predicted_proba=None) -> dict:
         latest_metrics = {}
-        for metric in self.metrics:
-            if self.metrics[metric] is not None:
+        for metric_group , metrics_in_group in self.metrics.items():
+            if metrics_in_group is not None:
 
-                if metric == 'probabilistic':
+                if metric_group == 'probabilistic':
                     # Update the probabilistic metrics
-                    self.metrics[metric].update(y, y_predicted_proba)
+                    metrics_in_group.update(y, y_predicted_proba)
                 else:  # Update the metrics
-                    self.metrics[metric].update(y, y_predicted)
+                    metrics_in_group.update(y, y_predicted)
 
         # Store the metrics values
         for metric in self.metrics_list:

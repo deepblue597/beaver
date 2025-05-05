@@ -1,0 +1,73 @@
+
+
+
+
+pipeline HalfSpaceTreesPipe { 
+
+    output_topic : 'HalfSpaceTreesBVR' 
+    data : anomaly
+    algorithm : HalfSpaceTrees 
+
+}
+
+
+connector {
+
+    connection_params { 
+        
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'anomaly',
+        auto_offset_reset="earliest"
+    
+    }
+
+}
+
+
+
+data anomaly { 
+
+    input_topic : 'anomaly_detection'
+
+}
+
+
+
+
+algorithms { 
+
+
+    model HalfSpaceTrees {
+
+            type : anomaly
+            name : HalfSpaceTrees
+            params : { 
+                n_trees=5,
+                height=3,
+                window_size=3,
+                seed=42
+            }
+        }
+
+
+
+}
+
+ 
+
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+
