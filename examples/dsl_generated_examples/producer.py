@@ -32,29 +32,36 @@ if __name__ == "__main__":
     #    position=500,
     #    width=40).take(1000)
     # dataset = datasets.Bananas().take(500)
-    dataset = [
-        [1, 2],
-        [1, 4],
-        [1, 0],
-        [-4, 2],
-        [-4, 4],
-        [-4, 0],
-        [5, 0],
-        [5, 2],
-        [5, 4]
-    ]
-
+    # dataset = [
+    #     [1, 2],
+    #     [1, 4],
+    #     [1, 0],
+    #     [-4, 2],
+    #     [-4, 4],
+    #     [-4, 0],
+    #     [5, 0],
+    #     [5, 2],
+    #     [5, 4]
+    # ]
+    dataset = datasets.AirlinePassengers()
 # %%
     dataset
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval
-    # df = pd.read_csv(dataset.path)
+    df = pd.read_csv(dataset.path)
     # Bananas, Clustering
-    df = pd.DataFrame(dataset)
+    #df = pd.DataFrame(dataset)
 # %%
     df
+    
+#%% 
+
+# for idx, row in df.iterrows():
+#     json_message = row.to_json()
+#     #sample_dict = {**row[0].isoformat(), 'passengers': row[1]}
+#     print(json_message)
 # %%
     print('Messages are being published to Kafka topic')
     messages_count = 0
@@ -62,7 +69,7 @@ if __name__ == "__main__":
     for idx, row in df.iterrows():
 
         # bananas
-        # sample_dict = {**row[0], 'class': row[1]}
+        #sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
         # TRump
         json_message = row.to_json()

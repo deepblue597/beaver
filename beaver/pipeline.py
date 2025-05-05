@@ -97,6 +97,7 @@ class Pipeline:
         """
         
         y_predicted, y_predicted_proba = self._predict(X)
+        #print('hi')
         # If y exists we need to seperate it from the data
         if self.y:
             y = X[self.y]
@@ -123,7 +124,7 @@ class Pipeline:
             output['y_predicted_probabilities'] = y_predicted_proba
         if y_predicted is not None:
             output['y_predicted'] = y_predicted
-        if self.metrics_list is not None and (latest_metrics := self._update_metrics(y , y_predicted , y_predicted_proba)) :
+        if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
             output['metrics'] = latest_metrics
 
         return output
@@ -172,7 +173,7 @@ class Pipeline:
         """
         
         y_predicted, y_predicted_proba = None, None
-        self.passed_seasonality += 1
+        
         if hasattr(self.model, "predict_one"):
             y_predicted = self.model.predict_one(X)
             
@@ -182,7 +183,7 @@ class Pipeline:
 
         elif hasattr(self.model, "score_one"):
             y_predicted = self.model.score_one(X)
-
+        #TODO: Check if queue is working correctly
         elif hasattr(self.model, "forecast"):
             try:
                 seasonal_pattern = self.model.seasonality if hasattr(
@@ -194,11 +195,12 @@ class Pipeline:
                 self.forecast_queue.append(self.model.forecast(horizon=1)[0])
             if self.passed_seasonality > seasonal_pattern + 1:
                 y_predicted = self.forecast_queue.popleft()
+                #print(y_predicted)
         else : 
             raise NotImplementedError(f"{self.model.__class__.__name__} is not supported by beaver. Please create an issue on github.")
         
-
-        
+        self.passed_seasonality += 1
+        #print(y_predicted)
         if y_predicted is None and y_predicted_proba is None : 
             PredictionWarning()
         
