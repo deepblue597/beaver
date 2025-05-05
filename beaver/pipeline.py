@@ -1,5 +1,5 @@
 from collections import deque
-from typing import List, Union
+from typing import List, Optional, Union
 
 import dill
 from matplotlib import pyplot as plt
@@ -32,13 +32,21 @@ class Pipeline:
 
     """
 
-    def __init__(self, model, name: str,  metrics_list: List[metrics.base.Metric] = None, y: str = None, output_topic: str = None):
+    def __init__(self,
+                 model,
+                 name: str,
+                 metrics_list: Optional[List[metrics.base.Metric]] = None,
+                 y: Optional[str] = None,
+                 output_topic: Optional[str] = None
+                 ):
+        
+        
         self.y = y
         self.model = model
         self.output_topic = output_topic
         self.name = name
         self.metrics_list = metrics_list
-        self.forecast_queue = deque(maxlen=2)
+        
         self.passed_seasonality = 0
         """
         Best Practices
@@ -183,7 +191,7 @@ class Pipeline:
 
         elif hasattr(self.model, "score_one"):
             y_predicted = self.model.score_one(X)
-        #TODO: Check if queue is working correctly
+        
         elif hasattr(self.model, "forecast"):
             try:
                 seasonal_pattern = self.model.seasonality if hasattr(
@@ -192,9 +200,7 @@ class Pipeline:
                 raise NotImplementedError(
                     f"{self.model.__class__.__name__} forecaster is not supported by beaver. Please create an issue on github.") from exc
             if self.passed_seasonality > seasonal_pattern:
-                self.forecast_queue.append(self.model.forecast(horizon=1)[0])
-            if self.passed_seasonality > seasonal_pattern + 1:
-                y_predicted = self.forecast_queue.popleft()
+                y_predicted = self.model.forecast(horizon=1)[0]
                 #print(y_predicted)
         else : 
             raise NotImplementedError(f"{self.model.__class__.__name__} is not supported by beaver. Please create an issue on github.")

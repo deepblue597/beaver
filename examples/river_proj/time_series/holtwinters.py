@@ -35,19 +35,21 @@ for t, (x, y) in enumerate(datasets.AirlinePassengers()):
     
     #print('t' , t) 
     #print(time)  
-    model.learn_one(y=y)
+    #model.learn_one(y=y)
     # model.forecast(horizon=1)
     # metric.update(y, model.forecast(horizon=1)[0])
     if time > model.m:
-        print('y', y)
-        y_pred_queue.append(model.forecast(horizon=1)[0])
+        
+        y_pred= model.forecast(horizon=1)[0] 
         #print(y_pred[-1][0])
-    if time > model.m + 1:
-        y_pred = y_pred_queue.popleft()
+    #if time > model.m + 1:
+        print('y', y)
+        #y_pred = y_pred_queue.popleft()
         print(y_pred)
         metric.update(y, y_pred)
         print(metric)
         # time_series.evaluate((x, y), model, horizon=12, metric=metric)
+    model.learn_one(y=y)
     time += 1
 # %%
 # Forecast the next 12 months (next year)
