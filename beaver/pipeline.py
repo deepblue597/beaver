@@ -125,6 +125,7 @@ class Pipeline:
         with open(f'{self.name}.pkl', 'wb') as model_file:
             dill.dump(self.model, model_file)
 
+        #TODO: Simplify these if statements
         output = {**X}
         if self.y:
             output['y_true'] = y

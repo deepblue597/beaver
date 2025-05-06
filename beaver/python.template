@@ -9,20 +9,20 @@ from pipeline import *
 from river import preprocessing
 {%- endif %}
 
-{%-if file.composers -%}
+{%if file.composers -%}
 from river import compose
 {%- endif %}
 
-{%-if file.optimizers -%}
+{%if file.optimizers -%}
 from river import optim
 {%- endif %}
 
-{%-if file.metrics -%}
+{%if file.metrics -%}
 from river import metrics
 {%- endif %}
 
 
-{%- set unique_modules = [] %}
+{% set unique_modules = [] %}
 {% for model in file.algorithms.models -%}
 {% if model.type not in unique_modules -%}
 {% set _ = unique_modules.append(model.type)  -%}
