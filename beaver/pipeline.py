@@ -6,6 +6,8 @@ from matplotlib import pyplot as plt
 from river import metrics
 import warnings
 from errors import PredictionWarning
+from matplotlib.animation import FuncAnimation
+
 
 __all__ = ['Pipeline']
 
