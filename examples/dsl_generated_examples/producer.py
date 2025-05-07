@@ -18,8 +18,8 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    # dataset = datasets.Phishing()
-    dataset = datasets.TrumpApproval()
+    dataset = datasets.Phishing()
+    #dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
     # gen = synth.Agrawal(classification_function=0, seed=42)
@@ -43,29 +43,37 @@ if __name__ == "__main__":
     #     [5, 2],
     #     [5, 4]
     # ]
-
+    #dataset = datasets.AirlinePassengers()
 # %%
     dataset
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval
-    df = pd.read_csv(dataset.path)
-    #
-    # df = pd.DataFrame(dataset)
+    #df = pd.read_csv(dataset.path)
+    # Bananas, Clustering
+    df = pd.DataFrame(dataset)
 # %%
     df
+    
+#%% 
+
+# for idx, row in df.iterrows():
+#     json_message = row.to_json()
+#     #sample_dict = {**row[0].isoformat(), 'passengers': row[1]}
+#     print(json_message)
 # %%
     print('Messages are being published to Kafka topic')
     messages_count = 0
 
     for idx, row in df.iterrows():
 
-        # sample_dict = {**row[0], 'class': row[1]}
+        # bananas
+        sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
-
-        json_message = row.to_json()
-        # json_message = json.dumps(sample_dict)
+        # TRump
+        #json_message = row.to_json()
+        json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

@@ -1,0 +1,85 @@
+
+
+
+
+pipeline HoltWintersPipe { 
+
+    output_topic : 'HoltWintersBVR' 
+    data : airline
+    algorithm : HoltWinters 
+    metrics : [ mae ]
+
+}
+
+
+connector {
+
+    connection_params { 
+        
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'time_series',
+        auto_offset_reset="earliest"
+    
+    }
+
+}
+
+
+
+data airline { 
+
+    input_topic : 'airline'
+    features {
+        target_feature : passengers
+    }
+
+}
+
+
+
+
+algorithms { 
+
+
+    model HoltWinters {
+
+            type : time_series
+            name : HoltWinters
+            params : { 
+                alpha=0.3,
+                beta=0.1,
+                gamma=0.6,
+                seasonality=12,
+                multiplicative=True
+            }
+        }
+
+
+
+}
+
+ 
+metrics { 
+
+    model mae {
+
+            type : metrics
+            name : MAE
+        }
+
+
+}
+ 
+
+ 
+ 
+ 
+ 
+

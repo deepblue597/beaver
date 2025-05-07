@@ -17,7 +17,10 @@ from river import compose
 from river import optim
 {%- endif %}
 
+{%if file.metrics -%}
 from river import metrics
+{%- endif %}
+
 
 {% set unique_modules = [] %}
 {% for model in file.algorithms.models -%}
@@ -114,9 +117,9 @@ from river import {{model.type}}
 {%endfor%}
 {%- endif %}
 
-
+{%if file.metrics -%}
 #Define metrics
-{%for model in file.metrics.models-%}
+{%for model in file.metrics[0].models-%}
 {{model.name}} = {{model.type}}.{{model.nameR}}(
     {%-for param in model.params%}
     {{param.name}} =  
@@ -138,6 +141,7 @@ from river import {{model.type}}
     {%- endfor -%}
 )
 {%endfor%}
+{%- endif %}
 
 #Define live data algorithms
 {%for model in file.algorithms.models-%}
@@ -256,6 +260,7 @@ sdf_{{data.name}} = sdf_{{data.name}}[[
 {%endif%}
 #Connect composers with preprocessors 
 {%for data in file.data-%}
+{%if data.preprocessors%}
 preprocessor_{{data.name}} = 
 {%-for preprocessors in data.preprocessors-%}
 {%-for model in preprocessors.items-%}
@@ -263,21 +268,25 @@ preprocessor_{{data.name}} =
 {%-endfor%}
 {%- if not loop.last %}+{%- endif -%}
 {%-endfor%}
+{%endif%}
 {%endfor%}
 
 #Pipeline definition 
 
 {%for pipeline in file.pipelines -%}
 
-{{pipeline.name}}_pipeline = preprocessor_{{pipeline.data.name}} | {{pipeline.algorithm.name}}
+{{pipeline.name}}_pipeline = {%-if pipeline.data.preprocessors%} preprocessor_{{pipeline.data.name}} | {%- endif -%}{{pipeline.algorithm.name}}
 
+{%-if pipeline.metrics%}
 {{pipeline.name}}_metrics = [
     {%-for metric in pipeline.metrics-%}
     {{metric.name}}{%- if not loop.last %},{%- endif -%}
     
     {%-endfor-%}
 ]
-{{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline , metrics_list = {{pipeline.name}}_metrics , name = "{{pipeline.name}}"{%-if pipeline.data.features[0].target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
+{%endif%}
+
+{{pipeline.name}} = Pipeline(model = {{pipeline.name}}_pipeline {%-if pipeline.metrics%} , metrics_list = {{pipeline.name}}_metrics{%endif%} , name = "{{pipeline.name}}"{%-if pipeline.data.features and pipeline.data.features[0].target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
 
 {% endfor -%}
 
@@ -307,6 +316,7 @@ app.run()
 
 #Metric plots for each Pipeline
 {%for pipeline in file.pipelines -%}
+{%-if pipeline.metrics%}
 {{pipeline.name}}.metrics_plot()
-
+{%endif%}
 {% endfor %}

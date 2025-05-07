@@ -14,6 +14,7 @@ from river import optim
 from river import metrics
 
 
+
 from river import linear_model
 
 
@@ -26,7 +27,6 @@ SGD = optim.SGD(
 
 #Define preprocessors
 standardScaler = preprocessing.StandardScaler()
-
 
 
 
@@ -74,30 +74,38 @@ sdf_trumpApproval = app.dataframe(topic=input_topic_trumpApproval)
 
 
 #Connect composers with preprocessors 
+
 preprocessor_phishing =standardScaler
+
+
 preprocessor_trumpApproval =standardScaler
+
 
 
 #Pipeline definition 
 
-LogisticRegression_pipeline = preprocessor_phishing | log_reg
-
+LogisticRegression_pipeline = preprocessor_phishing |log_reg
 LogisticRegression_metrics = [accuracy]
+
+
 LogisticRegression = Pipeline(model = LogisticRegression_pipeline , metrics_list = LogisticRegression_metrics , name = "LogisticRegression",y="class",output_topic="LogisticRegressionBVR")
 
-ALMAClassifier_pipeline = preprocessor_phishing | alma
-
+ALMAClassifier_pipeline = preprocessor_phishing |alma
 ALMAClassifier_metrics = [accuracy]
+
+
 ALMAClassifier = Pipeline(model = ALMAClassifier_pipeline , metrics_list = ALMAClassifier_metrics , name = "ALMAClassifier",y="class",output_topic="ALMAClassifierBVR")
 
-BayesianLinearReg_pipeline = preprocessor_trumpApproval | bayesian
-
+BayesianLinearReg_pipeline = preprocessor_trumpApproval |bayesian
 BayesianLinearReg_metrics = [mae]
+
+
 BayesianLinearReg = Pipeline(model = BayesianLinearReg_pipeline , metrics_list = BayesianLinearReg_metrics , name = "BayesianLinearReg",y="five_thirty_eight",output_topic="BayesianLinearRegBVR")
 
-linearRegPipe_pipeline = preprocessor_trumpApproval | linearReg
-
+linearRegPipe_pipeline = preprocessor_trumpApproval |linearReg
 linearRegPipe_metrics = [mae]
+
+
 linearRegPipe = Pipeline(model = linearRegPipe_pipeline , metrics_list = linearRegPipe_metrics , name = "linearRegPipe",y="five_thirty_eight",output_topic="linearRegBVR")
 
 # Output topics initialization
@@ -125,11 +133,15 @@ sdf_linearRegPipe = sdf_trumpApproval.apply(linearRegPipe.train_and_predict).to_
 app.run()
 
 #Metric plots for each Pipeline
+
 LogisticRegression.metrics_plot()
+
 
 ALMAClassifier.metrics_plot()
 
+
 BayesianLinearReg.metrics_plot()
+
 
 linearRegPipe.metrics_plot()
 
