@@ -1,0 +1,108 @@
+
+Model:
+    'model' name=ID '{'  
+        'name' ':' nameR = ModelGroup  
+    '}'
+;
+
+ModelGroup : LinearModel | Forest | Clustering | Drift | Ensemble | Facto | Imbalance | Metrics| MultioutputMetrics | Multiclass | Multioutput | NaiveBayes | Neighbors | NeuralNetworks | NeuralNetworksActivations | Optimizers | OptimizersBase | OptimInitializers | OptimLosses | OptimSchedulers | Preprocessing | Proba | ProbaBase | Reco | RecoBase | Rules | TimeSeries | Tree | TreeBase | TreeSplitter | Miscellaneous | Composers; 
+
+LinearModel : "ALMAClassifier" | "BayesianLinearRegression" | "LinearRegression" | "LogisticRegression" | "PAClassifier" | "PARegressor" | "Perceptron" | "SoftmaxRegression"
+;
+
+Forest : "AMFClassifier" | "AMFRegressor" | "ARFClassifier" | "ARFRegressor" | "OXTRegressor"
+;
+
+Anomaly : "GaussianScorer" |"HalfSpaceTrees" |"LocalOutlierFactor" |"OneClassSVM" |"PredictiveAnomalyDetection" |"QuantileFilter" |"StandardAbsoluteDeviation" |"ThresholdFilter"
+;
+
+Clustering : "CluStream" | "DBSTREAM" | "DenStream" | "KMeans" | "ODAC" | "STREAMKMeans" | "TextClust"
+; 
+
+Drift : "ADWIN" | "DriftRetrainingClassifier" | "DummyDriftDetector" | "KSWIN" | "NoDrift" | "PageHinkley"
+;
+
+Ensemble : "ADWINBaggingClassifier" | "ADWINBoostingClassifier" | "AdaBoostClassifier" | "BOLEClassifier" | "BaggingClassifier" | "BaggingRegressor" | "EWARegressor" | "LeveragingBaggingClassifier" | "SRPClassifier" | "SRPRegressor" | "StackingClassifier" | "VotingClassifier"
+;
+
+Facto : "FFMClassifier" | "FFMRegressor" | "FMClassifier" | "FMRegressor" | "FwFMClassifier" | "FwFMRegressor" | "HOFMClassifier" | "HOFMRegressor"
+;
+
+Imbalance : "ChebyshevOverSampler" | "ChebyshevUnderSampler" | "HardSamplingClassifier" | "HardSamplingRegressor" | "RandomOverSampler" | "RandomSampler" | "RandomUnderSampler"
+;
+
+Metrics : "Accuracy" | "AdjustedMutualInfo" | "AdjustedRand" | "BalancedAccuracy" | "ClassificationReport" | "CohenKappa" | "Completeness" | "ConfusionMatrix" | "CrossEntropy" | "F1" | "FBeta" | "FowlkesMallows" | "GeometricMean" | "Homogeneity" | "Jaccard" | "LogLoss" | "MAE" | "MAPE" | "MCC" | "MSE" | "MacroF1" | "MacroFBeta" | "MacroJaccard" | "MacroPrecision" | "MacroRecall" | "MicroF1" | "MicroFBeta" | "MicroJaccard" | "MicroPrecision" | "MicroRecall" | "MultiFBeta" | "MutualInfo" | "NormalizedMutualInfo" | "Precision" | "R2" | "RMSE" | "RMSLE" | "ROCAUC" | "Rand" | "Recall" | "RollingROCAUC" | "SMAPE" | "Silhouette" | "VBeta" | "WeightedF1" | "WeightedFBeta" | "WeightedJaccard" | "WeightedPrecision" | "WeightedRecall"
+;
+
+MultioutputMetrics : "ExactMatch" | "MacroAverage" | "MicroAverage" | "MultiLabelConfusionMatrix" | "PerOutput" | "SampleAverage"
+;
+
+Multiclass : "OneVsOneClassifier" | "OneVsRestClassifier" | "OutputCodeClassifier"
+;
+
+Multioutput : "ClassifierChain" | "MonteCarloClassifierChain" | "MultiClassEncoder" | "ProbabilisticClassifierChain" | "RegressorChain"
+;
+
+NaiveBayes : "BernoulliNB" | "ComplementNB" | "GaussianNB" | "MultinomialNB"
+;
+
+Neighbors : "KNNClassifier" | "KNNRegressor" | "LazySearch" | "SWINN"
+;
+
+NeuralNetworks : "MLPRegressor"
+;
+
+NeuralNetworksActivations : "Identity" | "ReLU" | "Sigmoid"
+;
+
+Optimizers : "AMSGrad" | "AdaBound" | "AdaDelta" | "AdaGrad" | "AdaMax" | "Adam" | "Averager" | "FTRLProximal" | "Momentum" | "Nadam" | "NesterovMomentum" | "RMSProp" | "SGD"
+;
+
+OptimizersBase : "Initializer" | "Loss" | "Optimizer" | "Scheduler"
+;
+
+OptimInitializers : "Constant" | "Normal" | "Zeros"
+;
+
+OptimLosses : "Absolute" | "BinaryFocalLoss" | "BinaryLoss" | "Cauchy" | "CrossEntropy" | "EpsilonInsensitiveHinge" | "Hinge" | "Huber" | "Log" | "MultiClassLoss" | "Poisson" | "Quantile" | "RegressionLoss" | "Squared"
+;
+
+OptimSchedulers : "Constant" | "InverseScaling" | "Optimal"
+;
+
+Preprocessing : "AdaptiveStandardScaler" | "Binarizer" | "FeatureHasher" | "GaussianRandomProjector" | "LDA" | "MaxAbsScaler" | "MinMaxScaler" | "Normalizer" | "OneHotEncoder" | "OrdinalEncoder" | "PredClipper" | "PreviousImputer" | "RobustScaler" | "SparseRandomProjector" | "StandardScaler" | "StatImputer" | "TargetMinMaxScaler" | "TargetStandardScaler"
+;
+
+Proba : "Beta" | "Gaussian" | "Multinomial" | "MultivariateGaussian"
+;
+
+ProbaBase : "BinaryDistribution" | "ContinuousDistribution" | "DiscreteDistribution" | "Distribution"
+;
+
+Reco : "Baseline" | "BiasedMF" | "FunkMF" | "RandomNormal"
+;
+
+RecoBase : "Ranker"
+;
+
+Rules : "AMRules"
+;
+
+TimeSeries : "HoltWinters" | "SNARIMAX"
+;
+
+Tree : "ExtremelyFastDecisionTreeClassifier" | "HoeffdingAdaptiveTreeClassifier" | "HoeffdingAdaptiveTreeRegressor" | "HoeffdingTreeClassifier" | "HoeffdingTreeRegressor" | "LASTClassifier" | "SGTClassifier" | "SGTRegressor" | "iSOUPTreeRegressor"
+;
+
+TreeBase : "Branch" | "Leaf"
+;
+
+
+TreeSplitter : "DynamicQuantizer" | "EBSTSplitter" | "ExhaustiveSplitter" | "GaussianSplitter" | "HistogramSplitter" | "QOSplitter" | "Quantizer" | "Splitter" | "StaticQuantizer" | "TEBSTSplitter"
+;
+
+Miscellaneous : "SDFT" | "Skyline"
+;
+
+Composers : "Discard" | "FuncTransformer" | "Grouper" | "Pipeline" | "Prefixer" | "Renamer" | "Select" | "SelectType" | "Suffixer" | "TargetTransformRegressor" | "TransformerProduct" | "TransformerUnion" | "learn_during_predict"
+;

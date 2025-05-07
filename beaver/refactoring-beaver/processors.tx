@@ -1,0 +1,34 @@
+import models
+import connections
+
+File : 
+    connector = Connector
+    data += Data
+    preprocessors += Preprocessors
+;
+
+Data : 
+    
+    'data' name = ID '{'
+
+        'input_topic' ':' input_topic=STRING 
+        ('preprocessors' ':'  preprocessors += ProcList['+'] )?
+        
+    
+    '}'
+; 
+
+
+ProcList : 
+    items += [Model]['|']
+;
+
+Preprocessors : 
+
+    'preprocessors' '{'
+    
+        models += Model 
+
+    '}'
+
+;

@@ -1,0 +1,23 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'linear_models'
+        auto_offset_reset = "earliest"
+}
+
+data testdata1 { 
+
+    input_topic : "tester_topic" 
+    preprocessors : LinearRegressionModel | BernoulliNBModel  +  LinearRegressionModel
+}
+
+preprocessors { 
+
+    model LinearRegressionModel {
+        name: BayesianLinearRegression
+        }
+
+    model BernoulliNBModel {
+        name: BernoulliNB
+        }
+}
