@@ -256,9 +256,14 @@ class Pipeline:
         col : int
             Column index of the subplot.
         """
+        #print(self.metrics_values)
+        
         for metric_name, values in self.metrics_values.items():
+            
             fig.add_trace(go.Scatter(
                 y=values,
                 mode="lines",
-                name=f"{self.name} - {metric_name}"
+                name=f"{self.name} - {metric_name}",
+                #hoverinfo="y+name",
+                hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
             ), row=row, col=col)

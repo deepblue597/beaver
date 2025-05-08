@@ -100,8 +100,13 @@ sdf_HoltWintersPipe = sdf_airline.apply(HoltWintersPipe.train_and_predict).to_to
 def run_dash():
     dash_app = Dash(__name__)
     dash_app.layout = html.Div([
-        html.H2("Live Metrics Dashboard"),
-        dcc.Interval(id='interval', interval=1000, n_intervals=0),
+         html.H2("Pipelines' Plots" , style={
+        'textAlign': 'center',  # Center the text
+
+        'fontFamily': 'sans-serif',  # Change the font family
+        'font-weight': 'normal',  # Make the text bold
+        }),
+        dcc.Interval(id='interval', n_intervals=0),
         dcc.Graph(id='live-graph')
     ])
 
@@ -110,15 +115,15 @@ def run_dash():
         Input('interval', 'n_intervals')
     )
     def update_graph(n):
-        fig = make_subplots(rows=1, cols=1)
+        fig = make_subplots(rows=2, cols=1 , vertical_spacing=0.1)
 
         # Assumes `add_metrics_traces` is defined in your Pipeline class
         HoltWintersPipe.add_metrics_traces(fig, row=1, col=1)
 
-        fig.update_layout(height=600, title="Live Metrics from HoltWintersPipe")
+        fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
         return fig
 
-    dash_app.run(debug=False, use_reloader=False)
+    dash_app.run(debug=True, use_reloader=False)
 
 
 # Start Dash in a separate thread
