@@ -7,7 +7,7 @@ from river import metrics
 import warnings
 from errors import PredictionWarning
 from matplotlib.animation import FuncAnimation
-
+import plotly.graph_objs as go
 
 __all__ = ['Pipeline']
 
@@ -242,3 +242,23 @@ class Pipeline:
             self.metrics[category] = metric
         else:
             self.metrics[category] += metric
+
+    def add_metrics_traces(self, fig, row=1, col=1):
+        """
+        Add line plot traces for each metric into the given figure.
+        
+        Parameters
+        ----------
+        fig : plotly.graph_objs.Figure
+            The figure object to add traces to.
+        row : int
+            Row index of the subplot.
+        col : int
+            Column index of the subplot.
+        """
+        for metric_name, values in self.metrics_values.items():
+            fig.add_trace(go.Scatter(
+                y=values,
+                mode="lines",
+                name=f"{self.name} - {metric_name}"
+            ), row=row, col=col)

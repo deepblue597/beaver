@@ -16,6 +16,9 @@ preprocessors {
     model LinearRegressionModel {
         name: BayesianLinearRegression
         }
+    model LinearRegressionModel<BayesianLinearRegression> A 
+
+    //TODO: tsekare tipou python tropos onomasia dhl class ClassName <Type> id 
 
     model BernoulliNBModel {
         name: BernoulliNB

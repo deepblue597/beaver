@@ -4,8 +4,14 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 from quixstreams.kafka import ConnectionConfig 
 from pipeline import * 
-
-
+from dash import Dash
+from dash.dependencies import Input, Output
+# import dash_core_components as dcc
+# import dash_html_components as html
+from dash import dcc, html
+import plotly.graph_objs as go
+import threading
+from plotly.subplots import make_subplots
 
 
 
@@ -89,10 +95,43 @@ output_topic_HoltWintersPipe = app.topic(HoltWintersPipe.output_topic, value_des
 sdf_HoltWintersPipe = sdf_airline.apply(HoltWintersPipe.train_and_predict).to_topic(output_topic_HoltWintersPipe)
 
 
-# Run Quix Streams 
-app.run()
+# ---------- DASHBOARD SETUP ----------
+
+def run_dash():
+    dash_app = Dash(__name__)
+    dash_app.layout = html.Div([
+        html.H2("Live Metrics Dashboard"),
+        dcc.Interval(id='interval', interval=1000, n_intervals=0),
+        dcc.Graph(id='live-graph')
+    ])
+
+    @dash_app.callback(
+        Output('live-graph', 'figure'),
+        Input('interval', 'n_intervals')
+    )
+    def update_graph(n):
+        fig = make_subplots(rows=1, cols=1)
+
+        # Assumes `add_metrics_traces` is defined in your Pipeline class
+        HoltWintersPipe.add_metrics_traces(fig, row=1, col=1)
+
+        fig.update_layout(height=600, title="Live Metrics from HoltWintersPipe")
+        return fig
+
+    dash_app.run(debug=False, use_reloader=False)
+
+
+# Start Dash in a separate thread
+#threading.Thread(target=run_dash, daemon=True).start()
+
+
+if __name__ == '__main__':
+    threading.Thread(target=run_dash, daemon=True).start()
+    #update_data()
+    # Run Quix Streams 
+    app.run()
 
 #Metric plots for each Pipeline
 
-HoltWintersPipe.metrics_plot()
+#HoltWintersPipe.metrics_plot()
 
