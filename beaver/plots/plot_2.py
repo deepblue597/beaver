@@ -38,7 +38,12 @@ def run_dash_app():
     app = dash.Dash(__name__)
 
     app.layout = html.Div([
-        html.H4('Interactive color selection with simple Dash example'),
+        html.H2("Pipelines' Plots" , style={
+        'textAlign': 'center',  # Center the text
+
+        'fontFamily': 'sans-serif',  # Change the font family
+        'font-weight': 'normal',  # Make the text bold
+        }),
         dcc.Graph(id='live-graph'),
         #You can add interval to update the graph every 2 seconds ()
         dcc.Interval(id='interval', interval=2000 , n_intervals=0)
@@ -58,13 +63,9 @@ def run_dash_app():
             go.Scatter(y=ys2, mode='lines', name='Bottom'),
             row=2, col=1
         )
-        # figure.update_layout(
-        #     title='Live Data Plot',  # Graph title
-        #     xaxis_title='Time',      # X-axis label
-        #     yaxis_title='Value',     # Y-axis label
-        # )
-        figure.update_layout(height=600, title="Live Subplots", margin=dict(t=40, b=40) , 
-                             xaxis_title='Time', yaxis_title='Value'  ),
+
+        figure.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40) , 
+                                yaxis_title='Values'  ),
         return figure
 
     app.run(debug=True, use_reloader=False)
