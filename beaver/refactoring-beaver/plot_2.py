@@ -24,7 +24,7 @@ def run_dash_app():
     app.layout = html.Div([
         html.H4('Interactive color selection with simple Dash example'),
         dcc.Graph(id='live-graph'),
-        dcc.Interval(id='interval', interval=1000, n_intervals=0)
+        dcc.Interval(id='interval',  n_intervals=0)
     ])
 
     @app.callback(
