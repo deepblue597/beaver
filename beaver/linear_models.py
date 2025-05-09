@@ -4,6 +4,12 @@ from quixstreams import Application
 from quixstreams.models import TopicConfig
 from quixstreams.kafka import ConnectionConfig 
 from pipeline import * 
+from dash import Dash
+from dash.dependencies import Input, Output
+from dash import dcc, html
+import plotly.graph_objs as go
+import threading
+from plotly.subplots import make_subplots
 
 from river import preprocessing
 
@@ -129,19 +135,46 @@ sdf_BayesianLinearReg = sdf_trumpApproval.apply(BayesianLinearReg.train_and_pred
 sdf_linearRegPipe = sdf_trumpApproval.apply(linearRegPipe.train_and_predict).to_topic(output_topic_linearRegPipe)
 
 
-# Run Quix Streams 
-app.run()
+# ---------- DASHBOARD SETUP ----------
 
-#Metric plots for each Pipeline
+def run_dash():
+    dash_app = Dash(__name__)
+    dash_app.layout = html.Div([
+         html.H2("Pipelines' Plots" , style={
+        'textAlign': 'center',  # Center the text
 
-LogisticRegression.metrics_plot()
+        'fontFamily': 'sans-serif',  # Change the font family
+        'font-weight': 'normal',  # Make the text bold
+        }),
+        dcc.Interval(id='interval', n_intervals=0),
+        dcc.Graph(id='live-graph')
+    ])
 
+    @dash_app.callback(
+        Output('live-graph', 'figure'),
+        Input('interval', 'n_intervals')
+    )
+    def update_graph(n):
+        fig = make_subplots(rows=4, cols=1 , vertical_spacing=0.1)
 
-ALMAClassifier.metrics_plot()
+        
+        LogisticRegression.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
+        
+        ALMAClassifier.add_metrics_traces(fig = fig , row = 2, col = 1 ) 
+        
+        BayesianLinearReg.add_metrics_traces(fig = fig , row = 3, col = 1 ) 
+        
+        linearRegPipe.add_metrics_traces(fig = fig , row = 4, col = 1 ) 
+        
 
+        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        return fig
 
-BayesianLinearReg.metrics_plot()
+    dash_app.run(debug=True, use_reloader=False)
 
-
-linearRegPipe.metrics_plot()
-
+if __name__ == '__main__':
+    #Run Plotly on different thread
+    threading.Thread(target=run_dash, daemon=True).start()
+   
+    # Run Quix Streams 
+    app.run()

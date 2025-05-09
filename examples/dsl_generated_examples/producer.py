@@ -18,7 +18,7 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    dataset = datasets.Phishing()
+    #dataset = datasets.Phishing()
     #dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
@@ -43,16 +43,16 @@ if __name__ == "__main__":
     #     [5, 2],
     #     [5, 4]
     # ]
-    #dataset = datasets.AirlinePassengers()
+    dataset = datasets.AirlinePassengers()
 # %%
     dataset
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
-    # Trump approval
-    #df = pd.read_csv(dataset.path)
+    # Trump approval , Airline
+    df = pd.read_csv(dataset.path)
     # Bananas, Clustering
-    df = pd.DataFrame(dataset)
+    #df = pd.DataFrame(dataset)
 # %%
     df
     
@@ -69,11 +69,11 @@ if __name__ == "__main__":
     for idx, row in df.iterrows():
 
         # bananas
-        sample_dict = {**row[0], 'class': row[1]}
+        #sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
-        # TRump
-        #json_message = row.to_json()
-        json_message = json.dumps(sample_dict)
+        # TRump , airline
+        json_message = row.to_json()
+        #json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(
