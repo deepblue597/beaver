@@ -1,21 +1,12 @@
 
-
-
 from river import linear_model
-
-from river import Forest
-
-from river import Clustering
-
-from river import Drift
-
-from river import Ensemble
-
-from river import NeuralNetworks
-
-from river import Preprocessing
-
-from river import TimeSeries
-
-from river import Miscellaneous
-
+from river import forest
+from river import cluster
+from river import drift
+from river import ensemble
+from river import neural_net
+from river import preprocessing
+from river import time_series
+from river import misc
+    
+from river import tree

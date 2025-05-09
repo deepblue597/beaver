@@ -1,9 +1,37 @@
+{% set custom_import_map = {
+    'neuralNetworksActivations': 'neural_net',
+    'multioutputMetrics': 'metrics',
+    'optimizersBase': 'optim',
+    'optimInitializers': 'optim',
+    'optimLosses': 'optim',
+    'optimSchedulers': 'optim',
+    'probaBase': 'proba',
+    'recoBase': 'reco',
+    'treeBase': 'treeBase',
+    'treeSplitter': 'tree'
+} %}
 
-{% set unique_modules = [] %}
-{%for model in file.preprocessors.models%}
-{% if model.type.__class__.__name__ not in unique_modules -%}
-{% set _ = unique_modules.append(model.type.__class__.__name__)  -%}
-from river import {{model.type.__class__.__name__}}
-{% endif -%}
-{% endfor %}
+{%- set custom_model_init = {
+    'neuralNetworksActivations': 'neural_net.activations',
+    'multioutputMetrics': 'metrics.multioutput',
+    'optimizersBase': 'optim.base',
+    'optimInitializers': 'optim.initializers',
+    'optimLosses': 'optim.losses',
+    'optimSchedulers': 'optim.schedulers',
+    'probaBase': 'proba.base',
+    'recoBase': 'reco.base',
+    'treeBase': 'tree.base',
+    'treeSplitter': 'tree.splitter'
+} %}
 
+{%- set unique_modules = [] -%}
+{%- for model in file.preprocessors.models -%}
+    {%- set class_name = model.type.__class__.__name__ -%}
+    {%- if class_name in custom_import_map %}
+    {% set class_name = custom_import_map[class_name] -%}
+    {%- endif %}
+    {%- if class_name not in unique_modules -%}
+    {%- set _ = unique_modules.append(class_name) %}
+from river import {{ class_name }}
+    {%- endif %}
+{%- endfor %}

@@ -2,9 +2,42 @@
 Model:
     'model' '<' type = ModelGroup '>'  name=ID ;
 
-ModelGroup : linear_model | Forest | Clustering | Drift | Ensemble | Facto | Imbalance | Metrics| MultioutputMetrics | Multiclass | Multioutput | NaiveBayes | Neighbors | NeuralNetworks | NeuralNetworksActivations | Optimizers | OptimizersBase | OptimInitializers | OptimLosses | OptimSchedulers | Preprocessing | Proba | ProbaBase | Reco | RecoBase | Rules | TimeSeries | Tree | TreeBase | TreeSplitter | Miscellaneous | Composers; 
+ModelGroup :    linear_model                | 
+                forest                      | 
+                cluster                     | 
+                drift                       | 
+                ensemble                    | 
+                facto                       | 
+                imblearn                    | 
+                metrics                     | 
+                multioutputMetrics          | 
+                multiclass                  | 
+                multioutput                 | 
+                naive_bayes                 | 
+                neighbors                   | 
+                neural_net                  |   
+                neuralNetworksActivations   | 
+                optim                       | 
+                optimizersBase              | 
+                optimInitializers           | 
+                optimLosses                 |    
+                optimSchedulers             | 
+                preprocessing               | 
+                proba                       | 
+                probaBase                   | 
+                reco                        | 
+                recoBase                    | 
+                rules                       | 
+                time_series                 | 
+                tree                        | 
+                treeBase                    | 
+                treeSplitter                | 
+                misc                        | 
+                compose 
+; 
 
 //TODO: Change the names to the libraries of river 
+// TODO: neuralNetworksActivations multioutputMetrics optimizersBase OptimInitializers OptimLosses OptimSchedulers ProbaBase  recoBase TreeBase  TreeSplitter on jinja 
 linear_model:
     name = LinearModelNames 
 ; 
@@ -20,7 +53,7 @@ LinearModelNames :  "ALMAClassifier" |
 ;
 
 
-Forest:
+forest :
     name = ForestNames
 ;
 
@@ -45,7 +78,7 @@ AnomalyNames : "GaussianScorer" |
                "ThresholdFilter"
 ;
 
-Clustering:
+cluster :
     name = ClusteringNames
 ;
 
@@ -58,7 +91,7 @@ ClusteringNames : "CluStream" |
                   "TextClust"
 ;
 
-Drift:
+drift :
     name = DriftNames
 ;
 
@@ -70,7 +103,7 @@ DriftNames : "ADWIN" |
              "PageHinkley"
 ;
 
-Ensemble:
+ensemble :
     name = EnsembleNames
 ;
 
@@ -88,7 +121,7 @@ EnsembleNames : "ADWINBaggingClassifier" |
                 "VotingClassifier"
 ;
 
-Facto:
+facto :
     name = FactoNames
 ;
 
@@ -102,7 +135,7 @@ FactoNames : "FFMClassifier" |
              "HOFMRegressor"
 ;
 
-Imbalance:
+imblearn :
     name = ImbalanceNames
 ;
 
@@ -115,7 +148,7 @@ ImbalanceNames : "ChebyshevOverSampler" |
                  "RandomUnderSampler"
 ;
 
-Metrics:
+metrics :
     name = MetricsNames
 ;
 
@@ -170,7 +203,7 @@ MetricsNames : "Accuracy" |
                "WeightedRecall"
 ;
 
-MultioutputMetrics:
+multioutputMetrics:
     name = MultioutputMetricsNames
 ;
 
@@ -182,7 +215,7 @@ MultioutputMetricsNames : "ExactMatch" |
                           "SampleAverage"
 ;
 
-Multiclass:
+multiclass:
     name = MulticlassNames
 ;
 
@@ -191,7 +224,7 @@ MulticlassNames : "OneVsOneClassifier" |
                   "OutputCodeClassifier"
 ;
 
-Multioutput:
+multioutput :
     name = MultioutputNames
 ;
 
@@ -202,7 +235,7 @@ MultioutputNames : "ClassifierChain" |
                    "RegressorChain"
 ;
 
-NaiveBayes:
+naive_bayes :
     name = NaiveBayesNames
 ;
 
@@ -212,7 +245,7 @@ NaiveBayesNames : "BernoulliNB" |
                   "MultinomialNB"
 ;
 
-Neighbors:
+neighbors :
     name = NeighborsNames
 ;
 
@@ -222,14 +255,14 @@ NeighborsNames : "KNNClassifier" |
                  "SWINN"
 ;
 
-NeuralNetworks:
+neural_net :
     name = NeuralNetworksNames
 ;
 
 NeuralNetworksNames : "MLPRegressor"
 ;
 
-NeuralNetworksActivations:
+neuralNetworksActivations:
     name = NeuralNetworksActivationsNames
 ;
 
@@ -238,7 +271,7 @@ NeuralNetworksActivationsNames : "Identity" |
                                  "Sigmoid"
 ;
 
-Optimizers:
+optim :
     name = OptimizersNames
 ;
 
@@ -257,7 +290,7 @@ OptimizersNames : "AMSGrad" |
                   "SGD"
 ;
 
-OptimizersBase:
+optimizersBase:
     name = OptimizersBaseNames
 ;
 
@@ -267,7 +300,7 @@ OptimizersBaseNames : "Initializer" |
                       "Scheduler"
 ;
 
-OptimInitializers:
+optimInitializers:
     name = OptimInitializersNames
 ;
 
@@ -276,7 +309,7 @@ OptimInitializersNames : "Constant" |
                          "Zeros"
 ;
 
-OptimLosses:
+optimLosses:
     name = OptimLossesNames
 ;
 
@@ -296,7 +329,7 @@ OptimLossesNames : "Absolute" |
                    "Squared"
 ;
 
-OptimSchedulers:
+optimSchedulers:
     name = OptimSchedulersNames
 ;
 
@@ -305,7 +338,7 @@ OptimSchedulersNames : "Constant" |
                        "Optimal"
 ;
 
-Preprocessing:
+preprocessing :
     name = PreprocessingNames
 ;
 
@@ -329,7 +362,7 @@ PreprocessingNames : "AdaptiveStandardScaler" |
                      "TargetStandardScaler"
 ;
 
-Proba:
+proba :
     name = ProbaNames
 ;
 
@@ -339,7 +372,7 @@ ProbaNames : "Beta" |
              "MultivariateGaussian"
 ;
 
-ProbaBase:
+probaBase:
     name = ProbaBaseNames
 ;
 
@@ -349,7 +382,7 @@ ProbaBaseNames : "BinaryDistribution" |
                  "Distribution"
 ;
 
-Reco:
+reco :
     name = RecoNames
 ;
 
@@ -359,21 +392,21 @@ RecoNames : "Baseline" |
             "RandomNormal"
 ;
 
-RecoBase:
+recoBase:
     name = RecoBaseNames
 ;
 
 RecoBaseNames : "Ranker"
 ;
 
-Rules:
+rules:
     name = RulesNames
 ;
 
 RulesNames : "AMRules"
 ;
 
-TimeSeries:
+time_series :
     name = TimeSeriesNames
 ;
 
@@ -381,7 +414,7 @@ TimeSeriesNames : "HoltWinters" |
                   "SNARIMAX"
 ;
 
-Tree:
+tree :
     name = TreeNames
 ;
 
@@ -396,7 +429,7 @@ TreeNames : "ExtremelyFastDecisionTreeClassifier" |
             "iSOUPTreeRegressor"
 ;
 
-TreeBase:
+treeBase:
     name = TreeBaseNames
 ;
 
@@ -404,7 +437,7 @@ TreeBaseNames : "Branch" |
                 "Leaf"
 ;
 
-TreeSplitter:
+treeSplitter:
     name = TreeSplitterNames
 ;
 
@@ -420,7 +453,7 @@ TreeSplitterNames : "DynamicQuantizer" |
                     "TEBSTSplitter"
 ;
 
-Miscellaneous:
+misc :
     name = MiscellaneousNames
 ;
 
@@ -428,7 +461,7 @@ MiscellaneousNames : "SDFT" |
                      "Skyline"
 ;
 
-Composers:
+compose :
     name = ComposersNames
 ;
 
