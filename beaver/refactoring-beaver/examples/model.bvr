@@ -14,7 +14,7 @@ data testdata1 {
 preprocessors { 
 
     // tester
-    model <LinearRegression> model2  
+    model <ALMAClassifier> model2  
 
 
     model <ARFClassifier> model3  

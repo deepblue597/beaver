@@ -1,5 +1,9 @@
-{%for preprocessor in file.preprocessors.models%}
 
-{{ preprocessor.type.__class__.__name__  }}
-{{ preprocessor.type.name   }}
-{%endfor%}
+{% set unique_modules = [] %}
+{%for model in file.preprocessors.models%}
+{% if model.type.__class__.__name__ not in unique_modules -%}
+{% set _ = unique_modules.append(model.type.__class__.__name__)  -%}
+from river import {{model.type.__class__.__name__}}
+{% endif -%}
+{% endfor %}
+

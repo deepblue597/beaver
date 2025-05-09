@@ -1,36 +1,21 @@
 
 
-LinearModel
-LinearRegression
 
+from river import linear_model
 
-Forest
-ARFClassifier
+from river import Forest
 
+from river import Clustering
 
-Clustering
-KMeans
+from river import Drift
 
+from river import Ensemble
 
-Drift
-ADWIN
+from river import NeuralNetworks
 
+from river import Preprocessing
 
-Ensemble
-BaggingClassifier
+from river import TimeSeries
 
+from river import Miscellaneous
 
-NeuralNetworks
-MLPRegressor
-
-
-Preprocessing
-StandardScaler
-
-
-TimeSeries
-HoltWinters
-
-
-Miscellaneous
-Skyline

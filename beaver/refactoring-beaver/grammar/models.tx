@@ -2,9 +2,10 @@
 Model:
     'model' '<' type = ModelGroup '>'  name=ID ;
 
-ModelGroup : LinearModel | Forest | Clustering | Drift | Ensemble | Facto | Imbalance | Metrics| MultioutputMetrics | Multiclass | Multioutput | NaiveBayes | Neighbors | NeuralNetworks | NeuralNetworksActivations | Optimizers | OptimizersBase | OptimInitializers | OptimLosses | OptimSchedulers | Preprocessing | Proba | ProbaBase | Reco | RecoBase | Rules | TimeSeries | Tree | TreeBase | TreeSplitter | Miscellaneous | Composers; 
+ModelGroup : linear_model | Forest | Clustering | Drift | Ensemble | Facto | Imbalance | Metrics| MultioutputMetrics | Multiclass | Multioutput | NaiveBayes | Neighbors | NeuralNetworks | NeuralNetworksActivations | Optimizers | OptimizersBase | OptimInitializers | OptimLosses | OptimSchedulers | Preprocessing | Proba | ProbaBase | Reco | RecoBase | Rules | TimeSeries | Tree | TreeBase | TreeSplitter | Miscellaneous | Composers; 
 
-LinearModel:
+//TODO: Change the names to the libraries of river 
+linear_model:
     name = LinearModelNames 
 ; 
 
