@@ -1,0 +1,238 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+131537969348832[ label="{File|}"]
+
+131537968578096[ label="{Data|name: ID\linput_topic: STRING\l}"]
+
+131537969351472[ label="{ProcList|}"]
+
+131537968754288[ label="{Preprocessors|}"]
+
+131537968896080[ label="{Model|name: ID\l}"]
+
+131537968895552[ label="{*ModelGroup|}"]
+
+131537968896272[ label="{LinearModel|name: LinearModelNames\l}"]
+
+131537968896512[ label="{Forest|name: ForestNames\l}"]
+
+131537968896848[ label="{Anomaly|name: AnomalyNames\l}"]
+
+131537968897184[ label="{Clustering|name: ClusteringNames\l}"]
+
+131537968896656[ label="{Drift|name: DriftNames\l}"]
+
+131537968897760[ label="{Ensemble|name: EnsembleNames\l}"]
+
+131537968897952[ label="{Facto|name: FactoNames\l}"]
+
+131537968898144[ label="{Imbalance|name: ImbalanceNames\l}"]
+
+131537968898192[ label="{Metrics|name: MetricsNames\l}"]
+
+131537968898672[ label="{MultioutputMetrics|name: MultioutputMetricsNames\l}"]
+
+131537968898816[ label="{Multiclass|name: MulticlassNames\l}"]
+
+131537968899008[ label="{Multioutput|name: MultioutputNames\l}"]
+
+131537968899200[ label="{NaiveBayes|name: NaiveBayesNames\l}"]
+
+131537968899344[ label="{Neighbors|name: NeighborsNames\l}"]
+
+131537968899488[ label="{NeuralNetworks|name: NeuralNetworksNames\l}"]
+
+131537968899680[ label="{NeuralNetworksActivations|name: NeuralNetworksActivationsNames\l}"]
+
+131537968899872[ label="{Optimizers|name: OptimizersNames\l}"]
+
+131537968900064[ label="{OptimizersBase|name: OptimizersBaseNames\l}"]
+
+131537968900256[ label="{OptimInitializers|name: OptimInitializersNames\l}"]
+
+131537968900448[ label="{OptimLosses|name: OptimLossesNames\l}"]
+
+131537968900592[ label="{OptimSchedulers|name: OptimSchedulersNames\l}"]
+
+131537968900784[ label="{Preprocessing|name: PreprocessingNames\l}"]
+
+131537968900976[ label="{Proba|name: ProbaNames\l}"]
+
+131537968901168[ label="{ProbaBase|name: ProbaBaseNames\l}"]
+
+131537968901312[ label="{Reco|name: RecoNames\l}"]
+
+131537968901504[ label="{RecoBase|name: RecoBaseNames\l}"]
+
+131537968901696[ label="{Rules|name: RulesNames\l}"]
+
+131537968901888[ label="{TimeSeries|name: TimeSeriesNames\l}"]
+
+131537968902080[ label="{Tree|name: TreeNames\l}"]
+
+131537968902272[ label="{TreeBase|name: TreeBaseNames\l}"]
+
+131537968902416[ label="{TreeSplitter|name: TreeSplitterNames\l}"]
+
+131537968902608[ label="{Miscellaneous|name: MiscellaneousNames\l}"]
+
+131537968902800[ label="{Composers|name: ComposersNames\l}"]
+
+131537968902944[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+
+
+
+131537969348832 -> 131537968902944[arrowtail=diamond, dir=both, headlabel="connector "]
+131537969348832 -> 131537968578096[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+131537969348832 -> 131537968754288[arrowtail=diamond, dir=both, headlabel="preprocessors "]
+131537968578096 -> 131537969351472[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+131537969351472 -> 131537968896080[headlabel="items 1..*"]
+131537968754288 -> 131537968896080[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+131537968896080 -> 131537968895552[arrowtail=diamond, dir=both, headlabel="type "]
+131537968895552 -> 131537968896272 [dir=back]
+131537968895552 -> 131537968896512 [dir=back]
+131537968895552 -> 131537968897184 [dir=back]
+131537968895552 -> 131537968896656 [dir=back]
+131537968895552 -> 131537968897760 [dir=back]
+131537968895552 -> 131537968897952 [dir=back]
+131537968895552 -> 131537968898144 [dir=back]
+131537968895552 -> 131537968898192 [dir=back]
+131537968895552 -> 131537968898672 [dir=back]
+131537968895552 -> 131537968898816 [dir=back]
+131537968895552 -> 131537968899008 [dir=back]
+131537968895552 -> 131537968899200 [dir=back]
+131537968895552 -> 131537968899344 [dir=back]
+131537968895552 -> 131537968899488 [dir=back]
+131537968895552 -> 131537968899680 [dir=back]
+131537968895552 -> 131537968899872 [dir=back]
+131537968895552 -> 131537968900064 [dir=back]
+131537968895552 -> 131537968900256 [dir=back]
+131537968895552 -> 131537968900448 [dir=back]
+131537968895552 -> 131537968900592 [dir=back]
+131537968895552 -> 131537968900784 [dir=back]
+131537968895552 -> 131537968900976 [dir=back]
+131537968895552 -> 131537968901168 [dir=back]
+131537968895552 -> 131537968901312 [dir=back]
+131537968895552 -> 131537968901504 [dir=back]
+131537968895552 -> 131537968901696 [dir=back]
+131537968895552 -> 131537968901888 [dir=back]
+131537968895552 -> 131537968902080 [dir=back]
+131537968895552 -> 131537968902272 [dir=back]
+131537968895552 -> 131537968902416 [dir=back]
+131537968895552 -> 131537968902608 [dir=back]
+131537968895552 -> 131537968902800 [dir=back]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>AnomalyNames</b></td><td>GaussianScorer|HalfSpaceTrees|LocalOutlierFactor|OneClassSVM|PredictiveAnomalyDetection|QuantileFilter|StandardAbsoluteDeviation|ThresholdFilter</td>
+	</tr>
+	<tr>
+		<td><b>ClusteringNames</b></td><td>CluStream|DBSTREAM|DenStream|KMeans|ODAC|STREAMKMeans|TextClust</td>
+	</tr>
+	<tr>
+		<td><b>ComposersNames</b></td><td>Discard|FuncTransformer|Grouper|Pipeline|Prefixer|Renamer|Select|SelectType|Suffixer|TargetTransformRegressor|TransformerProduct|TransformerUnion|learn_during_predict</td>
+	</tr>
+	<tr>
+		<td><b>DriftNames</b></td><td>ADWIN|DriftRetrainingClassifier|DummyDriftDetector|KSWIN|NoDrift|PageHinkley</td>
+	</tr>
+	<tr>
+		<td><b>EnsembleNames</b></td><td>ADWINBaggingClassifier|ADWINBoostingClassifier|AdaBoostClassifier|BOLEClassifier|BaggingClassifier|BaggingRegressor|EWARegressor|LeveragingBaggingClassifier|SRPClassifier|SRPRegressor|StackingClassifier|VotingClassifier</td>
+	</tr>
+	<tr>
+		<td><b>FactoNames</b></td><td>FFMClassifier|FFMRegressor|FMClassifier|FMRegressor|FwFMClassifier|FwFMRegressor|HOFMClassifier|HOFMRegressor</td>
+	</tr>
+	<tr>
+		<td><b>ForestNames</b></td><td>AMFClassifier|AMFRegressor|ARFClassifier|ARFRegressor|OXTRegressor</td>
+	</tr>
+	<tr>
+		<td><b>ImbalanceNames</b></td><td>ChebyshevOverSampler|ChebyshevUnderSampler|HardSamplingClassifier|HardSamplingRegressor|RandomOverSampler|RandomSampler|RandomUnderSampler</td>
+	</tr>
+	<tr>
+		<td><b>LinearModelNames</b></td><td>ALMAClassifier|BayesianLinearRegression|LinearRegression|LogisticRegression|PAClassifier|PARegressor|Perceptron|SoftmaxRegression</td>
+	</tr>
+	<tr>
+		<td><b>MetricsNames</b></td><td>Accuracy|AdjustedMutualInfo|AdjustedRand|BalancedAccuracy|ClassificationReport|CohenKappa|Completeness|ConfusionMatrix|CrossEntropy|F1|FBeta|FowlkesMallows|GeometricMean|Homogeneity|Jaccard|LogLoss|MAE|MAPE|MCC|MSE|MacroF1|MacroFBeta|MacroJaccard|MacroPrecision|MacroRecall|MicroF1|MicroFBeta|MicroJaccard|MicroPrecision|MicroRecall|MultiFBeta|MutualInfo|NormalizedMutualInfo|Precision|R2|RMSE|RMSLE|ROCAUC|Rand|Recall|RollingROCAUC|SMAPE|Silhouette|VBeta|WeightedF1|WeightedFBeta|WeightedJaccard|WeightedPrecision|WeightedRecall</td>
+	</tr>
+	<tr>
+		<td><b>MiscellaneousNames</b></td><td>SDFT|Skyline</td>
+	</tr>
+	<tr>
+		<td><b>MulticlassNames</b></td><td>OneVsOneClassifier|OneVsRestClassifier|OutputCodeClassifier</td>
+	</tr>
+	<tr>
+		<td><b>MultioutputMetricsNames</b></td><td>ExactMatch|MacroAverage|MicroAverage|MultiLabelConfusionMatrix|PerOutput|SampleAverage</td>
+	</tr>
+	<tr>
+		<td><b>MultioutputNames</b></td><td>ClassifierChain|MonteCarloClassifierChain|MultiClassEncoder|ProbabilisticClassifierChain|RegressorChain</td>
+	</tr>
+	<tr>
+		<td><b>NaiveBayesNames</b></td><td>BernoulliNB|ComplementNB|GaussianNB|MultinomialNB</td>
+	</tr>
+	<tr>
+		<td><b>NeighborsNames</b></td><td>KNNClassifier|KNNRegressor|LazySearch|SWINN</td>
+	</tr>
+	<tr>
+		<td><b>NeuralNetworksActivationsNames</b></td><td>Identity|ReLU|Sigmoid</td>
+	</tr>
+	<tr>
+		<td><b>NeuralNetworksNames</b></td><td>MLPRegressor</td>
+	</tr>
+	<tr>
+		<td><b>OptimInitializersNames</b></td><td>Constant|Normal|Zeros</td>
+	</tr>
+	<tr>
+		<td><b>OptimLossesNames</b></td><td>Absolute|BinaryFocalLoss|BinaryLoss|Cauchy|CrossEntropy|EpsilonInsensitiveHinge|Hinge|Huber|Log|MultiClassLoss|Poisson|Quantile|RegressionLoss|Squared</td>
+	</tr>
+	<tr>
+		<td><b>OptimSchedulersNames</b></td><td>Constant|InverseScaling|Optimal</td>
+	</tr>
+	<tr>
+		<td><b>OptimizersBaseNames</b></td><td>Initializer|Loss|Optimizer|Scheduler</td>
+	</tr>
+	<tr>
+		<td><b>OptimizersNames</b></td><td>AMSGrad|AdaBound|AdaDelta|AdaGrad|AdaMax|Adam|Averager|FTRLProximal|Momentum|Nadam|NesterovMomentum|RMSProp|SGD</td>
+	</tr>
+	<tr>
+		<td><b>PreprocessingNames</b></td><td>AdaptiveStandardScaler|Binarizer|FeatureHasher|GaussianRandomProjector|LDA|MaxAbsScaler|MinMaxScaler|Normalizer|OneHotEncoder|OrdinalEncoder|PredClipper|PreviousImputer|RobustScaler|SparseRandomProjector|StandardScaler|StatImputer|TargetMinMaxScaler|TargetStandardScaler</td>
+	</tr>
+	<tr>
+		<td><b>ProbaBaseNames</b></td><td>BinaryDistribution|ContinuousDistribution|DiscreteDistribution|Distribution</td>
+	</tr>
+	<tr>
+		<td><b>ProbaNames</b></td><td>Beta|Gaussian|Multinomial|MultivariateGaussian</td>
+	</tr>
+	<tr>
+		<td><b>RecoBaseNames</b></td><td>Ranker</td>
+	</tr>
+	<tr>
+		<td><b>RecoNames</b></td><td>Baseline|BiasedMF|FunkMF|RandomNormal</td>
+	</tr>
+	<tr>
+		<td><b>RulesNames</b></td><td>AMRules</td>
+	</tr>
+	<tr>
+		<td><b>TimeSeriesNames</b></td><td>HoltWinters|SNARIMAX</td>
+	</tr>
+	<tr>
+		<td><b>TreeBaseNames</b></td><td>Branch|Leaf</td>
+	</tr>
+	<tr>
+		<td><b>TreeNames</b></td><td>ExtremelyFastDecisionTreeClassifier|HoeffdingAdaptiveTreeClassifier|HoeffdingAdaptiveTreeRegressor|HoeffdingTreeClassifier|HoeffdingTreeRegressor|LASTClassifier|SGTClassifier|SGTRegressor|iSOUPTreeRegressor</td>
+	</tr>
+	<tr>
+		<td><b>TreeSplitterNames</b></td><td>DynamicQuantizer|EBSTSplitter|ExhaustiveSplitter|GaussianSplitter|HistogramSplitter|QOSplitter|Quantizer|Splitter|StaticQuantizer|TEBSTSplitter</td>
+	</tr>
+</table> >]
+
+
+}

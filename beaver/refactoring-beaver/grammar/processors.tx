@@ -1,10 +1,11 @@
 import models
 import connections
+import types
 
 File : 
     connector = Connector
     data += Data
-    preprocessors += Preprocessors
+    preprocessors = Preprocessors
 ;
 
 Data : 

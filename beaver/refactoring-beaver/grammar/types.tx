@@ -30,3 +30,12 @@ DictType:
 
 
 Reference : value = [Model] ;
+
+
+
+// Special rule for comments. Comments start with //
+Comment: CommentLine | CommentBlock ;
+
+CommentLine: /\/\/.*?$/;
+
+CommentBlock: /\/\*(.|\n)*?\*\//;

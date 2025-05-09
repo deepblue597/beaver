@@ -1,0 +1,5 @@
+{%for preprocessor in file.preprocessors.models%}
+
+{{ preprocessor.type.__class__.__name__  }}
+{{ preprocessor.type.name   }}
+{%endfor%}

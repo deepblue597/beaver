@@ -1,0 +1,447 @@
+
+Model:
+    'model' '<' type = ModelGroup '>'  name=ID ;
+
+ModelGroup : LinearModel | Forest | Clustering | Drift | Ensemble | Facto | Imbalance | Metrics| MultioutputMetrics | Multiclass | Multioutput | NaiveBayes | Neighbors | NeuralNetworks | NeuralNetworksActivations | Optimizers | OptimizersBase | OptimInitializers | OptimLosses | OptimSchedulers | Preprocessing | Proba | ProbaBase | Reco | RecoBase | Rules | TimeSeries | Tree | TreeBase | TreeSplitter | Miscellaneous | Composers; 
+
+LinearModel:
+    name = LinearModelNames 
+; 
+
+LinearModelNames :  "ALMAClassifier" | 
+                    "BayesianLinearRegression" | 
+                    "LinearRegression" | 
+                    "LogisticRegression" | 
+                    "PAClassifier" | 
+                    "PARegressor" | 
+                    "Perceptron" | 
+                    "SoftmaxRegression"
+;
+
+
+Forest:
+    name = ForestNames
+;
+
+ForestNames : "AMFClassifier" | 
+              "AMFRegressor" | 
+              "ARFClassifier" | 
+              "ARFRegressor" | 
+              "OXTRegressor"
+;
+
+Anomaly:
+    name = AnomalyNames
+;
+
+AnomalyNames : "GaussianScorer" | 
+               "HalfSpaceTrees" | 
+               "LocalOutlierFactor" | 
+               "OneClassSVM" | 
+               "PredictiveAnomalyDetection" | 
+               "QuantileFilter" | 
+               "StandardAbsoluteDeviation" | 
+               "ThresholdFilter"
+;
+
+Clustering:
+    name = ClusteringNames
+;
+
+ClusteringNames : "CluStream" | 
+                  "DBSTREAM" | 
+                  "DenStream" | 
+                  "KMeans" | 
+                  "ODAC" | 
+                  "STREAMKMeans" | 
+                  "TextClust"
+;
+
+Drift:
+    name = DriftNames
+;
+
+DriftNames : "ADWIN" | 
+             "DriftRetrainingClassifier" | 
+             "DummyDriftDetector" | 
+             "KSWIN" | 
+             "NoDrift" | 
+             "PageHinkley"
+;
+
+Ensemble:
+    name = EnsembleNames
+;
+
+EnsembleNames : "ADWINBaggingClassifier" | 
+                "ADWINBoostingClassifier" | 
+                "AdaBoostClassifier" | 
+                "BOLEClassifier" | 
+                "BaggingClassifier" | 
+                "BaggingRegressor" | 
+                "EWARegressor" | 
+                "LeveragingBaggingClassifier" | 
+                "SRPClassifier" | 
+                "SRPRegressor" | 
+                "StackingClassifier" | 
+                "VotingClassifier"
+;
+
+Facto:
+    name = FactoNames
+;
+
+FactoNames : "FFMClassifier" | 
+             "FFMRegressor" | 
+             "FMClassifier" | 
+             "FMRegressor" | 
+             "FwFMClassifier" | 
+             "FwFMRegressor" | 
+             "HOFMClassifier" | 
+             "HOFMRegressor"
+;
+
+Imbalance:
+    name = ImbalanceNames
+;
+
+ImbalanceNames : "ChebyshevOverSampler" | 
+                 "ChebyshevUnderSampler" | 
+                 "HardSamplingClassifier" | 
+                 "HardSamplingRegressor" | 
+                 "RandomOverSampler" | 
+                 "RandomSampler" | 
+                 "RandomUnderSampler"
+;
+
+Metrics:
+    name = MetricsNames
+;
+
+MetricsNames : "Accuracy" | 
+               "AdjustedMutualInfo" | 
+               "AdjustedRand" | 
+               "BalancedAccuracy" | 
+               "ClassificationReport" | 
+               "CohenKappa" | 
+               "Completeness" | 
+               "ConfusionMatrix" | 
+               "CrossEntropy" | 
+               "F1" | 
+               "FBeta" | 
+               "FowlkesMallows" | 
+               "GeometricMean" | 
+               "Homogeneity" | 
+               "Jaccard" | 
+               "LogLoss" | 
+               "MAE" | 
+               "MAPE" | 
+               "MCC" | 
+               "MSE" | 
+               "MacroF1" | 
+               "MacroFBeta" | 
+               "MacroJaccard" | 
+               "MacroPrecision" | 
+               "MacroRecall" | 
+               "MicroF1" | 
+               "MicroFBeta" | 
+               "MicroJaccard" | 
+               "MicroPrecision" | 
+               "MicroRecall" | 
+               "MultiFBeta" | 
+               "MutualInfo" | 
+               "NormalizedMutualInfo" | 
+               "Precision" | 
+               "R2" | 
+               "RMSE" | 
+               "RMSLE" | 
+               "ROCAUC" | 
+               "Rand" | 
+               "Recall" | 
+               "RollingROCAUC" | 
+               "SMAPE" | 
+               "Silhouette" | 
+               "VBeta" | 
+               "WeightedF1" | 
+               "WeightedFBeta" | 
+               "WeightedJaccard" | 
+               "WeightedPrecision" | 
+               "WeightedRecall"
+;
+
+MultioutputMetrics:
+    name = MultioutputMetricsNames
+;
+
+MultioutputMetricsNames : "ExactMatch" | 
+                          "MacroAverage" | 
+                          "MicroAverage" | 
+                          "MultiLabelConfusionMatrix" | 
+                          "PerOutput" | 
+                          "SampleAverage"
+;
+
+Multiclass:
+    name = MulticlassNames
+;
+
+MulticlassNames : "OneVsOneClassifier" | 
+                  "OneVsRestClassifier" | 
+                  "OutputCodeClassifier"
+;
+
+Multioutput:
+    name = MultioutputNames
+;
+
+MultioutputNames : "ClassifierChain" | 
+                   "MonteCarloClassifierChain" | 
+                   "MultiClassEncoder" | 
+                   "ProbabilisticClassifierChain" | 
+                   "RegressorChain"
+;
+
+NaiveBayes:
+    name = NaiveBayesNames
+;
+
+NaiveBayesNames : "BernoulliNB" | 
+                  "ComplementNB" | 
+                  "GaussianNB" | 
+                  "MultinomialNB"
+;
+
+Neighbors:
+    name = NeighborsNames
+;
+
+NeighborsNames : "KNNClassifier" | 
+                 "KNNRegressor" | 
+                 "LazySearch" | 
+                 "SWINN"
+;
+
+NeuralNetworks:
+    name = NeuralNetworksNames
+;
+
+NeuralNetworksNames : "MLPRegressor"
+;
+
+NeuralNetworksActivations:
+    name = NeuralNetworksActivationsNames
+;
+
+NeuralNetworksActivationsNames : "Identity" | 
+                                 "ReLU" | 
+                                 "Sigmoid"
+;
+
+Optimizers:
+    name = OptimizersNames
+;
+
+OptimizersNames : "AMSGrad" | 
+                  "AdaBound" | 
+                  "AdaDelta" | 
+                  "AdaGrad" | 
+                  "AdaMax" | 
+                  "Adam" | 
+                  "Averager" | 
+                  "FTRLProximal" | 
+                  "Momentum" | 
+                  "Nadam" | 
+                  "NesterovMomentum" | 
+                  "RMSProp" | 
+                  "SGD"
+;
+
+OptimizersBase:
+    name = OptimizersBaseNames
+;
+
+OptimizersBaseNames : "Initializer" | 
+                      "Loss" | 
+                      "Optimizer" | 
+                      "Scheduler"
+;
+
+OptimInitializers:
+    name = OptimInitializersNames
+;
+
+OptimInitializersNames : "Constant" | 
+                         "Normal" | 
+                         "Zeros"
+;
+
+OptimLosses:
+    name = OptimLossesNames
+;
+
+OptimLossesNames : "Absolute" | 
+                   "BinaryFocalLoss" | 
+                   "BinaryLoss" | 
+                   "Cauchy" | 
+                   "CrossEntropy" | 
+                   "EpsilonInsensitiveHinge" | 
+                   "Hinge" | 
+                   "Huber" | 
+                   "Log" | 
+                   "MultiClassLoss" | 
+                   "Poisson" | 
+                   "Quantile" | 
+                   "RegressionLoss" | 
+                   "Squared"
+;
+
+OptimSchedulers:
+    name = OptimSchedulersNames
+;
+
+OptimSchedulersNames : "Constant" | 
+                       "InverseScaling" | 
+                       "Optimal"
+;
+
+Preprocessing:
+    name = PreprocessingNames
+;
+
+PreprocessingNames : "AdaptiveStandardScaler" | 
+                     "Binarizer" | 
+                     "FeatureHasher" | 
+                     "GaussianRandomProjector" | 
+                     "LDA" | 
+                     "MaxAbsScaler" | 
+                     "MinMaxScaler" | 
+                     "Normalizer" | 
+                     "OneHotEncoder" | 
+                     "OrdinalEncoder" | 
+                     "PredClipper" | 
+                     "PreviousImputer" | 
+                     "RobustScaler" | 
+                     "SparseRandomProjector" | 
+                     "StandardScaler" | 
+                     "StatImputer" | 
+                     "TargetMinMaxScaler" | 
+                     "TargetStandardScaler"
+;
+
+Proba:
+    name = ProbaNames
+;
+
+ProbaNames : "Beta" | 
+             "Gaussian" | 
+             "Multinomial" | 
+             "MultivariateGaussian"
+;
+
+ProbaBase:
+    name = ProbaBaseNames
+;
+
+ProbaBaseNames : "BinaryDistribution" | 
+                 "ContinuousDistribution" | 
+                 "DiscreteDistribution" | 
+                 "Distribution"
+;
+
+Reco:
+    name = RecoNames
+;
+
+RecoNames : "Baseline" | 
+            "BiasedMF" | 
+            "FunkMF" | 
+            "RandomNormal"
+;
+
+RecoBase:
+    name = RecoBaseNames
+;
+
+RecoBaseNames : "Ranker"
+;
+
+Rules:
+    name = RulesNames
+;
+
+RulesNames : "AMRules"
+;
+
+TimeSeries:
+    name = TimeSeriesNames
+;
+
+TimeSeriesNames : "HoltWinters" | 
+                  "SNARIMAX"
+;
+
+Tree:
+    name = TreeNames
+;
+
+TreeNames : "ExtremelyFastDecisionTreeClassifier" | 
+            "HoeffdingAdaptiveTreeClassifier" | 
+            "HoeffdingAdaptiveTreeRegressor" | 
+            "HoeffdingTreeClassifier" | 
+            "HoeffdingTreeRegressor" | 
+            "LASTClassifier" | 
+            "SGTClassifier" | 
+            "SGTRegressor" | 
+            "iSOUPTreeRegressor"
+;
+
+TreeBase:
+    name = TreeBaseNames
+;
+
+TreeBaseNames : "Branch" | 
+                "Leaf"
+;
+
+TreeSplitter:
+    name = TreeSplitterNames
+;
+
+TreeSplitterNames : "DynamicQuantizer" | 
+                    "EBSTSplitter" | 
+                    "ExhaustiveSplitter" | 
+                    "GaussianSplitter" | 
+                    "HistogramSplitter" | 
+                    "QOSplitter" | 
+                    "Quantizer" | 
+                    "Splitter" | 
+                    "StaticQuantizer" | 
+                    "TEBSTSplitter"
+;
+
+Miscellaneous:
+    name = MiscellaneousNames
+;
+
+MiscellaneousNames : "SDFT" | 
+                     "Skyline"
+;
+
+Composers:
+    name = ComposersNames
+;
+
+ComposersNames : "Discard" | 
+                 "FuncTransformer" | 
+                 "Grouper" | 
+                 "Pipeline" | 
+                 "Prefixer" | 
+                 "Renamer" | 
+                 "Select" | 
+                 "SelectType" | 
+                 "Suffixer" | 
+                 "TargetTransformRegressor" | 
+                 "TransformerProduct" | 
+                 "TransformerUnion" | 
+                 "learn_during_predict"
+;
