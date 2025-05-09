@@ -35,3 +35,12 @@
 from river import {{ class_name }}
     {%- endif %}
 {%- endfor %}
+
+{% for model in file.preprocessors.models -%}
+    {%- set class_name = model.type.__class__.__name__ -%}
+    {%- if class_name in custom_import_map %}
+{{model.name}} = {{ custom_model_init[class_name] }}.{{ model.type.name }}()
+    {%- else %}
+{{model.name}} = {{ class_name }}.{{ model.type.name }}()
+    {%- endif %}
+{%- endfor %}

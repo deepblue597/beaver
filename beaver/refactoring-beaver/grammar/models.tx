@@ -1,3 +1,7 @@
+//TODO: xreiazomai to params poy einai sto types 
+// AN omos kano import types vgazei error
+///home/jason/thesis/beaver/refactoring-beaver/grammar/processors.tx
+// Error: processors.tx:31:13: Unknown class/rule "Model". 
 
 Model:
     'model' '<' type = ModelGroup '>'  name=ID ;

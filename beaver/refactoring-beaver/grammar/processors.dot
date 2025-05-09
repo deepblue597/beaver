@@ -11,148 +11,158 @@
     edge[dir=black,arrowtail=empty]
 
 
-123706085846640[ label="{File|}"]
+126975821838192[ label="{File|}"]
 
-123706085837184[ label="{Data|name: ID\linput_topic: STRING\l}"]
+126975821838048[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-123706085849376[ label="{ProcList|}"]
+126975821838096[ label="{ProcList|}"]
 
-123706085930000[ label="{Preprocessors|}"]
+126975821835984[ label="{Preprocessors|}"]
 
-123706085334320[ label="{Model|name: ID\l}"]
+126975821239344[ label="{Model|name: ID\l}"]
 
-123706085330720[ label="{*ModelGroup|}"]
+126975821241888[ label="{*ModelGroup|}"]
 
-123706085333264[ label="{linear_model|name: LinearModelNames\l}"]
+126975821241120[ label="{linear_model|name: LinearModelNames\l}"]
 
-123706085329424[ label="{forest|name: ForestNames\l}"]
+126975821235360[ label="{forest|name: ForestNames\l}"]
 
-123706085333552[ label="{Anomaly|name: AnomalyNames\l}"]
+126975821242416[ label="{Anomaly|name: AnomalyNames\l}"]
 
-123706085330336[ label="{cluster|name: ClusteringNames\l}"]
+126975821240640[ label="{cluster|name: ClusteringNames\l}"]
 
-123706085334896[ label="{drift|name: DriftNames\l}"]
+126975821240736[ label="{drift|name: DriftNames\l}"]
 
-123706085335520[ label="{ensemble|name: EnsembleNames\l}"]
+126975821243088[ label="{ensemble|name: EnsembleNames\l}"]
 
-123706085335568[ label="{facto|name: FactoNames\l}"]
+126975821243376[ label="{facto|name: FactoNames\l}"]
 
-123706085335952[ label="{imblearn|name: ImbalanceNames\l}"]
+126975821243664[ label="{imblearn|name: ImbalanceNames\l}"]
 
-123706085336432[ label="{metrics|name: MetricsNames\l}"]
+126975821243904[ label="{metrics|name: MetricsNames\l}"]
 
-123706085336624[ label="{multioutputMetrics|name: MultioutputMetricsNames\l}"]
+126975821244192[ label="{multioutputMetrics|name: MultioutputMetricsNames\l}"]
 
-123706085336768[ label="{multiclass|name: MulticlassNames\l}"]
+126975821244336[ label="{multiclass|name: MulticlassNames\l}"]
 
-123706085336960[ label="{multioutput|name: MultioutputNames\l}"]
+126975821244528[ label="{multioutput|name: MultioutputNames\l}"]
 
-123706085337152[ label="{naive_bayes|name: NaiveBayesNames\l}"]
+126975821244720[ label="{naive_bayes|name: NaiveBayesNames\l}"]
 
-123706085337344[ label="{neighbors|name: NeighborsNames\l}"]
+126975821244864[ label="{neighbors|name: NeighborsNames\l}"]
 
-123706085337536[ label="{neural_net|name: NeuralNetworksNames\l}"]
+126975821245008[ label="{neural_net|name: NeuralNetworksNames\l}"]
 
-123706085337680[ label="{neuralNetworksActivations|name: NeuralNetworksActivationsNames\l}"]
+126975821245200[ label="{neuralNetworksActivations|name: NeuralNetworksActivationsNames\l}"]
 
-123706085337872[ label="{optim|name: OptimizersNames\l}"]
+126975821245392[ label="{optim|name: OptimizersNames\l}"]
 
-123706085338064[ label="{optimizersBase|name: OptimizersBaseNames\l}"]
+126975820959472[ label="{optimizersBase|name: OptimizersBaseNames\l}"]
 
-123706085338256[ label="{optimInitializers|name: OptimInitializersNames\l}"]
+126975821245632[ label="{optimInitializers|name: OptimInitializersNames\l}"]
 
-123706085338400[ label="{optimLosses|name: OptimLossesNames\l}"]
+126975821245824[ label="{optimLosses|name: OptimLossesNames\l}"]
 
-123706085338592[ label="{optimSchedulers|name: OptimSchedulersNames\l}"]
+126975821246016[ label="{optimSchedulers|name: OptimSchedulersNames\l}"]
 
-123706085338784[ label="{preprocessing|name: PreprocessingNames\l}"]
+126975821246208[ label="{preprocessing|name: PreprocessingNames\l}"]
 
-123706085338976[ label="{proba|name: ProbaNames\l}"]
+126975821246352[ label="{proba|name: ProbaNames\l}"]
 
-123706085339168[ label="{ProbaBase|name: ProbaBaseNames\l}"]
+126975821246544[ label="{probaBase|name: ProbaBaseNames\l}"]
 
-123706085339312[ label="{Reco|name: RecoNames\l}"]
+126975821246688[ label="{reco|name: RecoNames\l}"]
 
-123706085339504[ label="{RecoBase|name: RecoBaseNames\l}"]
+126975821246880[ label="{recoBase|name: RecoBaseNames\l}"]
 
-123706085339696[ label="{Rules|name: RulesNames\l}"]
+126975821247072[ label="{rules|name: RulesNames\l}"]
 
-123706085339888[ label="{TimeSeries|name: TimeSeriesNames\l}"]
+126975821247264[ label="{time_series|name: TimeSeriesNames\l}"]
 
-123706085340080[ label="{Tree|name: TreeNames\l}"]
+126975821247456[ label="{tree|name: TreeNames\l}"]
 
-123706085340272[ label="{TreeBase|name: TreeBaseNames\l}"]
+126975821247600[ label="{treeBase|name: TreeBaseNames\l}"]
 
-123706085340464[ label="{TreeSplitter|name: TreeSplitterNames\l}"]
+126975821247792[ label="{treeSplitter|name: TreeSplitterNames\l}"]
 
-123706085340608[ label="{Miscellaneous|name: MiscellaneousNames\l}"]
+126975821247984[ label="{misc|name: MiscellaneousNames\l}"]
 
-123706085340800[ label="{Composers|name: ComposersNames\l}"]
+126975821248176[ label="{compose|name: ComposersNames\l}"]
 
-123706085340992[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+126975821248368[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
 
-123706085341088[ label="{Param|name: ID\l}"]
+126975821248464[ label="{Param|name: ID\l}"]
 
-123706085341184[ label="{List|}"]
+126975821248560[ label="{List|}"]
 
-123706085341280[ label="{*ParamValue|}"]
+126975821248656[ label="{*ParamValue|}"]
 
-123706085341376[ label="{Tuple|}"]
+126975821248752[ label="{Tuple|}"]
 
-123706085341424[ label="{Dict|}"]
+126975821248848[ label="{Dict|}"]
 
-123706085341520[ label="{DictItem|name: STRING\l}"]
+126975821248944[ label="{DictItem|name: STRING\l}"]
 
-123706085341616[ label="{*DictType|}"]
+126975821249040[ label="{*DictType|}"]
 
-123706085341712[ label="{Reference|}"]
+126975821249136[ label="{Reference|}"]
 
 
 
-123706085846640 -> 123706085340992[arrowtail=diamond, dir=both, headlabel="connector "]
-123706085846640 -> 123706085837184[arrowtail=diamond, dir=both, headlabel="data 1..*"]
-123706085846640 -> 123706085930000[arrowtail=diamond, dir=both, headlabel="preprocessors "]
-123706085837184 -> 123706085849376[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
-123706085849376 -> 123706085334320[headlabel="items 1..*"]
-123706085930000 -> 123706085334320[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-123706085334320 -> 123706085330720[arrowtail=diamond, dir=both, headlabel="type "]
-123706085330720 -> 123706085333264 [dir=back]
-123706085330720 -> 123706085329424 [dir=back]
-123706085330720 -> 123706085330336 [dir=back]
-123706085330720 -> 123706085334896 [dir=back]
-123706085330720 -> 123706085335520 [dir=back]
-123706085330720 -> 123706085335568 [dir=back]
-123706085330720 -> 123706085335952 [dir=back]
-123706085330720 -> 123706085336432 [dir=back]
-123706085330720 -> 123706085336624 [dir=back]
-123706085330720 -> 123706085336768 [dir=back]
-123706085330720 -> 123706085336960 [dir=back]
-123706085330720 -> 123706085337152 [dir=back]
-123706085330720 -> 123706085337344 [dir=back]
-123706085330720 -> 123706085337536 [dir=back]
-123706085330720 -> 123706085337680 [dir=back]
-123706085330720 -> 123706085337872 [dir=back]
-123706085330720 -> 123706085338064 [dir=back]
-123706085330720 -> 123706085338256 [dir=back]
-123706085330720 -> 123706085338400 [dir=back]
-123706085330720 -> 123706085338592 [dir=back]
-123706085330720 -> 123706085338784 [dir=back]
-123706085330720 -> 123706085338976 [dir=back]
-123706085340992 -> 123706085341424[arrowtail=diamond, dir=both, headlabel="consumer_extra_config "]
-123706085340992 -> 123706085341424[arrowtail=diamond, dir=both, headlabel="producer_extra_config "]
-123706085340992 -> 123706085341424[arrowtail=diamond, dir=both, headlabel="rocksdb_options "]
-123706085341088 -> 123706085341280[arrowtail=diamond, dir=both, headlabel="value "]
-123706085341184 -> 123706085341280[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-123706085341280 -> 123706085341712 [dir=back]
-123706085341280 -> 123706085341376 [dir=back]
-123706085341280 -> 123706085341184 [dir=back]
-123706085341280 -> 123706085341424 [dir=back]
-123706085341376 -> 123706085341616[arrowtail=diamond, dir=both, headlabel="itemsT 0..*"]
-123706085341424 -> 123706085341520[arrowtail=diamond, dir=both, headlabel="itemsD 0..*"]
-123706085341520 -> 123706085341616[arrowtail=diamond, dir=both, headlabel="value "]
-123706085341616 -> 123706085341424 [dir=back]
-123706085341616 -> 123706085341184 [dir=back]
-123706085341712 -> 123706085334320[headlabel="value "]
+126975821838192 -> 126975821248368[arrowtail=diamond, dir=both, headlabel="connector "]
+126975821838192 -> 126975821838048[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+126975821838192 -> 126975821835984[arrowtail=diamond, dir=both, headlabel="preprocessors "]
+126975821838048 -> 126975821838096[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+126975821838096 -> 126975821239344[headlabel="items 1..*"]
+126975821835984 -> 126975821239344[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+126975821239344 -> 126975821241888[arrowtail=diamond, dir=both, headlabel="type "]
+126975821241888 -> 126975821241120 [dir=back]
+126975821241888 -> 126975821235360 [dir=back]
+126975821241888 -> 126975821240640 [dir=back]
+126975821241888 -> 126975821240736 [dir=back]
+126975821241888 -> 126975821243088 [dir=back]
+126975821241888 -> 126975821243376 [dir=back]
+126975821241888 -> 126975821243664 [dir=back]
+126975821241888 -> 126975821243904 [dir=back]
+126975821241888 -> 126975821244192 [dir=back]
+126975821241888 -> 126975821244336 [dir=back]
+126975821241888 -> 126975821244528 [dir=back]
+126975821241888 -> 126975821244720 [dir=back]
+126975821241888 -> 126975821244864 [dir=back]
+126975821241888 -> 126975821245008 [dir=back]
+126975821241888 -> 126975821245200 [dir=back]
+126975821241888 -> 126975821245392 [dir=back]
+126975821241888 -> 126975820959472 [dir=back]
+126975821241888 -> 126975821245632 [dir=back]
+126975821241888 -> 126975821245824 [dir=back]
+126975821241888 -> 126975821246016 [dir=back]
+126975821241888 -> 126975821246208 [dir=back]
+126975821241888 -> 126975821246352 [dir=back]
+126975821241888 -> 126975821246544 [dir=back]
+126975821241888 -> 126975821246688 [dir=back]
+126975821241888 -> 126975821246880 [dir=back]
+126975821241888 -> 126975821247072 [dir=back]
+126975821241888 -> 126975821247264 [dir=back]
+126975821241888 -> 126975821247456 [dir=back]
+126975821241888 -> 126975821247600 [dir=back]
+126975821241888 -> 126975821247792 [dir=back]
+126975821241888 -> 126975821247984 [dir=back]
+126975821241888 -> 126975821248176 [dir=back]
+126975821248368 -> 126975821248848[arrowtail=diamond, dir=both, headlabel="consumer_extra_config "]
+126975821248368 -> 126975821248848[arrowtail=diamond, dir=both, headlabel="producer_extra_config "]
+126975821248368 -> 126975821248848[arrowtail=diamond, dir=both, headlabel="rocksdb_options "]
+126975821248464 -> 126975821248656[arrowtail=diamond, dir=both, headlabel="value "]
+126975821248560 -> 126975821248656[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+126975821248656 -> 126975821249136 [dir=back]
+126975821248656 -> 126975821248752 [dir=back]
+126975821248656 -> 126975821248560 [dir=back]
+126975821248656 -> 126975821248848 [dir=back]
+126975821248752 -> 126975821249040[arrowtail=diamond, dir=both, headlabel="itemsT 0..*"]
+126975821248848 -> 126975821248944[arrowtail=diamond, dir=both, headlabel="itemsD 0..*"]
+126975821248944 -> 126975821249040[arrowtail=diamond, dir=both, headlabel="value "]
+126975821249040 -> 126975821248848 [dir=back]
+126975821249040 -> 126975821248560 [dir=back]
+126975821249136 -> 126975821239344[headlabel="value "]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>AnomalyNames</b></td><td>GaussianScorer|HalfSpaceTrees|LocalOutlierFactor|OneClassSVM|PredictiveAnomalyDetection|QuantileFilter|StandardAbsoluteDeviation|ThresholdFilter</td>
