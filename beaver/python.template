@@ -343,10 +343,10 @@ def run_dash():
         {{pipeline.name}}.add_metrics_traces(fig = fig , row = {{ loop.index }}, col = 1 ) 
         {% endfor %}
 
-        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True , hovermode = 'x' )
         return fig
 
-    dash_app.run(debug=True, use_reloader=False)
+    dash_app.run(debug=False, use_reloader=False)
 
 if __name__ == '__main__':
     #Run Plotly on different thread
