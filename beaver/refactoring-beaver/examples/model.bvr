@@ -5,15 +5,11 @@ connector {
         auto_offset_reset = "earliest"
 }
 
-data testdata1 { 
 
-    input_topic : "tester_topic" 
-    preprocessors : model2 | model2  
-}
+// tester
 
-preprocessors { 
+algorithms { 
 
-    // tester
     model <ALMAClassifier> model2  
 
 
@@ -41,4 +37,10 @@ preprocessors {
 
     model <DynamicQuantizer> model11
 
+}
+
+data testdata1 { 
+
+    input_topic : "tester_topic" 
+    preprocessors : model2 | model2  
 }

@@ -1,18 +1,21 @@
 import models
 
-Param : 
-
-    name = ID '=' value =  ParamValue   ; 
-
 List:
-    '[' items*=ParamValue[','] ']'
+    '[' items*=ListItem[','] ']'
 ;
 
-ParamValue : NUMBER | STRING | BOOL | Reference | Tuple | List | Dict;
+ListItem:
+    NUMBER | STRING | BOOL | List | Dict | ModelRef 
+;
+
 
 
 Tuple:
     '(' itemsT*=DictType[','] ')'
+;
+
+TupleType:
+    NUMBER | STRING | BOOL | Tuple |Dict | List | ID
 ;
 
 
@@ -28,11 +31,25 @@ DictType:
     NUMBER | STRING | BOOL | Dict | List | ID
 ;
 
-Reference : value = [Model] ;
 
 
 
+ModelRef : value = [Model];
 
+Param:
+    name = ID '=' value = ParamValue;
+
+ParamValue:
+    NUMBER | STRING | BOOL  | Tuple | List | Dict;
+
+
+Model:
+    'model' '<' type = ModelGroup '>'  name=ID 
+    ('params' ':' '('
+        params += Param[',']
+    ')'
+    )?     
+;
 
 // Special rule for comments. Comments start with //
 Comment: CommentLine | CommentBlock ;

@@ -1,24 +1,2 @@
 
-from river import linear_model
-from river import forest
-from river import cluster
-from river import drift
-from river import ensemble
-from river import neural_net
-from river import preprocessing
-from river import time_series
-from river import misc
-    
-from river import tree
 
-
-model2 = linear_model.ALMAClassifier()
-model3 = forest.ARFClassifier()
-model4 = cluster.KMeans()
-model5 = drift.ADWIN()
-model6 = ensemble.BaggingClassifier()
-model7 = neural_net.MLPRegressor()
-model8 = preprocessing.StandardScaler()
-model9 = time_series.HoltWinters()
-model10 = misc.Skyline()
-model11 = tree.splitter.DynamicQuantizer()

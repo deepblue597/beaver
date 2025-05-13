@@ -33,7 +33,7 @@ if __name__ == "__main__":
     args = parse_command_line_arguments()
 
     # Load the DSL grammar
-    ml_mm = metamodel_from_file('grammar/processors.tx')
+    ml_mm = metamodel_from_file('grammar/pipeline.tx')
 
     # ml_mm.register_obj_processors(processors)
 

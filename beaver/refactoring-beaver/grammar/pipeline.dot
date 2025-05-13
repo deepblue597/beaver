@@ -1,0 +1,43 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+129545807112832[ label="{File|}"]
+
+129545806485920[ label="{Data|name: ID\linput_topic: STRING\l}"]
+
+129545806482560[ label="{ProcList|}"]
+
+129545806483280[ label="{Composers|}"]
+
+129545806483328[ label="{Preprocessors|}"]
+
+129545806483472[ label="{Algorithms|}"]
+
+129545806482224[ label="{Optimizers|}"]
+
+129545806482752[ label="{Metrics|}"]
+
+129545806482944[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+
+
+
+129545807112832 -> 129545806482944[arrowtail=diamond, dir=both, headlabel="connector "]
+129545807112832 -> 129545806483280[arrowtail=diamond, dir=both, headlabel="composers "]
+129545807112832 -> 129545806483328[arrowtail=diamond, dir=both, headlabel="preprocessors "]
+129545807112832 -> 129545806482224[arrowtail=diamond, dir=both, headlabel="optimizers "]
+129545807112832 -> 129545806483472[arrowtail=diamond, dir=both, headlabel="algorithms "]
+129545807112832 -> 129545806482752[arrowtail=diamond, dir=both, headlabel="metrics "]
+129545807112832 -> 129545806485920[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+129545806485920 -> 129545806482560[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+
+}

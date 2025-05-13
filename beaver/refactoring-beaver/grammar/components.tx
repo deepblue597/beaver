@@ -1,0 +1,68 @@
+import types
+
+Data : 
+    
+    'data' name = ID '{'
+
+        'input_topic' ':' input_topic=STRING 
+        ('preprocessors' ':'  preprocessors += ProcList['+'] )?
+        
+    
+    '}'
+; 
+
+
+ProcList : 
+    items += [Model]['|']
+;
+
+
+Composers : 
+
+    'composers' '{'
+    
+        models += Model
+
+    '}'
+; 
+
+
+Preprocessors : 
+
+    'preprocessors' '{'
+    
+        models += Model 
+
+    '}'
+
+;
+
+Algorithms : 
+
+    'algorithms' '{'
+    
+        models += Model 
+
+    
+    '}'
+;
+
+Optimizers : 
+
+    'optimizers' '{'
+    
+        models += Model 
+
+    '}'
+
+;
+
+Metrics : 
+
+    'metrics' '{' 
+    
+        models += Model 
+        
+    '}'
+
+;

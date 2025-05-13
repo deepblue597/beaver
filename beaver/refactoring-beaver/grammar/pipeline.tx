@@ -1,0 +1,18 @@
+import components 
+import connections
+// import types for comments otherwise it will throw error
+import types
+
+File : 
+    connector = Connector
+
+    (composers = Composers)?  
+    (preprocessors = Preprocessors)?
+    (optimizers = Optimizers )?
+    algorithms = Algorithms
+    (metrics = Metrics)?
+    data += Data
+    
+
+;
+
