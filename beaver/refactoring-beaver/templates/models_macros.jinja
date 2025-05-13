@@ -1,0 +1,28 @@
+{% macro gnerate_imports(models , custom_import_map )%}
+
+{%- set unique_modules = [] -%}
+{%- for model in models -%}
+    {%- set class_name = model.type.__class__.__name__ -%}
+    {%- if class_name in custom_import_map %}
+    {% set class_name = custom_import_map[class_name] -%}
+    {%- endif %}
+    {%- if class_name not in unique_modules -%}
+    {%- set _ = unique_modules.append(class_name) %}
+from river import {{ class_name }}
+    {%- endif %}
+{%- endfor %}
+
+{% endmacro %}
+
+{% macro generate_model_classes(models , custom_import_map, custom_model_init)%}
+
+    {%- for model in models -%}
+        {%- set class_name = model.type.__class__.__name__ -%}
+        {%- if class_name in custom_import_map %}
+{{model.name}} = {{ custom_model_init[class_name] }}.{{ model.type.name }}()
+        {%- else %}
+{{model.name}} = {{ class_name }}.{{ model.type.name }}()
+        {%- endif %}
+    {%- endfor %}
+
+{% endmacro %}

@@ -11,6 +11,10 @@ connector {
 algorithms { 
 
     model <ALMAClassifier> model2  
+    params : ( 
+        lr = 0.1 , 
+        optim = model3  
+    )
 
 
     model <ARFClassifier> model3  
@@ -36,6 +40,8 @@ algorithms {
     model <Skyline> model10  
 
     model <DynamicQuantizer> model11
+
+    model <ExactMatch> model12 
 
 }
 

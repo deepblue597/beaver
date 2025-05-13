@@ -1,5 +1,6 @@
 import models
 
+//TODO: fix items 
 List:
     '[' items*=ListItem[','] ']'
 ;
@@ -40,7 +41,7 @@ Param:
     name = ID '=' value = ParamValue;
 
 ParamValue:
-    NUMBER | STRING | BOOL  | Tuple | List | Dict;
+    NUMBER | STRING | BOOL  | Tuple | List | Dict | ModelRef;
 
 
 Model:
