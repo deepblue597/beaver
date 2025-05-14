@@ -28,21 +28,21 @@
 } %}
 
 {%-if file.composers%}
-{{models_macros.gnerate_imports(file.composers.models ,custom_import_map )}}
+{{models_macros.generate_imports(file.composers.models ,custom_import_map )}}
 {%-endif%}
 
 {%-if file.preprocessors%}
-{{models_macros.gnerate_imports(file.preprocessors.models ,custom_import_map )}}
+{{models_macros.generate_imports(file.preprocessors.models ,custom_import_map )}}
 {%-endif%}
 
 {%-if file.optimizers%}
-{{models_macros.gnerate_imports(file.optimizers.models ,custom_import_map )}}
+{{models_macros.generate_imports(file.optimizers.models ,custom_import_map )}}
 {%-endif%}
 
-{{models_macros.gnerate_imports(file.algorithms.models ,custom_import_map )}}
+{{models_macros.generate_imports(file.algorithms.models ,custom_import_map )}}
 
 {%-if file.metrics%}
-{{models_macros.gnerate_imports(file.metrics.models ,custom_import_map )}}
+{{models_macros.generate_imports(file.metrics.models ,custom_import_map )}}
 {%-endif%}
 
 #Define models

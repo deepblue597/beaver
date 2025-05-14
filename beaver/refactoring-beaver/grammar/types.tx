@@ -2,35 +2,35 @@ import models
 
 //TODO: fix items 
 List:
-    '[' items*=ListItem[','] ']'
+    '[' items*=ParamValue[','] ']'
 ;
 
-ListItem:
-    NUMBER | STRING | BOOL | List | Dict | ModelRef 
-;
+//ListItem:
+//    NUMBER | STRING | BOOL | List | Dict | ModelRef 
+//;
 
 
 
 Tuple:
-    '(' itemsT*=DictType[','] ')'
+    '(' items*=ParamValue[','] ')'
 ;
 
-TupleType:
-    NUMBER | STRING | BOOL | Tuple |Dict | List | ID
-;
+//TupleType:
+//    NUMBER | STRING | BOOL | Tuple |Dict | List | ID
+//;
 
 
 Dict:
-    '{' itemsD*=DictItem[','] '}'
+    '{' items*=DictItem[','] '}'
 ;
 
 DictItem:
-    name=STRING ':' value=DictType
+    name=STRING ':' value=ParamValue
 ;
 
-DictType:
-    NUMBER | STRING | BOOL | Dict | List | ID
-;
+//DictType:
+//    NUMBER | STRING | BOOL | Dict | List | ID
+//;
 
 
 

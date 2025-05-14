@@ -21,15 +21,32 @@ from river import metrics
 #Define models
 
 
-model2 = linear_model.ALMAClassifier()
-model3 = forest.ARFClassifier()
-model4 = cluster.KMeans()
-model5 = drift.ADWIN()
-model6 = ensemble.BaggingClassifier()
-model7 = neural_net.MLPRegressor()
-model8 = preprocessing.StandardScaler()
-model9 = time_series.HoltWinters()
-model10 = misc.Skyline()
-model11 = tree.splitter.DynamicQuantizer()
-model12 = metrics.multioutput.ExactMatch()
+model2 = linear_model.ALMAClassifier(
+    test = 1,
+    lr = 0.1,
+    dict = {"name" : [1,2]},
+    name = 'HELLOITSME',
+    test2 = ['1',2]
+)
+model3 = forest.ARFClassifier(
+    optim = model2
+)
+model4 = cluster.KMeans(
+)
+model5 = drift.ADWIN(
+)
+model6 = ensemble.BaggingClassifier(
+)
+model7 = neural_net.MLPRegressor(
+)
+model8 = preprocessing.StandardScaler(
+)
+model9 = time_series.HoltWinters(
+)
+model10 = misc.Skyline(
+)
+model11 = tree.splitter.DynamicQuantizer(
+)
+model12 = metrics.multioutput.ExactMatch(
+)
 

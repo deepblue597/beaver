@@ -11,33 +11,81 @@
     edge[dir=black,arrowtail=empty]
 
 
-129545807112832[ label="{File|}"]
+2512910567136[ label="{File|}"]
 
-129545806485920[ label="{Data|name: ID\linput_topic: STRING\l}"]
+2512910138592[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-129545806482560[ label="{ProcList|}"]
+2512910136864[ label="{ProcList|}"]
 
-129545806483280[ label="{Composers|}"]
+2512910136960[ label="{Composers|}"]
 
-129545806483328[ label="{Preprocessors|}"]
+2512910137056[ label="{Preprocessors|}"]
 
-129545806483472[ label="{Algorithms|}"]
+2512909879152[ label="{Algorithms|}"]
 
-129545806482224[ label="{Optimizers|}"]
+2512910137200[ label="{Optimizers|}"]
 
-129545806482752[ label="{Metrics|}"]
+2512910137296[ label="{Metrics|}"]
 
-129545806482944[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+2512910137440[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lstate_dir: STRING\lon_consumer_error: STRING\lon_processing_error: STRING\lon_producer_error: STRING\lon_message_processed: STRING\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+
+2512910137920[ label="{List|}"]
+
+2512910138352[ label="{Tuple|}"]
+
+2512910138544[ label="{Dict|}"]
+
+2512910138784[ label="{DictItem|name: STRING\l}"]
+
+2512910138736[ label="{ModelRef|}"]
+
+2512910139360[ label="{Param|name: ID\l}"]
+
+2512910271024[ label="{*ParamValue|}"]
+
+2512910270592[ label="{Model|name: ID\l}"]
 
 
 
-129545807112832 -> 129545806482944[arrowtail=diamond, dir=both, headlabel="connector "]
-129545807112832 -> 129545806483280[arrowtail=diamond, dir=both, headlabel="composers "]
-129545807112832 -> 129545806483328[arrowtail=diamond, dir=both, headlabel="preprocessors "]
-129545807112832 -> 129545806482224[arrowtail=diamond, dir=both, headlabel="optimizers "]
-129545807112832 -> 129545806483472[arrowtail=diamond, dir=both, headlabel="algorithms "]
-129545807112832 -> 129545806482752[arrowtail=diamond, dir=both, headlabel="metrics "]
-129545807112832 -> 129545806485920[arrowtail=diamond, dir=both, headlabel="data 1..*"]
-129545806485920 -> 129545806482560[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+2512910567136 -> 2512910137440[arrowtail=diamond, dir=both, headlabel="connector "]
+2512910567136 -> 2512910136960[arrowtail=diamond, dir=both, headlabel="composers "]
+2512910567136 -> 2512910137056[arrowtail=diamond, dir=both, headlabel="preprocessors "]
+2512910567136 -> 2512910137200[arrowtail=diamond, dir=both, headlabel="optimizers "]
+2512910567136 -> 2512909879152[arrowtail=diamond, dir=both, headlabel="algorithms "]
+2512910567136 -> 2512910137296[arrowtail=diamond, dir=both, headlabel="metrics "]
+2512910567136 -> 2512910138592[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+2512910138592 -> 2512910136864[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+2512910136864 -> 2512910270592[headlabel="items 1..*"]
+2512910136960 -> 2512910270592[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2512910137056 -> 2512910270592[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2512909879152 -> 2512910270592[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2512910137200 -> 2512910270592[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2512910137296 -> 2512910270592[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2512910137440 -> 2512910138544[arrowtail=diamond, dir=both, headlabel="consumer_extra_config "]
+2512910137440 -> 2512910138544[arrowtail=diamond, dir=both, headlabel="producer_extra_config "]
+2512910137440 -> 2512910138544[arrowtail=diamond, dir=both, headlabel="rocksdb_options "]
+2512910137920 -> 2512910271024[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2512910138352 -> 2512910271024[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2512910138544 -> 2512910138784[arrowtail=diamond, dir=both, headlabel="itemsD 0..*"]
+2512910138784 -> 2512910271024[arrowtail=diamond, dir=both, headlabel="value "]
+2512910138736 -> 2512910270592[headlabel="value "]
+2512910139360 -> 2512910271024[arrowtail=diamond, dir=both, headlabel="value "]
+2512910271024 -> 2512910138352 [dir=back]
+2512910271024 -> 2512910137920 [dir=back]
+2512910271024 -> 2512910138544 [dir=back]
+2512910271024 -> 2512910138736 [dir=back]
+2512910270592 -> 2512910139360[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>Comment</b></td><td></td>
+	</tr>
+	<tr>
+		<td><b>CommentBlock</b></td><td>\/\*(.|\n)*?\*\/</td>
+	</tr>
+	<tr>
+		<td><b>CommentLine</b></td><td>\/\/.*?$</td>
+	</tr>
+</table> >]
+
 
 }
