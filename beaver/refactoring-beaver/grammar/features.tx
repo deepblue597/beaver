@@ -1,0 +1,19 @@
+Features :
+    'features' ':'
+        ('keep_features' ':' keep_features += ID[','] )?
+        ('drop_features' ':' drop_features += ID[','] )?
+        ('generated_features'  ':' assignments*= Assignment )? 
+        ('target_feature' ':' target_feature = ID )?
+        
+    
+    
+;
+
+
+Assignment: variable=ID '=' expression=Expression ';';
+Expression: operands=Term (operators=PlusOrMinus operands=Term)*;
+PlusOrMinus: '+' | '-';
+Term: operands=Factor (operators=MulOrDiv operands=Factor)*;
+MulOrDiv: '*' | '/' ;
+Factor: (sign=PlusOrMinus)?  op=Operand;
+Operand: op_num=NUMBER | op_id=ID | ('(' op_expr=Expression ')');

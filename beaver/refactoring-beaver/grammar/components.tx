@@ -1,10 +1,12 @@
 import types
+import features
 
 Data : 
     
     'data' name = ID '{'
 
-        'input_topic' ':' input_topic=STRING 
+        'input_topic' ':' input_topic=STRING
+        (features = Features)? 
         ('preprocessors' ':'  preprocessors += ProcList['+'] )?
         
     

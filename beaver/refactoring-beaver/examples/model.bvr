@@ -54,5 +54,22 @@ algorithms {
 data testdata1 { 
 
     input_topic : "tester_topic" 
+    features : 
+        keep_features : keep1 , keep2 
+        drop_features : drop1 
+        generated_features : 
+            comp1 = keep1 * keep2 ; 
+    
     preprocessors : model2 | model2  
+}
+
+data testdata2 { 
+
+    input_topic : "tester_topic" 
+    features : 
+        keep_features : keep1 , keep2 
+        generated_features : 
+            comp1 = keep1 * keep2 ; 
+    
+    preprocessors : model3 + model2 | model5  
 }
