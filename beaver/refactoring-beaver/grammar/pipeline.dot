@@ -11,67 +11,76 @@
     edge[dir=black,arrowtail=empty]
 
 
-2024682362720[ label="{File|}"]
+2462811762144[ label="{BeaverModel|}"]
 
-2024681887584[ label="{Data|name: ID\linput_topic: STRING\l}"]
+2462811755904[ label="{Pipeline|name: ID\loutput_topic: STRING\l}"]
 
-2024681897568[ label="{ProcList|}"]
+2462811183568[ label="{Data|name: ID\linput_topic: STRING\l}"]
 
-2024681897664[ label="{Composers|}"]
+2462811184192[ label="{ProcList|}"]
 
-2024681897760[ label="{Preprocessors|}"]
+2462811184384[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
 
-2024681897904[ label="{Algorithms|}"]
+2462811184480[ label="{List|}"]
 
-2024682063968[ label="{Optimizers|}"]
+2462811184528[ label="{Tuple|}"]
 
-2024682063008[ label="{Metrics|}"]
+2462811184624[ label="{Dict|}"]
 
-2024682062816[ label="{Connector|bootstrap_servers: STRING\lsecurity_protocol: STRING\lsasl_username: STRING\lsasl_password: STRING\lquix_sdk_token: STRING\lconsumer_group: STRING\lauto_offset_reset: STRING\lcommit_interval: FLOAT\lcommit_every: INT\lconsumer_poll_timeout: FLOAT\lproducer_poll_timeout: FLOAT\lloglevel: STRING\lauto_create_topics: BOOL\luse_changelog_topics: BOOL\lquix_config_builder: STRING\ltopic_manager: STRING\lrequest_timeout: FLOAT\ltopic_create_timeout: FLOAT\lprocessing_guarantee: STRING\l}"]
+2462811184720[ label="{DictItem|name: STRING\l}"]
 
-2024682063296[ label="{List|}"]
+2462811184816[ label="{ModelRef|}"]
 
-2024682062240[ label="{Tuple|}"]
+2462811184912[ label="{Param|name: ID\l}"]
 
-2024682062336[ label="{Dict|}"]
+2462811185104[ label="{*ParamValue|}"]
 
-2024682062960[ label="{DictItem|name: STRING\l}"]
+2462811186304[ label="{*Model|}"]
 
-2024682063344[ label="{ModelRef|}"]
+2462811187696[ label="{*DataModel|}"]
 
-2024682063584[ label="{Param|name: ID\l}"]
+2462811187792[ label="{Composer|name: ID\l}"]
 
-2024682063632[ label="{*ParamValue|}"]
+2462811187888[ label="{Preprocessor|name: ID\l}"]
 
-2024682063680[ label="{Model|name: ID\l}"]
+2462811187984[ label="{Algorithm|name: ID\l}"]
+
+2462811187936[ label="{Optimizer|name: ID\l}"]
+
+2462811185248[ label="{Metric|name: ID\l}"]
 
 
 
-2024682362720 -> 2024682062816[arrowtail=diamond, dir=both, headlabel="connector "]
-2024682362720 -> 2024681897664[arrowtail=diamond, dir=both, headlabel="composers "]
-2024682362720 -> 2024681897760[arrowtail=diamond, dir=both, headlabel="preprocessors "]
-2024682362720 -> 2024682063968[arrowtail=diamond, dir=both, headlabel="optimizers "]
-2024682362720 -> 2024681897904[arrowtail=diamond, dir=both, headlabel="algorithms "]
-2024682362720 -> 2024682063008[arrowtail=diamond, dir=both, headlabel="metrics "]
-2024682362720 -> 2024681887584[arrowtail=diamond, dir=both, headlabel="data 1..*"]
-2024681887584 -> 2024681897568[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
-2024681897568 -> 2024682063680[headlabel="items 1..*"]
-2024681897664 -> 2024682063680[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-2024681897760 -> 2024682063680[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-2024681897904 -> 2024682063680[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-2024682063968 -> 2024682063680[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-2024682063008 -> 2024682063680[arrowtail=diamond, dir=both, headlabel="models 1..*"]
-2024682063296 -> 2024682063632[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-2024682062240 -> 2024682063632[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-2024682062336 -> 2024682062960[arrowtail=diamond, dir=both, headlabel="items 0..*"]
-2024682062960 -> 2024682063632[arrowtail=diamond, dir=both, headlabel="value "]
-2024682063344 -> 2024682063680[headlabel="value "]
-2024682063584 -> 2024682063632[arrowtail=diamond, dir=both, headlabel="value "]
-2024682063632 -> 2024682062240 [dir=back]
-2024682063632 -> 2024682063296 [dir=back]
-2024682063632 -> 2024682062336 [dir=back]
-2024682063632 -> 2024682063344 [dir=back]
-2024682063680 -> 2024682063584[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2462811762144 -> 2462811184384[arrowtail=diamond, dir=both, headlabel="connector "]
+2462811762144 -> 2462811186304[arrowtail=diamond, dir=both, headlabel="models 1..*"]
+2462811762144 -> 2462811183568[arrowtail=diamond, dir=both, headlabel="data 1..*"]
+2462811755904 -> 2462811183568[headlabel="data "]
+2462811755904 -> 2462811187984[headlabel="algorithm "]
+2462811755904 -> 2462811185248[headlabel="metrics 1..*"]
+2462811183568 -> 2462811184192[arrowtail=diamond, dir=both, headlabel="preprocessors 1..*"]
+2462811184192 -> 2462811187696[headlabel="items 1..*"]
+2462811184480 -> 2462811185104[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2462811184528 -> 2462811185104[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2462811184624 -> 2462811184720[arrowtail=diamond, dir=both, headlabel="items 0..*"]
+2462811184720 -> 2462811185104[arrowtail=diamond, dir=both, headlabel="value "]
+2462811184816 -> 2462811186304[headlabel="value "]
+2462811184912 -> 2462811185104[arrowtail=diamond, dir=both, headlabel="value "]
+2462811185104 -> 2462811184528 [dir=back]
+2462811185104 -> 2462811184480 [dir=back]
+2462811185104 -> 2462811184624 [dir=back]
+2462811185104 -> 2462811184816 [dir=back]
+2462811186304 -> 2462811187792 [dir=back]
+2462811186304 -> 2462811187888 [dir=back]
+2462811186304 -> 2462811187984 [dir=back]
+2462811186304 -> 2462811187936 [dir=back]
+2462811186304 -> 2462811185248 [dir=back]
+2462811187696 -> 2462811187792 [dir=back]
+2462811187696 -> 2462811187888 [dir=back]
+2462811187792 -> 2462811184912[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2462811187888 -> 2462811184912[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2462811187984 -> 2462811184912[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2462811187936 -> 2462811184912[arrowtail=diamond, dir=both, headlabel="params 1..*"]
+2462811185248 -> 2462811184912[arrowtail=diamond, dir=both, headlabel="params 1..*"]
 match_rules [ shape=plaintext, label=< <table>
 	<tr>
 		<td><b>Comment</b></td><td></td>

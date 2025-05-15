@@ -1,0 +1,5 @@
+setup.py
+beaver.egg-info/PKG-INFO
+beaver.egg-info/SOURCES.txt
+beaver.egg-info/dependency_links.txt
+beaver.egg-info/top_level.txt

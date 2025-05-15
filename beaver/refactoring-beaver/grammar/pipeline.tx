@@ -3,16 +3,28 @@ import connections
 // import types for comments otherwise it will throw error
 import types
 
-File : 
+BeaverModel : 
     connector = Connector
-
-    (composers = Composers)?  
-    (preprocessors = Preprocessors)?
-    (optimizers = Optimizers )?
-    algorithms = Algorithms
-    (metrics = Metrics)?
+    models += Model
     data += Data
+    pipelines += Pipeline
     
-
+    //(composers = Composers)?  
+    //(preprocessors = Preprocessor)?
+    //(optimizers = Optimizer )?
+    //algorithms = Algorithm
+    //(metrics = Metric)?
 ;
 
+Pipeline : 
+
+    'pipeline' name = ID '{'
+
+        ('output_topic' '=' output_topic = STRING)?  
+        'data' '=' data = [Data]
+        'algorithm' '=' algorithm = [Algorithm]
+        ('metrics' '=' metrics += [Metric][','])?
+
+    
+    '}'
+;

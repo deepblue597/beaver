@@ -1,9 +1,9 @@
 Features :
     'features' ':'
-        ('keep_features' ':' keep_features += ID[','] )?
-        ('drop_features' ':' drop_features += ID[','] )?
+        ('keep_features' '=' keep_features += ID[','] )?
+        ('drop_features' '=' drop_features += ID[','] )?
         ('generated_features'  ':' assignments*= Assignment )? 
-        ('target_feature' ':' target_feature = ID )?
+        ('target_feature' '=' target_feature = ID )?
         
     
     

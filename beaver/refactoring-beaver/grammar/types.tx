@@ -44,17 +44,50 @@ ParamValue:
     NUMBER | STRING | BOOL  | Tuple | List | Dict | ModelRef;
 
 
-Model:
-    'model' '<' type = ModelGroup '>'  name=ID 
-    ('params' ':' '('
-        params += Param[',']
-    ')'
-    )?     
-;
-
 // Special rule for comments. Comments start with //
 Comment: CommentLine | CommentBlock ;
 
 CommentLine: /\/\/.*?$/;
 
 CommentBlock: /\/\*(.|\n)*?\*\//;
+
+Model : Composer | Preprocessor | Algorithm | Optimizer | Metric ; 
+DataModel : Composer | Preprocessor ; 
+
+Composer:
+    'composer' '<' type = ComposeGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+Preprocessor:
+    'preprocessor' '<' type = PreprocGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+
+Algorithm:
+    'algorithm' '<' type = AlgoGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+Optimizer:
+    'optimizer' '<' type = OptimGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+Metric:
+    'metric' '<' type = MetricGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+

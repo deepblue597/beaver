@@ -1,24 +1,16 @@
-ModelGroup :    linear_model                | 
+AlgoGroup :    linear_model                 | 
                 forest                      | 
                 cluster                     | 
                 drift                       | 
                 ensemble                    | 
                 facto                       | 
                 imblearn                    | 
-                metrics                     | 
-                multioutputMetrics          | 
                 multiclass                  | 
                 multioutput                 | 
                 naive_bayes                 | 
                 neighbors                   | 
                 neural_net                  |   
                 neuralNetworksActivations   | 
-                optim                       | 
-                optimizersBase              | 
-                optimInitializers           | 
-                optimLosses                 |    
-                optimSchedulers             | 
-                preprocessing               | 
                 proba                       | 
                 probaBase                   | 
                 reco                        | 
@@ -28,9 +20,26 @@ ModelGroup :    linear_model                |
                 tree                        | 
                 treeBase                    | 
                 treeSplitter                | 
-                misc                        | 
-                compose 
+                misc                         
+ 
 ; 
+
+OptimGroup :    optim                       | 
+                optimizersBase              | 
+                optimInitializers           | 
+                optimLosses                 |    
+                optimSchedulers             
+;
+
+PreprocGroup : preprocessing     
+;
+
+MetricGroup :   metrics                     | 
+                multioutputMetrics           
+;
+
+ComposeGroup :  compose
+;
 
 //TODO: Change the names to the libraries of river 
 // TODO: neuralNetworksActivations multioutputMetrics optimizersBase OptimInitializers OptimLosses OptimSchedulers ProbaBase  recoBase TreeBase  TreeSplitter on jinja 
