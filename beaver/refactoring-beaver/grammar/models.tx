@@ -41,8 +41,6 @@ MetricGroup :   metrics                     |
 ComposeGroup :  compose
 ;
 
-//TODO: Change the names to the libraries of river 
-// TODO: neuralNetworksActivations multioutputMetrics optimizersBase OptimInitializers OptimLosses OptimSchedulers ProbaBase  recoBase TreeBase  TreeSplitter on jinja 
 linear_model:
     name = LinearModelNames 
 ; 
@@ -272,7 +270,7 @@ neuralNetworksActivations:
 ;
 
 NeuralNetworksActivationsNames : "Identity" | 
-                                 "ReLU" | 
+                                 "ReLU"     | 
                                  "Sigmoid"
 ;
 
@@ -280,18 +278,18 @@ optim :
     name = OptimizersNames
 ;
 
-OptimizersNames : "AMSGrad" | 
-                  "AdaBound" | 
-                  "AdaDelta" | 
-                  "AdaGrad" | 
-                  "AdaMax" | 
-                  "Adam" | 
-                  "Averager" | 
-                  "FTRLProximal" | 
-                  "Momentum" | 
-                  "Nadam" | 
-                  "NesterovMomentum" | 
-                  "RMSProp" | 
+OptimizersNames : "AMSGrad"             | 
+                  "AdaBound"            | 
+                  "AdaDelta"            | 
+                  "AdaGrad"             | 
+                  "AdaMax"              | 
+                  "Adam"                | 
+                  "Averager"            |    
+                  "FTRLProximal"        | 
+                  "Momentum"            | 
+                  "Nadam"               | 
+                  "NesterovMomentum"    | 
+                  "RMSProp"             | 
                   "SGD"
 ;
 
@@ -300,8 +298,8 @@ optimizersBase:
 ;
 
 OptimizersBaseNames : "Initializer" | 
-                      "Loss" | 
-                      "Optimizer" | 
+                      "Loss"        | 
+                      "Optimizer"   | 
                       "Scheduler"
 ;
 
@@ -310,7 +308,7 @@ optimInitializers:
 ;
 
 OptimInitializersNames : "Constant" | 
-                         "Normal" | 
+                         "Normal"   | 
                          "Zeros"
 ;
 
@@ -318,19 +316,19 @@ optimLosses:
     name = OptimLossesNames
 ;
 
-OptimLossesNames : "Absolute" | 
-                   "BinaryFocalLoss" | 
-                   "BinaryLoss" | 
-                   "Cauchy" | 
-                   "CrossEntropy" | 
-                   "EpsilonInsensitiveHinge" | 
-                   "Hinge" | 
-                   "Huber" | 
-                   "Log" | 
-                   "MultiClassLoss" | 
-                   "Poisson" | 
-                   "Quantile" | 
-                   "RegressionLoss" | 
+OptimLossesNames : "Absolute"                   | 
+                   "BinaryFocalLoss"            | 
+                   "BinaryLoss"                 | 
+                   "Cauchy"                     | 
+                   "CrossEntropy"               | 
+                   "EpsilonInsensitiveHinge"    | 
+                   "Hinge"                      | 
+                   "Huber"                      | 
+                   "Log"                        | 
+                   "MultiClassLoss"             | 
+                   "Poisson"                    | 
+                   "Quantile"                   | 
+                   "RegressionLoss"             | 
                    "Squared"
 ;
 
@@ -338,7 +336,7 @@ optimSchedulers:
     name = OptimSchedulersNames
 ;
 
-OptimSchedulersNames : "Constant" | 
+OptimSchedulersNames : "Constant"       | 
                        "InverseScaling" | 
                        "Optimal"
 ;
@@ -347,23 +345,23 @@ preprocessing :
     name = PreprocessingNames
 ;
 
-PreprocessingNames : "AdaptiveStandardScaler" | 
-                     "Binarizer" | 
-                     "FeatureHasher" | 
-                     "GaussianRandomProjector" | 
-                     "LDA" | 
-                     "MaxAbsScaler" | 
-                     "MinMaxScaler" | 
-                     "Normalizer" | 
-                     "OneHotEncoder" | 
-                     "OrdinalEncoder" | 
-                     "PredClipper" | 
-                     "PreviousImputer" | 
-                     "RobustScaler" | 
-                     "SparseRandomProjector" | 
-                     "StandardScaler" | 
-                     "StatImputer" | 
-                     "TargetMinMaxScaler" | 
+PreprocessingNames : "AdaptiveStandardScaler"   | 
+                     "Binarizer"                | 
+                     "FeatureHasher"            | 
+                     "GaussianRandomProjector"  | 
+                     "LDA"                      | 
+                     "MaxAbsScaler"             | 
+                     "MinMaxScaler"             | 
+                     "Normalizer"               | 
+                     "OneHotEncoder"            | 
+                     "OrdinalEncoder"           | 
+                     "PredClipper"              | 
+                     "PreviousImputer"          | 
+                     "RobustScaler"             | 
+                     "SparseRandomProjector"    | 
+                     "StandardScaler"           | 
+                     "StatImputer"              | 
+                     "TargetMinMaxScaler"       | 
                      "TargetStandardScaler"
 ;
 
@@ -371,9 +369,9 @@ proba :
     name = ProbaNames
 ;
 
-ProbaNames : "Beta" | 
-             "Gaussian" | 
-             "Multinomial" | 
+ProbaNames : "Beta"                     | 
+             "Gaussian"                 | 
+             "Multinomial"              | 
              "MultivariateGaussian"
 ;
 
@@ -381,9 +379,9 @@ probaBase:
     name = ProbaBaseNames
 ;
 
-ProbaBaseNames : "BinaryDistribution" | 
-                 "ContinuousDistribution" | 
-                 "DiscreteDistribution" | 
+ProbaBaseNames : "BinaryDistribution"       | 
+                 "ContinuousDistribution"   | 
+                 "DiscreteDistribution"     | 
                  "Distribution"
 ;
 
@@ -391,9 +389,9 @@ reco :
     name = RecoNames
 ;
 
-RecoNames : "Baseline" | 
-            "BiasedMF" | 
-            "FunkMF" | 
+RecoNames : "Baseline"      | 
+            "BiasedMF"      | 
+            "FunkMF"        | 
             "RandomNormal"
 ;
 
@@ -423,14 +421,14 @@ tree :
     name = TreeNames
 ;
 
-TreeNames : "ExtremelyFastDecisionTreeClassifier" | 
-            "HoeffdingAdaptiveTreeClassifier" | 
-            "HoeffdingAdaptiveTreeRegressor" | 
-            "HoeffdingTreeClassifier" | 
-            "HoeffdingTreeRegressor" | 
-            "LASTClassifier" | 
-            "SGTClassifier" | 
-            "SGTRegressor" | 
+TreeNames : "ExtremelyFastDecisionTreeClassifier"   | 
+            "HoeffdingAdaptiveTreeClassifier"       | 
+            "HoeffdingAdaptiveTreeRegressor"        | 
+            "HoeffdingTreeClassifier"               | 
+            "HoeffdingTreeRegressor"                | 
+            "LASTClassifier"                        | 
+            "SGTClassifier"                         | 
+            "SGTRegressor"                          | 
             "iSOUPTreeRegressor"
 ;
 
@@ -446,15 +444,15 @@ treeSplitter:
     name = TreeSplitterNames
 ;
 
-TreeSplitterNames : "DynamicQuantizer" | 
-                    "EBSTSplitter" | 
-                    "ExhaustiveSplitter" | 
-                    "GaussianSplitter" | 
-                    "HistogramSplitter" | 
-                    "QOSplitter" | 
-                    "Quantizer" | 
-                    "Splitter" | 
-                    "StaticQuantizer" | 
+TreeSplitterNames : "DynamicQuantizer"      | 
+                    "EBSTSplitter"          | 
+                    "ExhaustiveSplitter"    | 
+                    "GaussianSplitter"      | 
+                    "HistogramSplitter"     | 
+                    "QOSplitter"            | 
+                    "Quantizer"             | 
+                    "Splitter"              | 
+                    "StaticQuantizer"       | 
                     "TEBSTSplitter"
 ;
 
@@ -462,7 +460,7 @@ misc :
     name = MiscellaneousNames
 ;
 
-MiscellaneousNames : "SDFT" | 
+MiscellaneousNames : "SDFT"     | 
                      "Skyline"
 ;
 
@@ -470,17 +468,17 @@ compose :
     name = ComposersNames
 ;
 
-ComposersNames : "Discard" | 
-                 "FuncTransformer" | 
-                 "Grouper" | 
-                 "Pipeline" | 
-                 "Prefixer" | 
-                 "Renamer" | 
-                 "Select" | 
-                 "SelectType" | 
-                 "Suffixer" | 
-                 "TargetTransformRegressor" | 
-                 "TransformerProduct" | 
-                 "TransformerUnion" | 
+ComposersNames : "Discard"                      | 
+                 "FuncTransformer"              | 
+                 "Grouper"                      | 
+                 "Pipeline"                     | 
+                 "Prefixer"                     | 
+                 "Renamer"                      | 
+                 "Select"                       | 
+                 "SelectType"                   | 
+                 "Suffixer"                     | 
+                 "TargetTransformRegressor"     | 
+                 "TransformerProduct"           | 
+                 "TransformerUnion"             | 
                  "learn_during_predict"
 ;

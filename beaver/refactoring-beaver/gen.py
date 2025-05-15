@@ -47,7 +47,7 @@ if __name__ == "__main__":
     template = env.get_template('templates/models.jinja')
 
     flattened_dict = dict_flatten(outpout)
-    print(flattened_dict)
+    #print(flattened_dict)
     generated_code = template.render(
         file=config , assignments=flattened_dict)
 

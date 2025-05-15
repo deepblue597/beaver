@@ -1,23 +1,12 @@
 import models
 
-//TODO: fix items 
 List:
     '[' items*=ParamValue[','] ']'
 ;
 
-//ListItem:
-//    NUMBER | STRING | BOOL | List | Dict | ModelRef 
-//;
-
-
-
 Tuple:
     '(' items*=ParamValue[','] ')'
 ;
-
-//TupleType:
-//    NUMBER | STRING | BOOL | Tuple |Dict | List | ID
-//;
 
 
 Dict:
@@ -27,13 +16,6 @@ Dict:
 DictItem:
     name=STRING ':' value=ParamValue
 ;
-
-//DictType:
-//    NUMBER | STRING | BOOL | Dict | List | ID
-//;
-
-
-
 
 ModelRef : value = [Model];
 

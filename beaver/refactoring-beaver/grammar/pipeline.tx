@@ -8,12 +8,6 @@ BeaverModel :
     models += Model
     data += Data
     pipelines += Pipeline
-    
-    //(composers = Composers)?  
-    //(preprocessors = Preprocessor)?
-    //(optimizers = Optimizer )?
-    //algorithms = Algorithm
-    //(metrics = Metric)?
 ;
 
 Pipeline : 

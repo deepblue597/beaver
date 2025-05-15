@@ -40,7 +40,7 @@ data testdata2 {
         keep_features = keep1 , keep2 
         generated_features :  
             comp1 = keep1 * keep2 ;
-            comp2 = keep1 * keep2 ; 
+            comp2 = keep1 / keep2 ; 
 }
 
 pipeline testPipeline { 

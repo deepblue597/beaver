@@ -81,11 +81,10 @@ sdf_testdata1 = sdf_testdata1[["keep1","keep2"]]
 sdf_testdata2 = sdf_testdata2[["keep1","keep2"]]
 
 
-#TODO: Assignments
 
 # Define new features
 sdf_testdata2["comp1"]=sdf_testdata2["keep1"]*sdf_testdata2["keep2"]
-sdf_testdata2["comp2"]=sdf_testdata2["keep1"]*sdf_testdata2["keep2"]
+sdf_testdata2["comp2"]=sdf_testdata2["keep1"]/sdf_testdata2["keep2"]
 
 
 
