@@ -1,0 +1,30 @@
+# ---------- DASHBOARD SETUP ----------
+
+def run_dash():
+    dash_app = Dash(__name__)
+    dash_app.layout = html.Div([
+         html.H2("Pipelines' Plots" , style={
+        'textAlign': 'center',  # Center the text
+
+        'fontFamily': 'sans-serif',  # Change the font family
+        'font-weight': 'normal',  # Make the text bold
+        }),
+        dcc.Interval(id='interval', n_intervals=0),
+        dcc.Graph(id='live-graph')
+    ])
+
+    @dash_app.callback(
+        Output('live-graph', 'figure'),
+        Input('interval', 'n_intervals')
+    )
+    def update_graph(n):
+        fig = make_subplots(rows={{ file.pipelines | length }}, cols=1 , vertical_spacing=0.1)
+
+        {% for pipeline in file.pipelines %}
+        {{pipeline.name}}.add_metrics_traces(fig = fig , row = {{ loop.index }}, col = 1 ) 
+        {% endfor %}
+
+        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        return fig
+
+    dash_app.run(debug=True, use_reloader=False)

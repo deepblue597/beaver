@@ -38,111 +38,9 @@ from plotly.subplots import make_subplots
 
 {{models_macros.generate_model_classes(file.models ,custom_import_map, custom_model_init )}}
 
-#Define connection
-connectionConfig = ConnectionConfig( 
-{%- for param_name, param_value in [
-    ('bootstrap_servers', file.connector.bootstrap_servers),
-    ('security_protocol', file.connector.security_protocol),
-    ('sasl_username', file.connector.sasl_username),
-    ('sasl_password', file.connector.sasl_password)
-    ] -%}
-    {%- if param_value  %}
-    {%-if param_value is string%}
-    {{ param_name }} = '{{ param_value }}'{%- if not loop.last -%},{%- endif -%}
-    {%-else%}
-    {{ param_name }} = {{ param_value }}{%- if not loop.last -%},{%- endif -%}
-    {%-endif%}
-        
-    {%- endif %}
-{%- endfor %}
-)
+{% include '/templates/quixstreams.jinja' %}
 
-#Connection to Kafka
-app = Application( 
-    broker_address = connectionConfig,
-{%- for param_name, param_value in [
-    ('quix_sdk_token', file.connector.quix_sdk_token),
-    ('consumer_group', file.connector.consumer_group),
-    ('auto_offset_reset', file.connector.auto_offset_reset),
-    ('commit_interval', file.connector.commit_interval),
-    ('commit_every', file.connector.commit_every),
-    ('consumer_poll_timeout', file.connector.consumer_poll_timeout),
-    ('producer_poll_timeout', file.connector.producer_poll_timeout),
-    ('loglevel', file.connector.loglevel),
-    ('auto_create_topics', file.connector.auto_create_topics),
-    ('use_changelog_topics', file.connector.use_changelog_topics),
-    ('quix_config_builder', file.connector.quix_config_builder),
-    ('topic_manager', file.connector.topic_manager),
-    ('request_timeout', file.connector.request_timeout),
-    ('topic_create_timeout', file.connector.topic_create_timeout),
-    ('processing_guarantee', file.connector.processing_guarantee)
-] -%}
-    {%- if param_value  %}
-    {%-if param_value is string%}
-    {{ param_name }} = '{{ param_value }}'{%- if not loop.last -%},{%- endif -%}
-    {%-else%}
-    {{ param_name }} = {{ param_value }}{%- if not loop.last -%},{%- endif -%}
-    {%-endif%}
-        
-    {%- endif %}
-{%- endfor %}
-)
-
-#Input topics 
-{%for data in file.data%}
-input_topic_{{data.name}} = app.topic("{{data.input_topic}}", value_deserializer="json")
-{%- endfor %}
-
-# Create Streaming DataFrames connected to the input Kafka topics
-{%for data in file.data%}
-sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
-{%- endfor %}
-
-
-#Drop Features
-{%for data in file.data%}
-{%-if data.features.drop_features%}
-sdf_{{data.name}}.drop([
-    {%- for feature  in data.features.drop_features -%}
-    "{{feature}}"
-    {%- if not loop.last %},
-    {%- endif -%} 
-    {%- endfor -%}
-])
-{%endif-%}
-{%- endfor %}
-
-#Keep Features
-{%for data in file.data%}
-{%-if data.features.keep_features%}
-sdf_{{data.name}} = sdf_{{data.name}}[[
-    {%- for feature  in data.features.keep_features -%}
-    "{{feature}}"
-    {%- if not loop.last %},
-    {%- endif -%} 
-    {%- endfor -%}
-]]
-{%endif-%}
-{%- endfor %}
-
-{% if assignments%}
-# Define new features
-{%for key, values in assignments.items() -%}
-{%for assignment in values-%}
-
-{% if assignment == ';' %}
-{% elif assignment == '(' or assignment == ')' -%}
-    {{ assignment }}
-{%- elif assignment is number -%}
-    {{ assignment }}
-{%- elif assignment in ['+', '-', '*', '/', '='] -%}
-    {{ assignment }}
-{%- else -%}
-    sdf_{{key}}["{{ assignment }}"]
-{%- endif %}
-{%-endfor%}
-{%-endfor%}
-{%endif%}
+{% include '/templates/features.jinja' %}
 
 #Connect composers with preprocessors 
 {%for data in file.data-%}
@@ -157,25 +55,7 @@ preprocessor_{{data.name}} =
 {%endif%}
 {%endfor%}
 
-
-#Pipeline definition 
-
-{%for pipeline in file.pipelines -%}
-
-{{pipeline.name}}_pipeline = {%-if pipeline.data.preprocessors%} preprocessor_{{pipeline.data.name}} | {%- endif -%}{{pipeline.algorithm.name}}
-
-{%-if pipeline.metrics%}
-{{pipeline.name}}_metrics = [
-    {%-for metric in pipeline.metrics-%}
-    {{metric.name}}{%- if not loop.last %},{%- endif -%}
-    
-    {%-endfor-%}
-]
-{%endif%}
-
-{{pipeline.name}} = pipeline.Pipeline(model = {{pipeline.name}}_pipeline {%-if pipeline.metrics%} , metrics_list = {{pipeline.name}}_metrics{%endif%} , name = "{{pipeline.name}}"{%-if pipeline.data.features and pipeline.data.features.target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
-
-{% endfor -%}
+{% include '/templates/pipeline.jinja' %}
 
 # Output topics initialization
 {%for pipeline in file.pipelines -%}
@@ -199,37 +79,7 @@ sdf_{{pipeline.name}} = sdf_{{pipeline.data.name}}.apply({{pipeline.name}}.train
 
 {% endfor %}
 
-
-# ---------- DASHBOARD SETUP ----------
-
-def run_dash():
-    dash_app = Dash(__name__)
-    dash_app.layout = html.Div([
-         html.H2("Pipelines' Plots" , style={
-        'textAlign': 'center',  # Center the text
-
-        'fontFamily': 'sans-serif',  # Change the font family
-        'font-weight': 'normal',  # Make the text bold
-        }),
-        dcc.Interval(id='interval', n_intervals=0),
-        dcc.Graph(id='live-graph')
-    ])
-
-    @dash_app.callback(
-        Output('live-graph', 'figure'),
-        Input('interval', 'n_intervals')
-    )
-    def update_graph(n):
-        fig = make_subplots(rows={{ file.pipelines | length }}, cols=1 , vertical_spacing=0.1)
-
-        {% for pipeline in file.pipelines %}
-        {{pipeline.name}}.add_metrics_traces(fig = fig , row = {{ loop.index }}, col = 1 ) 
-        {% endfor %}
-
-        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
-        return fig
-
-    dash_app.run(debug=True, use_reloader=False)
+{% include '/templates/dash.jinja' %}
 
 if __name__ == '__main__':
     #Run Plotly on different thread
@@ -237,4 +87,3 @@ if __name__ == '__main__':
    
     # Run Quix Streams 
     app.run()
-

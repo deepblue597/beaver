@@ -42,6 +42,8 @@ model8 = preprocessing.StandardScaler(
 )
 model9 = metrics.MAE(
 )
+model10 = metrics.MSE(
+)
 
 
 
@@ -68,7 +70,6 @@ input_topic_testdata2 = app.topic("tester_topic", value_deserializer="json")
 sdf_testdata1 = app.dataframe(topic=input_topic_testdata1)
 sdf_testdata2 = app.dataframe(topic=input_topic_testdata2)
 
-
 #Drop Features
 
 sdf_testdata1.drop(["drop1"])
@@ -83,6 +84,7 @@ sdf_testdata2 = sdf_testdata2[["keep1","keep2"]]
 
 
 # Define new features
+sdf_testdata1["comp1"]=sdf_testdata1["keep1"]*sdf_testdata1["keep2"]
 sdf_testdata2["comp1"]=sdf_testdata2["keep1"]*sdf_testdata2["keep2"]
 sdf_testdata2["comp2"]=sdf_testdata2["keep1"]/sdf_testdata2["keep2"]
 
@@ -90,8 +92,7 @@ sdf_testdata2["comp2"]=sdf_testdata2["keep1"]/sdf_testdata2["keep2"]
 
 #Connect composers with preprocessors 
 
-preprocessor_testdata1 =model8|model8
-
+preprocessor_testdata1 =model8+model8|model8
 
 
 
@@ -99,10 +100,12 @@ preprocessor_testdata1 =model8|model8
 #Pipeline definition 
 
 testPipeline_pipeline = preprocessor_testdata1 |model4
-testPipeline_metrics = [model9]
+testPipeline_metrics = [model9,model10]
 
 
 testPipeline = pipeline.Pipeline(model = testPipeline_pipeline , metrics_list = testPipeline_metrics , name = "testPipeline",output_topic="output_test")
+
+
 
 # Output topics initialization
 
@@ -115,7 +118,6 @@ output_topic_testPipeline = app.topic(testPipeline.output_topic, value_deseriali
 #If the pipeline has an output topic then we call it 
 
 sdf_testPipeline = sdf_testdata1.apply(testPipeline.train_and_predict).to_topic(output_topic_testPipeline)
-
 
 
 # ---------- DASHBOARD SETUP ----------
