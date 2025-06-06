@@ -53,8 +53,8 @@ app.layout = html.Div([
         [ 
             Input(
                 component_id='wheels-plot', 
-                component_property='hoverData'
-            )
+                component_property='clickData' #hoveData for hover
+            ) 
         ]
 )
 def callback_image( hoverData) : 
