@@ -8,6 +8,9 @@ import warnings
 from errors import PredictionWarning
 from matplotlib.animation import FuncAnimation
 import plotly.graph_objs as go
+from plotly.subplots import make_subplots
+from river import base, utils
+from sklearn.metrics import confusion_matrix
 
 __all__ = ['Pipeline']
 
@@ -36,13 +39,14 @@ class Pipeline:
 
     def __init__(self,
                  model,
+                 model_name,
                  name: str,
                  metrics_list: Optional[List[metrics.base.Metric]] = None,
                  y: Optional[str] = None,
                  output_topic: Optional[str] = None
                  ):
         
-        
+        self.model_name = model_name
         self.y = y
         self.model = model
         self.output_topic = output_topic
@@ -95,6 +99,9 @@ class Pipeline:
                             f"Unknown metric type: {metric.__class__.__name__}")
 
                 self.metrics_values[metric.__class__.__name__] = []
+            
+            self.y_true_list = []
+            self.y_pred_list = []  
 
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
@@ -130,10 +137,12 @@ class Pipeline:
         #TODO: Simplify these if statements
         output = {**X}
         if self.y:
+            self.y_true_list.append(y) 
             output['y_true'] = y
         if y_predicted_proba is not None:
             output['y_predicted_probabilities'] = y_predicted_proba
         if y_predicted is not None:
+            self.y_pred_list.append(y_predicted)
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
             output['metrics'] = latest_metrics
@@ -267,3 +276,18 @@ class Pipeline:
                 #hoverinfo="y+name",
                 hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
             ), row=row, col=col)
+            
+    def add_stats_traces(self, trace) : 
+        print(issubclass(type(self.model[self.model_name]), base.Classifier))
+        if issubclass(type(self.model[self.model_name]), base.Classifier):
+            #print('hiiii')
+            trace.append(
+                go.Heatmap(
+                    x=self.y_true_list, 
+                    y=self.y_pred_list
+                )
+            )
+        elif issubclass(type(self.model[self.model_name]) , base.Regressor) : 
+            print('regressorr')
+        else : 
+            print('not')

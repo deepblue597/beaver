@@ -8,7 +8,7 @@ import json
 import numpy as np 
 from datetime import date
 import requests
-import flightradar24
+
 
 app = Dash() 
 

@@ -2,8 +2,17 @@
 
 from quixstreams import Application
 from quixstreams.models import TopicConfig
-from quixstreams.kafka import ConnectionConfig 
-from pipeline import * 
+from quixstreams.kafka import ConnectionConfig
+from pipeline import *
+
+from river import preprocessing
+
+
+from river import optim
+
+from river import metrics
+
+from river import linear_model
 from dash import Dash
 from dash.dependencies import Input, Output
 # import dash_core_components as dcc
@@ -12,87 +21,72 @@ from dash import dcc, html
 import plotly.graph_objs as go
 import threading
 from plotly.subplots import make_subplots
+# Define optimizers
+SGD = optim.SGD(
+    lr=0.1)
 
 
+# Define preprocessors
+standardScaler = preprocessing.StandardScaler()
 
 
-
-from river import metrics
-
-
-
-from river import time_series
+# Define metrics
+accuracy = metrics.Accuracy()
 
 
+# Define live data algorithms
+log_reg = linear_model.LogisticRegression(
+    optimizer=SGD)
 
 
+# Connection Configuration for quixstreams
+connectionConfig = ConnectionConfig(
 
+    bootstrap_servers="localhost:39092",
+    security_protocol="plaintext")
 
+# Connection to Kafka
+app = Application(
+    broker_address=connectionConfig,
+    consumer_group="log_reg_cons",
+    auto_offset_reset="earliest")
 
+# Input topics
 
-
-
-
-#Define metrics
-mae = metrics.MAE()
-
-
-#Define live data algorithms
-HoltWinters = time_series.HoltWinters(
-    alpha =0.3,
-    beta =0.1,
-    gamma =0.6,
-    seasonality =12,
-    multiplicative =True)
-
-
-#Connection Configuration for quixstreams
-connectionConfig = ConnectionConfig( 
-    
-    bootstrap_servers ="localhost:39092",
-    security_protocol ="plaintext")
-
-#Connection to Kafka 
-app = Application( 
-    broker_address = connectionConfig,
-    consumer_group ="time_series",
-    auto_offset_reset ="earliest")
-
-#Input topics 
-
-input_topic_airline = app.topic("AirlinePassengers", value_deserializer="json")
+input_topic_phishing = app.topic("Phishing", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
-sdf_airline = app.dataframe(topic=input_topic_airline)
+sdf_phishing = app.dataframe(topic=input_topic_phishing)
 
 
 # Define new features
 
 
-
-#Connect composers with preprocessors 
-
-
-
-#Pipeline definition 
-
-HoltWintersPipe_pipeline =HoltWinters
-HoltWintersPipe_metrics = [mae]
+# Connect composers with preprocessors
+preprocessor_phishing = standardScaler
 
 
-HoltWintersPipe = Pipeline(model = HoltWintersPipe_pipeline , metrics_list = HoltWintersPipe_metrics , name = "HoltWintersPipe",y="passengers",output_topic="HoltWintersBVR")
+# Pipeline definition
+
+linear_algorithm_pipeline = preprocessor_phishing | log_reg
+
+linear_algorithm_metrics = [accuracy]
+linear_algorithm = Pipeline(model=linear_algorithm_pipeline, model_name = 'LogisticRegression' , metrics_list=linear_algorithm_metrics,
+                            name="linear_algorithm", y="is_phishing", output_topic="LogisticRegressionBVR")
 
 # Output topics initialization
 
-output_topic_HoltWintersPipe = app.topic(HoltWintersPipe.output_topic, value_deserializer="json")
+output_topic_linear_algorithm = app.topic(
+    linear_algorithm.output_topic, value_deserializer="json")
 
 
-#Sdf for each pipeline 
-#Train and predict method calls for each pipeline
-#If the pipeline has an output topic then we call it 
+# Sdf for each pipeline
+# Train and predict method calls for each pipeline
+# If the pipeline has an output topic then we call it
 
-sdf_HoltWintersPipe = sdf_airline.apply(HoltWintersPipe.train_and_predict).to_topic(output_topic_HoltWintersPipe)
+sdf_linear_algorithm = sdf_phishing.apply(
+    linear_algorithm.train_and_predict).to_topic(output_topic_linear_algorithm)
 
 
 # ---------- DASHBOARD SETUP ----------
@@ -123,10 +117,11 @@ def run_dash():
         fig = make_subplots(rows=2, cols=1 , vertical_spacing=0.1)
 
         # Assumes `add_metrics_traces` is defined in your Pipeline class
-        HoltWintersPipe.add_metrics_traces(fig, row=1, col=1)
+        linear_algorithm.add_metrics_traces(fig, row=1, col=1)
 
         fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
         return fig
+    
     
     @dash_app.callback(
         Output(
@@ -137,12 +132,12 @@ def run_dash():
             component_id='interval', 
             component_property='n_intervals'
         )
-    )
+    )    
     def update_stats(n):
         
         traces = []  
         
-        HoltWintersPipe.add_stats_traces(traces) 
+        linear_algorithm.add_stats_traces(traces) 
         if traces:
             fig = go.Figure(
                     data=traces
