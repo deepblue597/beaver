@@ -104,7 +104,10 @@ def run_dash():
         dcc.Graph(id='live-graph'), 
         html.Div(
             children=[
-                dcc.Graph(id='live-stats')
+                dcc.Graph(
+                    id='live-stats', 
+                    style={'margin': 'auto', 'display': 'block', 'width':'70%'}
+                )
             ]
         )
     ])
@@ -140,7 +143,7 @@ def run_dash():
         linear_algorithm.add_stats_traces(traces) 
         if traces:
             fig = go.Figure(
-                    data=traces
+                    data=traces, 
             )
             return fig    
     
