@@ -11,6 +11,7 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 from river import base, utils
 from sklearn.metrics import confusion_matrix
+import numpy as np
 
 __all__ = ['Pipeline']
 
@@ -278,13 +279,22 @@ class Pipeline:
             ), row=row, col=col)
             
     def add_stats_traces(self, trace) : 
-        print(issubclass(type(self.model[self.model_name]), base.Classifier))
+        #print(issubclass(type(self.model[self.model_name]), base.Classifier))
         if issubclass(type(self.model[self.model_name]), base.Classifier):
-            #print('hiiii')
+            y_true = np.array(self.y_true_list)
+            y_pred = np.array(self.y_pred_list)
+            # Get unique labels for axes
+            labels = sorted(set(y_true) | set(y_pred))
+            cm = confusion_matrix(self.y_true_list, self.y_pred_list)
             trace.append(
                 go.Heatmap(
-                    x=self.y_true_list, 
-                    y=self.y_pred_list
+                    z = cm,
+                    x=labels,  # predicted
+                    y=labels,  # true
+                    colorscale='Viridis',
+                    colorbar=dict(title='Count'),
+                    hovertemplate='True: %{y}<br>Predicted: %{x}<br>Count: %{z}<extra></extra>'
+    
                 )
             )
         elif issubclass(type(self.model[self.model_name]) , base.Regressor) : 
