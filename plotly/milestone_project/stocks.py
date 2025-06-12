@@ -7,10 +7,10 @@ import plotly.graph_objects as go
 import json
 import numpy as np 
 from datetime import date
-import pandas_datareader.data as web
-import finnhub
+
 import os
 import kagglehub
+import dash
 
 # Download latest version
 path = kagglehub.dataset_download("mattiuzc/stock-exchange-data")
@@ -21,10 +21,17 @@ print("Path to dataset files:", path)
 df = pd.read_csv(path+'/indexData.csv')
 df
 # %%
-app = Dash()
+app = Dash(__name__, use_pages=True)
 
 app.layout = html.Div(
+    
     children=[
+            html.Div([
+        html.Div(
+            dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
+        ) for page in dash.page_registry.values()
+    ]),
+    dash.page_container, 
         html.H2(
             'Stock prices'
         ), 
