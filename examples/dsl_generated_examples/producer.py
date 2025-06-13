@@ -18,8 +18,8 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    dataset = datasets.Phishing()
-    #dataset = datasets.TrumpApproval()
+    #dataset = datasets.Phishing()
+    dataset = datasets.TrumpApproval()
     # dataset = datasets.ImageSegments()
     # print("Path to dataset files:", path)
     # gen = synth.Agrawal(classification_function=0, seed=42)

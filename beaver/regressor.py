@@ -35,8 +35,7 @@ accuracy = metrics.Accuracy()
 
 
 # Define live data algorithms
-log_reg = linear_model.LogisticRegression(
-    optimizer=SGD)
+log_reg = linear_model.LinearRegression()
 
 
 # Connection Configuration for quixstreams
@@ -48,12 +47,12 @@ connectionConfig = ConnectionConfig(
 # Connection to Kafka
 app = Application(
     broker_address=connectionConfig,
-    consumer_group="log_reg_cons",
+    consumer_group="trump1",
     auto_offset_reset="earliest")
 
 # Input topics
 
-input_topic_phishing = app.topic("Phishing", value_deserializer="json")
+input_topic_phishing = app.topic("TrumpApproval", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
@@ -72,8 +71,8 @@ preprocessor_phishing = standardScaler
 linear_algorithm_pipeline = preprocessor_phishing | log_reg
 
 linear_algorithm_metrics = [accuracy]
-linear_algorithm = Pipeline(model=linear_algorithm_pipeline, model_name = 'LogisticRegression' , metrics_list=linear_algorithm_metrics,
-                            name="linear_algorithm", y="is_phishing", output_topic="LogisticRegressionBVR")
+linear_algorithm = Pipeline(model=linear_algorithm_pipeline, model_name = 'LinearRegression' , metrics_list=linear_algorithm_metrics,
+                            name="linear_regression", y="five_thirty_eight", output_topic="LinearRegressionBVR")
 
 # Output topics initialization
 
