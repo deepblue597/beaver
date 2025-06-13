@@ -186,7 +186,7 @@ def run_dash():
     
         return go.Figure()
     
-    dash_app.run(debug=False, use_reloader=False)
+    dash_app.run(debug=True, use_reloader=False)
 
 if __name__ == '__main__':
     #Run Plotly on different thread
