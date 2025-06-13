@@ -10,7 +10,7 @@ outpout = {}
 
 def data_action(data):
 
-    if data.features.assignments :
+    if data.features and data.features.assignments :
         #print(data.features.assignments[0].variable)
         outpout[data.name] = data.features.assignments
 

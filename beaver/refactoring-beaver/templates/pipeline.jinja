@@ -13,6 +13,6 @@
 ]
 {%endif%}
 
-{{pipeline.name}} = pipeline.Pipeline(model = {{pipeline.name}}_pipeline {%-if pipeline.metrics%}, model_name ='{{pipeline.algorithm.type.name}}'  , metrics_list = {{pipeline.name}}_metrics{%endif%} , name = "{{pipeline.name}}"{%-if pipeline.data.features and pipeline.data.features.target_feature-%},y="{{pipeline.data.features[0].target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
+{{pipeline.name}} = pipeline.Pipeline(model = {{pipeline.name}}_pipeline {%-if pipeline.metrics%}, model_name ='{{pipeline.algorithm.type.name}}'  , metrics_list = {{pipeline.name}}_metrics{%endif%} , name = "{{pipeline.name}}"{%-if pipeline.data.features and pipeline.data.features.target_feature-%},y="{{pipeline.data.features.target_feature}}"{%-endif-%} {%-if pipeline.output_topic-%},output_topic="{{pipeline.output_topic}}"{%-endif-%} )
 
 {% endfor -%}

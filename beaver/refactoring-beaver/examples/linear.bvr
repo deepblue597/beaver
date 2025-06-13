@@ -1,0 +1,49 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'linear_models'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <ALMAClassifier> alma 
+
+algorithm <LinearRegression> linear 
+    params: 
+        intercept_lr=0.1
+
+preprocessor <StandardScaler> scaler 
+
+metric <MAE> mae
+metric <Accuracy> acc
+
+data Phishing { 
+
+    input_topic = "Phishing"         
+    features: 
+        target_feature = five_thirty_eight
+    preprocessors = scaler
+}
+
+
+data TrumpApproval { 
+
+    input_topic = "TrumpApproval"         
+    features: 
+        target_feature = is_phishing
+    preprocessors = scaler
+}
+
+pipeline almaPipeline { 
+    output_topic = 'almaPipeline' 
+    data = Phishing
+    algorithm = alma
+    metrics = acc
+}
+
+
+pipeline LinearRegressionPipeline { 
+    output_topic = 'LinearRegressionPipeline' 
+    data = TrumpApproval
+    algorithm = linear
+    metrics = mae
+}

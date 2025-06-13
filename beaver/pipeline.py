@@ -12,6 +12,7 @@ from plotly.subplots import make_subplots
 from river import base, utils
 from sklearn.metrics import confusion_matrix
 import numpy as np
+from river.compose.pipeline import Pipeline as RiverPipeline
 
 __all__ = ['Pipeline']
 
@@ -282,11 +283,11 @@ class Pipeline:
             ), row=row, col=col)
             
     def add_stats_traces(self, trace) : 
-        if isinstance(self.model, dict):
+        if type(self.model) == RiverPipeline:
             model_instance = self.model[self.model_name]
         else:
             model_instance = self.model
-        #print(model_instance)
+        print(model_instance)
         if issubclass(type(model_instance), base.Classifier):
             y_true = np.array(self.y_true_list)
             y_pred = np.array(self.y_pred_list)
