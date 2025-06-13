@@ -60,7 +60,7 @@ app = Application(
 
 #Input topics 
 
-input_topic_airline = app.topic("airline", value_deserializer="json")
+input_topic_airline = app.topic("AirlinePassengers", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
@@ -107,7 +107,12 @@ def run_dash():
         'font-weight': 'normal',  # Make the text bold
         }),
         dcc.Interval(id='interval', n_intervals=0),
-        dcc.Graph(id='live-graph')
+        dcc.Graph(id='live-graph'), 
+        html.Div(
+            children=[
+                dcc.Graph(id='live-stats')
+            ]
+        )
     ])
 
     @dash_app.callback(
@@ -122,7 +127,30 @@ def run_dash():
 
         fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
         return fig
-
+    
+    @dash_app.callback(
+        Output(
+            component_id='live-stats', 
+            component_property='figure'
+        ), 
+        Input(
+            component_id='interval', 
+            component_property='n_intervals'
+        )
+    )
+    def update_stats(n):
+        
+        traces = []  
+        
+        HoltWintersPipe.add_stats_traces(traces) 
+        if traces:
+            fig = go.Figure(
+                    data=traces
+            )
+            return fig    
+    
+        return go.Figure()
+    
     dash_app.run(debug=True, use_reloader=False)
 
 

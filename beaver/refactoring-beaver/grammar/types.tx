@@ -1,0 +1,42 @@
+import models
+
+Param : 
+
+    name = ID '=' value =  ParamValue   ; 
+
+List:
+    '[' items*=ParamValue[','] ']'
+;
+
+ParamValue : NUMBER | STRING | BOOL | Reference | Tuple | List | Dict;
+
+
+Tuple:
+    '(' itemsT*=DictType[','] ')'
+;
+
+
+Dict:
+    '{' itemsD*=DictItem[','] '}'
+;
+
+DictItem:
+    name=STRING ':' value=DictType
+;
+
+DictType:
+    NUMBER | STRING | BOOL | Dict | List | ID
+;
+
+Reference : value = [Model] ;
+
+
+
+
+
+// Special rule for comments. Comments start with //
+Comment: CommentLine | CommentBlock ;
+
+CommentLine: /\/\/.*?$/;
+
+CommentBlock: /\/\*(.|\n)*?\*\//;

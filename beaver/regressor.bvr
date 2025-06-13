@@ -1,0 +1,84 @@
+
+
+pipeline linear_algorithm { 
+
+    output_topic : 'LinearRegressionBVR' 
+    data : TrumpApproval
+    algorithm : LinearRegression 
+    metrics : [accuracy] 
+}
+
+
+
+connector {
+
+    connection_params { 
+        
+        bootstrap_servers = "localhost:39092",
+        security_protocol = "plaintext"
+
+
+    }
+
+    kafka_params { 
+
+        consumer_group = 'trump'
+    
+    }
+
+}
+
+data TrumpApproval { 
+
+    input_topic : 'TrumpApproval'
+    features {
+        target_feature : class
+    }
+    preprocessors : [[standardScaler]]
+}
+
+
+preprocessors { 
+
+        model standardScaler {
+
+            type : preprocessing
+            name : StandardScaler
+
+        }
+
+}
+
+
+algorithms { 
+
+    model LinearRegression {
+
+            type : linear_model
+            name : LinearRegression
+        }
+
+
+}
+
+
+
+ 
+metrics { 
+
+    model accuracy {
+
+            type : metrics
+            name : Accuracy
+        }
+
+}
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+

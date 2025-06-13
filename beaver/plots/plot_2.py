@@ -63,12 +63,12 @@ def run_dash_app():
             go.Scatter(y=ys2, mode='lines', name='Bottom'),
             row=2, col=1
         )
-
+        
         figure.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40) , 
-                                yaxis_title='Values'  ),
+                                yaxis_title='Values' , hovermode = 'x'  ),
         return figure
-
-    app.run(debug=True, use_reloader=False)
+    
+    app.run(debug=False, use_reloader=False)
 
 
 if __name__ == '__main__':

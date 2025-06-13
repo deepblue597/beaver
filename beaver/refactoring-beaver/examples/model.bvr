@@ -1,0 +1,44 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'linear_models'
+        auto_offset_reset = "earliest"
+}
+
+data testdata1 { 
+
+    input_topic : "tester_topic" 
+    preprocessors : model2 | model2  
+}
+
+preprocessors { 
+
+    // tester
+    model <ALMAClassifier> model2  
+
+
+    model <ARFClassifier> model3  
+
+  
+    model <KMeans> model4  
+
+
+    model <ADWIN> model5  
+
+
+    model <BaggingClassifier> model6  
+
+    model <MLPRegressor> model7  
+
+
+    model <StandardScaler> model8  
+
+
+    model <HoltWinters> model9  
+
+
+    model <Skyline> model10  
+
+    model <DynamicQuantizer> model11
+
+}
