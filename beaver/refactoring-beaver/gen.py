@@ -2,6 +2,7 @@
 from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
+from calc import * 
 
 
 # %%
@@ -21,21 +22,21 @@ def parse_command_line_arguments():
 # %%
 if __name__ == "__main__":
 
-    # processors = {
-    #     'Data': data_action,
-    #     'Assignment': assignment_action,
-    #     'Expression': expression_action,
-    #     'Term': term_action,
-    #     'Factor': factor_action,
-    #     'Operand': operand_action,
-    # }
+    processors = {
+        'Data': data_action,
+        'Assignment': assignment_action,
+        'Expression': expression_action,
+        'Term': term_action,
+        'Factor': factor_action,
+        'Operand': operand_action,
+    }
 
     args = parse_command_line_arguments()
 
     # Load the DSL grammar
-    ml_mm = metamodel_from_file('grammar/processors.tx')
+    ml_mm = metamodel_from_file('grammar/pipeline.tx')
 
-    # ml_mm.register_obj_processors(processors)
+    ml_mm.register_obj_processors(processors)
 
     # Parse the DSL configuration file
     config = ml_mm.model_from_file(args.metamodel)
@@ -45,13 +46,13 @@ if __name__ == "__main__":
     env = Environment(loader=FileSystemLoader('.'))
     template = env.get_template('templates/models.jinja')
 
-    # flattened_dict = dict_flatten(outpout)
-
+    flattened_dict = dict_flatten(outpout)
+    #print(flattened_dict)
     generated_code = template.render(
-        file=config)
+        file=config , assignments=flattened_dict)
 
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:
         f.write(generated_code)
 
-    # print("Generated code saved to:", args.generated_file_name)
+    print("Generated code saved to:", args.generated_file_name)

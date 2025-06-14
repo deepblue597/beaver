@@ -6,12 +6,14 @@ from matplotlib import pyplot as plt
 from river import metrics
 import warnings
 from errors import PredictionWarning, StatisticsWarning
+from errors import PredictionWarning, StatisticsWarning
 from matplotlib.animation import FuncAnimation
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 from river import base, utils
 from sklearn.metrics import confusion_matrix
 import numpy as np
+from river.compose.pipeline import Pipeline as RiverPipeline
 
 __all__ = ['Pipeline']
 
@@ -41,12 +43,14 @@ class Pipeline:
     def __init__(self,
                  model,
                  model_name,
+                 
                  name: str,
                  metrics_list: Optional[List[metrics.base.Metric]] = None,
                  y: Optional[str] = None,
                  output_topic: Optional[str] = None
                  ):
         
+        self.model_name = model_name
         self.model_name = model_name
         self.y = y
         self.model = model
@@ -79,6 +83,7 @@ class Pipeline:
 
             for metric in metrics_list:
                 #print(metric)
+                #print(metric)
                 if hasattr(metric, "requires_labels") and not metric.requires_labels:
                     if self.metrics['probabilistic'] is None:
                         try:
@@ -100,6 +105,9 @@ class Pipeline:
                             f"Unknown metric type: {metric.__class__.__name__}")
 
                 self.metrics_values[metric.__class__.__name__] = []
+            
+            self.y_true_list = []
+            self.y_pred_list = []  
             
             self.y_true_list = []
             self.y_pred_list = []  
@@ -129,6 +137,7 @@ class Pipeline:
 
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None): 
             #print('heee')
+            #print('heee')
             latest_metrics = self._update_metrics(y , y_predicted , y_predicted_proba)
            
         # Save the model to a file
@@ -139,10 +148,12 @@ class Pipeline:
         output = {**X}
         if self.y:
             self.y_true_list.append(y) 
+            self.y_true_list.append(y) 
             output['y_true'] = y
         if y_predicted_proba is not None:
             output['y_predicted_probabilities'] = y_predicted_proba
         if y_predicted is not None:
+            self.y_pred_list.append(y_predicted)
             self.y_pred_list.append(y_predicted)
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
@@ -198,6 +209,7 @@ class Pipeline:
         if hasattr(self.model, "predict_one"):
             y_predicted = self.model.predict_one(X)
             #print(y_predicted)
+            #print(y_predicted)
             # For probabilistic metrics
             if self.metrics['probabilistic'] is not None:
                 y_predicted_proba = self.model.predict_proba_one(X)
@@ -237,7 +249,10 @@ class Pipeline:
                 else:  # Update the metrics
                     #print(y , y_predicted)
                     
+                    #print(y , y_predicted)
+                    
                     metrics_in_group.update(y, y_predicted)
+                    #print(metrics_in_group.update(y, y_predicted))
                     #print(metrics_in_group.update(y, y_predicted))
 
         # Store the metrics values
@@ -246,6 +261,7 @@ class Pipeline:
             latest_value = metric.get()
             self.metrics_values[metric_name].append(latest_value)
             latest_metrics[metric_name] = latest_value
+        #print(latest_metrics)
         #print(latest_metrics)
         return latest_metrics
 
@@ -281,48 +297,53 @@ class Pipeline:
                 hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
             ), row=row, col=col)
             
-    def add_stats_traces(self, trace) : 
-        if isinstance(self.model, dict):
+    def add_stats_traces(self,traces): #fig, row=1, col=1) : 
+        if type(self.model) == RiverPipeline:
             model_instance = self.model[self.model_name]
         else:
             model_instance = self.model
-        #print(model_instance)
+        
         if issubclass(type(model_instance), base.Classifier):
+            print(model_instance)
             y_true = np.array(self.y_true_list)
             y_pred = np.array(self.y_pred_list)
             # Get unique labels for axes
             labels = sorted(set(y_true) | set(y_pred))
             cm = confusion_matrix(self.y_true_list, self.y_pred_list)
-            trace.append(
-                go.Heatmap(
-                    z = cm,
-                    x=labels,  # predicted
-                    y=labels,  # true
-                    colorscale='Viridis',
-                    name=f"{self.name} Predictions",
-                    colorbar=dict(title='Count'),
-                    hovertemplate='True: %{y}<br>Predicted: %{x}<br>Count: %{z}<extra></extra>'
+            traces.append(go.Heatmap(
+                        z = cm,
+                        x=labels,  # predicted
+                        y=labels,  # true
+                        colorscale='Viridis',
+                        name=f"{self.name} Predictions",
+                        colorbar=dict(
+                            title='Count',
+                            #len=0.5,  # 50% of the plot height
+                            #xanchor='left'
+                            ),
+                        hovertemplate='True: %{y}<br>Predicted: %{x}<br>Count: %{z}<extra></extra>'
     
                 )
             )
+            
         elif issubclass(type(model_instance) , base.Regressor) : 
+            #print(model_instance)
             #print(self.y_true_list)
             #print(self.y_pred_list)
-            trace.append(
-                go.Scatter(
-                    x=self.y_true_list,
-                    y=self.y_pred_list,
-                    mode='markers',
-                    #marker=dict(color='blue', size=6, opacity=0.7),
-                    name=f"{self.name} Predictions",
-                    hovertemplate='True: %{x}<br>Predicted: %{y}<extra></extra>'
-                )
+            traces.append(go.Scatter(
+                        x=self.y_true_list,
+                        y=self.y_pred_list,
+                        mode='markers',
+                        #marker=dict(color='blue', size=6, opacity=0.7),
+                        name=f"{self.name} Predictions",
+                        hovertemplate='True: %{x}<br>Predicted: %{y}<extra></extra>'
+                )#, row=row, col=col
             )
             # Optionally, add a y=x reference line
             min_val = min(np.min(self.y_true_list), np.min(self.y_pred_list))
             max_val = max(np.max(self.y_true_list), np.max(self.y_pred_list))
             #print(min_val)
-            trace.append(
+            traces.append(
                 go.Scatter(
                     x=[min_val, max_val],
                     y=[min_val, max_val],
@@ -330,7 +351,8 @@ class Pipeline:
                     line=dict(color='red', dash='dash'),
                     name='Ideal: y = x',
                     showlegend=True
-                )
+                ),
+                #row=row, col=col
             )
             
         else : 

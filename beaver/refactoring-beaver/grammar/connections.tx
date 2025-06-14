@@ -14,14 +14,6 @@ Connector :
         ('auto_offset_reset' '=' auto_offset_reset=STRING)?
         ('commit_interval' '=' commit_interval=FLOAT)?
         ('commit_every' '=' commit_every=INT)?
-        ('consumer_extra_config' '=' consumer_extra_config=Dict)?
-        ('producer_extra_config' '=' producer_extra_config=Dict)?
-        ('state_dir' '=' state_dir=STRING)?
-        ('rocksdb_options' '=' rocksdb_options=Dict)?
-        ('on_consumer_error' '=' on_consumer_error=STRING)?
-        ('on_processing_error' '=' on_processing_error=STRING)?
-        ('on_producer_error' '=' on_producer_error=STRING)?
-        ('on_message_processed' '=' on_message_processed=STRING)?
         ('consumer_poll_timeout' '=' consumer_poll_timeout=FLOAT)?
         ('producer_poll_timeout' '=' producer_poll_timeout=FLOAT)?
         ('loglevel' '=' loglevel=STRING)?

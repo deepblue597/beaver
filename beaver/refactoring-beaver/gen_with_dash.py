@@ -103,7 +103,7 @@ testPipeline_pipeline = preprocessor_testdata1 |model4
 testPipeline_metrics = [model9,model10]
 
 
-testPipeline = pipeline.Pipeline(model = testPipeline_pipeline , metrics_list = testPipeline_metrics , name = "testPipeline",output_topic="output_test")
+testPipeline = pipeline.Pipeline(model = testPipeline_pipeline, model_name ='KMeans'  , metrics_list = testPipeline_metrics , name = "testPipeline",output_topic="output_test")
 
 
 
@@ -132,7 +132,15 @@ def run_dash():
         'font-weight': 'normal',  # Make the text bold
         }),
         dcc.Interval(id='interval', n_intervals=0),
-        dcc.Graph(id='live-graph')
+        dcc.Graph(id='live-graph'), 
+        html.Div(
+            children=[
+                dcc.Graph(
+                    id='live-stats',
+                    style={'margin': 'auto', 'display': 'block', 'width':'70%'}
+                )
+            ]
+        )
     ])
 
     @dash_app.callback(
@@ -146,9 +154,38 @@ def run_dash():
         testPipeline.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
         
 
-        fig.update_layout(height=1200, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
         return fig
 
+    @dash_app.callback(
+        Output(
+            component_id='live-stats', 
+            component_property='figure'
+        ), 
+        Input(
+            component_id='interval', 
+            component_property='n_intervals'
+        )
+    )    
+    def update_stats(n):
+        
+        traces = []  
+        
+        testPipeline.add_stats_traces(traces) 
+               
+
+        
+        if traces:
+            fig = go.Figure(
+                    data=traces, 
+                    layout= go.Layout(
+                        title='Statistics'
+                    )
+            )
+            return fig    
+    
+        return go.Figure()
+    
     dash_app.run(debug=True, use_reloader=False)
 
 if __name__ == '__main__':

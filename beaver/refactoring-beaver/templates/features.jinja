@@ -1,0 +1,44 @@
+#Drop Features
+{%for data in file.data%}
+{%-if data.features.drop_features%}
+sdf_{{data.name}}.drop([
+    {%- for feature  in data.features.drop_features -%}
+    "{{feature}}"
+    {%- if not loop.last %},
+    {%- endif -%} 
+    {%- endfor -%}
+])
+{%endif-%}
+{%- endfor %}
+
+#Keep Features
+{%for data in file.data%}
+{%-if data.features.keep_features%}
+sdf_{{data.name}} = sdf_{{data.name}}[[
+    {%- for feature  in data.features.keep_features -%}
+    "{{feature}}"
+    {%- if not loop.last %},
+    {%- endif -%} 
+    {%- endfor -%}
+]]
+{%endif-%}
+{%- endfor %}
+
+{% if assignments%}
+# Define new features
+{%for key, values in assignments.items() -%}
+{%for assignment in values-%}
+
+{% if assignment == ';' %}
+{% elif assignment == '(' or assignment == ')' -%}
+    {{ assignment }}
+{%- elif assignment is number -%}
+    {{ assignment }}
+{%- elif assignment in ['+', '-', '*', '/', '='] -%}
+    {{ assignment }}
+{%- else -%}
+    sdf_{{key}}["{{ assignment }}"]
+{%- endif %}
+{%-endfor%}
+{%-endfor%}
+{%endif%}

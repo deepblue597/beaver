@@ -1,0 +1,24 @@
+import components 
+import connections
+// import types for comments otherwise it will throw error
+import types
+
+BeaverModel : 
+    connector = Connector
+    models += Model
+    data += Data
+    pipelines += Pipeline
+;
+
+Pipeline : 
+
+    'pipeline' name = ID '{'
+
+        ('output_topic' '=' output_topic = STRING)?  
+        'data' '=' data = [Data]
+        'algorithm' '=' algorithm = [Algorithm]
+        ('metrics' '=' metrics += [Metric][','])?
+
+    
+    '}'
+;

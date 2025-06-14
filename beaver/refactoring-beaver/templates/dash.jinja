@@ -1,0 +1,73 @@
+# ---------- DASHBOARD SETUP ----------
+
+def run_dash():
+    dash_app = Dash(__name__)
+    dash_app.layout = html.Div([
+         html.H2("Pipelines' Plots" , style={
+        'textAlign': 'center',  # Center the text
+
+        'fontFamily': 'sans-serif',  # Change the font family
+        'font-weight': 'normal',  # Make the text bold
+        }),
+        dcc.Interval(id='interval', n_intervals=0),
+        dcc.Graph(id='live-graph'), 
+        html.Div(
+            children=[
+                {% for pipeline in file.pipelines %}
+                dcc.Graph(
+                    id='live-stats-{{pipeline.name}}',
+                    #style={'margin': 'auto', 'display': 'block', 'width':'70%'}
+                ){%- if not loop.last %},{%- endif -%} 
+                {% endfor %}
+            ]
+        )
+    ])
+
+    @dash_app.callback(
+        Output('live-graph', 'figure'),
+        Input('interval', 'n_intervals')
+    )
+    def update_graph(n):
+        fig = make_subplots(rows={{ file.pipelines | length }}, cols=1 , vertical_spacing=0.1)
+
+        {% for pipeline in file.pipelines %}
+        {{pipeline.name}}.add_metrics_traces(fig = fig , row = {{ loop.index }}, col = 1 ) 
+        {% endfor %}
+
+        fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        return fig
+
+
+    {% for pipeline in file.pipelines %}
+    @dash_app.callback(
+        Output(
+            component_id='live-stats-{{pipeline.name}}', 
+            component_property='figure'
+        ), 
+        Input(
+            component_id='interval', 
+            component_property='n_intervals'
+        )
+    )
+
+      
+    def update_stats_{{pipeline.name}}(n):
+        
+        traces = []  
+        
+        {{pipeline.name}}.add_stats_traces(traces) 
+              
+
+        
+        if traces:
+            fig = go.Figure(
+                    data=traces, 
+                    layout= go.Layout(
+                        title='{{pipeline.name}} Statistics'
+                    )
+            )
+            return fig    
+    
+        return go.Figure()
+    {% endfor %}
+    dash_app.run(debug=False, use_reloader=False)

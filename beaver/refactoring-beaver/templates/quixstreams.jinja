@@ -1,0 +1,59 @@
+#Define connection
+connectionConfig = ConnectionConfig( 
+{%- for param_name, param_value in [
+    ('bootstrap_servers', file.connector.bootstrap_servers),
+    ('security_protocol', file.connector.security_protocol),
+    ('sasl_username', file.connector.sasl_username),
+    ('sasl_password', file.connector.sasl_password)
+    ] -%}
+    {%- if param_value  %}
+    {%-if param_value is string%}
+    {{ param_name }} = '{{ param_value }}'{%- if not loop.last -%},{%- endif -%}
+    {%-else%}
+    {{ param_name }} = {{ param_value }}{%- if not loop.last -%},{%- endif -%}
+    {%-endif%}
+        
+    {%- endif %}
+{%- endfor %}
+)
+
+#Connection to Kafka
+app = Application( 
+    broker_address = connectionConfig,
+{%- for param_name, param_value in [
+    ('quix_sdk_token', file.connector.quix_sdk_token),
+    ('consumer_group', file.connector.consumer_group),
+    ('auto_offset_reset', file.connector.auto_offset_reset),
+    ('commit_interval', file.connector.commit_interval),
+    ('commit_every', file.connector.commit_every),
+    ('consumer_poll_timeout', file.connector.consumer_poll_timeout),
+    ('producer_poll_timeout', file.connector.producer_poll_timeout),
+    ('loglevel', file.connector.loglevel),
+    ('auto_create_topics', file.connector.auto_create_topics),
+    ('use_changelog_topics', file.connector.use_changelog_topics),
+    ('quix_config_builder', file.connector.quix_config_builder),
+    ('topic_manager', file.connector.topic_manager),
+    ('request_timeout', file.connector.request_timeout),
+    ('topic_create_timeout', file.connector.topic_create_timeout),
+    ('processing_guarantee', file.connector.processing_guarantee)
+] -%}
+    {%- if param_value  %}
+    {%-if param_value is string%}
+    {{ param_name }} = '{{ param_value }}'{%- if not loop.last -%},{%- endif -%}
+    {%-else%}
+    {{ param_name }} = {{ param_value }}{%- if not loop.last -%},{%- endif -%}
+    {%-endif%}
+        
+    {%- endif %}
+{%- endfor %}
+)
+
+#Input topics 
+{%for data in file.data%}
+input_topic_{{data.name}} = app.topic("{{data.input_topic}}", value_deserializer="json")
+{%- endfor %}
+
+# Create Streaming DataFrames connected to the input Kafka topics
+{%for data in file.data%}
+sdf_{{data.name}} = app.dataframe(topic=input_topic_{{data.name}})
+{%- endfor %}
