@@ -13,10 +13,12 @@ def run_dash():
         dcc.Graph(id='live-graph'), 
         html.Div(
             children=[
+                {% for pipeline in file.pipelines %}
                 dcc.Graph(
-                    id='live-stats',
-                    style={'margin': 'auto', 'display': 'block', 'width':'70%'}
-                )
+                    id='live-stats-{{pipeline.name}}',
+                    #style={'margin': 'auto', 'display': 'block', 'width':'70%'}
+                ){%- if not loop.last %},{%- endif -%} 
+                {% endfor %}
             ]
         )
     ])
@@ -35,33 +37,37 @@ def run_dash():
         fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
         return fig
 
+
+    {% for pipeline in file.pipelines %}
     @dash_app.callback(
         Output(
-            component_id='live-stats', 
+            component_id='live-stats-{{pipeline.name}}', 
             component_property='figure'
         ), 
         Input(
             component_id='interval', 
             component_property='n_intervals'
         )
-    )    
-    def update_stats(n):
+    )
+
+      
+    def update_stats_{{pipeline.name}}(n):
         
         traces = []  
-        {% for pipeline in file.pipelines %}
+        
         {{pipeline.name}}.add_stats_traces(traces) 
-        {% endfor %}       
+              
 
         
         if traces:
             fig = go.Figure(
                     data=traces, 
                     layout= go.Layout(
-                        title='Statistics'
+                        title='{{pipeline.name}} Statistics'
                     )
             )
             return fig    
     
         return go.Figure()
-    
-    dash_app.run(debug=True, use_reloader=False)
+    {% endfor %}
+    dash_app.run(debug=False, use_reloader=False)

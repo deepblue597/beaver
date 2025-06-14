@@ -20,7 +20,7 @@ data Phishing {
 
     input_topic = "Phishing"         
     features: 
-        target_feature = five_thirty_eight
+        target_feature = is_phishing
     preprocessors = scaler
 }
 
@@ -29,7 +29,7 @@ data TrumpApproval {
 
     input_topic = "TrumpApproval"         
     features: 
-        target_feature = is_phishing
+        target_feature = five_thirty_eight
     preprocessors = scaler
 }
 
