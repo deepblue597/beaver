@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 from river import metrics
 import warnings
 from errors import PredictionWarning, StatisticsWarning
+from errors import PredictionWarning, StatisticsWarning
 from matplotlib.animation import FuncAnimation
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
@@ -42,12 +43,14 @@ class Pipeline:
     def __init__(self,
                  model,
                  model_name,
+                 model_name,
                  name: str,
                  metrics_list: Optional[List[metrics.base.Metric]] = None,
                  y: Optional[str] = None,
                  output_topic: Optional[str] = None
                  ):
         
+        self.model_name = model_name
         self.model_name = model_name
         self.y = y
         self.model = model
@@ -80,6 +83,7 @@ class Pipeline:
 
             for metric in metrics_list:
                 #print(metric)
+                #print(metric)
                 if hasattr(metric, "requires_labels") and not metric.requires_labels:
                     if self.metrics['probabilistic'] is None:
                         try:
@@ -101,6 +105,9 @@ class Pipeline:
                             f"Unknown metric type: {metric.__class__.__name__}")
 
                 self.metrics_values[metric.__class__.__name__] = []
+            
+            self.y_true_list = []
+            self.y_pred_list = []  
             
             self.y_true_list = []
             self.y_pred_list = []  
@@ -130,6 +137,7 @@ class Pipeline:
 
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None): 
             #print('heee')
+            #print('heee')
             latest_metrics = self._update_metrics(y , y_predicted , y_predicted_proba)
            
         # Save the model to a file
@@ -140,10 +148,12 @@ class Pipeline:
         output = {**X}
         if self.y:
             self.y_true_list.append(y) 
+            self.y_true_list.append(y) 
             output['y_true'] = y
         if y_predicted_proba is not None:
             output['y_predicted_probabilities'] = y_predicted_proba
         if y_predicted is not None:
+            self.y_pred_list.append(y_predicted)
             self.y_pred_list.append(y_predicted)
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
@@ -199,6 +209,7 @@ class Pipeline:
         if hasattr(self.model, "predict_one"):
             y_predicted = self.model.predict_one(X)
             #print(y_predicted)
+            #print(y_predicted)
             # For probabilistic metrics
             if self.metrics['probabilistic'] is not None:
                 y_predicted_proba = self.model.predict_proba_one(X)
@@ -238,7 +249,10 @@ class Pipeline:
                 else:  # Update the metrics
                     #print(y , y_predicted)
                     
+                    #print(y , y_predicted)
+                    
                     metrics_in_group.update(y, y_predicted)
+                    #print(metrics_in_group.update(y, y_predicted))
                     #print(metrics_in_group.update(y, y_predicted))
 
         # Store the metrics values
@@ -247,6 +261,7 @@ class Pipeline:
             latest_value = metric.get()
             self.metrics_values[metric_name].append(latest_value)
             latest_metrics[metric_name] = latest_value
+        #print(latest_metrics)
         #print(latest_metrics)
         return latest_metrics
 
