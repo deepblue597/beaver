@@ -39,15 +39,15 @@ class Pipeline:
 
     """
 
-    def __init__(self,
-                 model,
-                 model_name,
-                 
-                 name: str,
-                 metrics_list: Optional[List[metrics.base.Metric]] = None,
-                 y: Optional[str] = None,
-                 output_topic: Optional[str] = None
-                 ):
+    def __init__(
+        self,
+        model,
+        model_name, 
+        name: str,
+        metrics_list: Optional[List[metrics.base.Metric]] = None,
+        y: Optional[str] = None,
+        output_topic: Optional[str] = None
+        ):
         
         self.model_name = model_name
         self.model_name = model_name
