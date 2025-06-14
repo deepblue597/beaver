@@ -5,8 +5,7 @@ import dill
 from matplotlib import pyplot as plt
 from river import metrics
 import warnings
-from errors import PredictionWarning, StatisticsWarning
-from errors import PredictionWarning, StatisticsWarning
+from beaver.errors import PredictionWarning, StatisticsWarning
 from matplotlib.animation import FuncAnimation
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
