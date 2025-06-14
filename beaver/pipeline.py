@@ -43,7 +43,7 @@ class Pipeline:
     def __init__(self,
                  model,
                  model_name,
-                 model_name,
+                 
                  name: str,
                  metrics_list: Optional[List[metrics.base.Metric]] = None,
                  y: Optional[str] = None,
