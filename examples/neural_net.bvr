@@ -1,0 +1,46 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'neighbours_models'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <ReLU> ReLU
+
+algorithm <Identity> Identity 
+
+optimizer <SGD> SGDopt
+    params: 
+        lr = 1e-3
+
+algorithm <MLPRegressor> neural 
+    params: 
+        hidden_dims=(5),
+        activations=(
+            ReLU,
+            ReLU,
+            Identity
+        ),
+        optimizer=SGDopt,
+        seed=42
+
+preprocessor <StandardScaler> StandardScaler
+metric <MAE> mae
+
+
+data TrumpApproval { 
+
+    input_topic = "TrumpApproval"         
+    features: 
+        target_feature = five_thirty_eight
+    preprocessors = StandardScaler
+
+}
+
+
+pipeline neuralPipeline { 
+    output_topic = 'neuralPipeline' 
+    data = TrumpApproval
+    algorithm = neural
+    metrics = mae
+}

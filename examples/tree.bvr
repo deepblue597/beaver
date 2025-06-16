@@ -1,0 +1,31 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'tree_models'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <ExtremelyFastDecisionTreeClassifier> fastTree 
+    params: 
+        grace_period=100,
+        delta=1e-5,
+        nominal_attributes=['elevel', 'car', 'zipcode'],
+        min_samples_reevaluate=100
+
+metric <Accuracy> acc
+
+data Agrawal { 
+
+    input_topic = "Agrawal"         
+    features: 
+        target_feature = class
+
+}
+
+
+pipeline fastTreePipeline { 
+    output_topic = 'fastTreePipeline' 
+    data = Agrawal
+    algorithm = fastTree
+    metrics = acc
+}

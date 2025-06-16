@@ -6,3 +6,6 @@
 *.pkl
 /thesis/
 *.pyc
+beaver.egg-info/
+build/
+dist/

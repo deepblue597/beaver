@@ -1,0 +1,65 @@
+{% macro generate_imports(models , custom_import_map )%}
+
+{%- set unique_modules = [] -%}
+{%- for model in models -%}
+    {%- set class_name = model.type.__class__.__name__ -%}
+    {%- if class_name in custom_import_map %}
+    {% set class_name = custom_import_map[class_name] -%}
+    {%- endif %}
+    {%- if class_name not in unique_modules -%}
+    {%- set _ = unique_modules.append(class_name) %}
+from river import {{ class_name }}
+    {%- endif %}
+{%- endfor %}
+
+{% endmacro %}
+
+{% macro generate_model_classes(models, custom_import_map, custom_model_init) %}
+
+    {%- for model in models -%}
+        {%- set class_name = model.type.__class__.__name__ -%}
+        {%- if class_name in custom_import_map %}
+{{model.name}} = {{ custom_model_init[class_name] }}.{{ model.type.name }}(
+    {%- for param in model.params %}
+    {{ param.name }} = {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
+    {% endfor %}
+)
+        {%- else %}
+{{model.name}} = {{ class_name }}.{{ model.type.name }}(
+    {%- for param in model.params %}
+    {{ param.name }} = {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
+    {% endfor %}
+)
+        {%- endif %}
+    {%- endfor %}
+
+{% endmacro %}
+
+{% macro paramameter_types_generation(param) %}
+{%- if param.__class__.__name__ == 'ModelRef' -%}
+{{ param.value.name }}
+{%- elif param.__class__.__name__ == "str" -%}
+'{{ param }}'
+{%- elif param.__class__.__name__ == "List" -%}
+[
+    {%- for item in param.items -%}
+        {{ paramameter_types_generation(item) }}{%- if not loop.last %},{% endif %}
+    {%- endfor -%}
+]
+{%- elif param.__class__.__name__ == "Dict" -%}
+{
+    {%- for item in param.items -%}
+        "{{ item.name }}" : {{ paramameter_types_generation(item.value) }}{%- if not loop.last %},{% endif %}
+    {%- endfor -%}
+}
+
+{%- elif param.__class__.__name__ == "Tuple" -%}
+(
+    {%- for item in param.items -%}
+        {{ paramameter_types_generation(item) }}{%- if not loop.last %},{% endif %}
+    {%- endfor -%}
+)
+{%- else -%}
+{{ param }}
+{%- endif -%}
+{% endmacro %}

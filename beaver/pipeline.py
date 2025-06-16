@@ -1,12 +1,11 @@
-from collections import deque
+from collections import deque , Counter
 from typing import List, Optional, Union
 
 import dill
 from matplotlib import pyplot as plt
 from river import metrics
 import warnings
-from errors import PredictionWarning, StatisticsWarning
-from errors import PredictionWarning, StatisticsWarning
+from beaver.errors import PredictionWarning, StatisticsWarning
 from matplotlib.animation import FuncAnimation
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
@@ -40,15 +39,15 @@ class Pipeline:
 
     """
 
-    def __init__(self,
-                 model,
-                 model_name,
-                 
-                 name: str,
-                 metrics_list: Optional[List[metrics.base.Metric]] = None,
-                 y: Optional[str] = None,
-                 output_topic: Optional[str] = None
-                 ):
+    def __init__(
+        self,
+        model,
+        model_name, 
+        name: str,
+        metrics_list: Optional[List[metrics.base.Metric]] = None,
+        y: Optional[str] = None,
+        output_topic: Optional[str] = None
+        ):
         
         self.model_name = model_name
         self.model_name = model_name
@@ -88,7 +87,7 @@ class Pipeline:
                     if self.metrics['probabilistic'] is None:
                         try:
                             # Check if model.predict_proba_one() is implemented
-                            model.predict_proba_one()
+                            model.predict_proba_one({})  # Test with an empty dict
                         except NotImplementedError as exc:
                             raise NotImplementedError(
                                 f"{model.__class__.__name__} does not support probabilistic metrics."
@@ -106,11 +105,9 @@ class Pipeline:
 
                 self.metrics_values[metric.__class__.__name__] = []
             
-            self.y_true_list = []
-            self.y_pred_list = []  
+        self.y_true_list = []
+        self.y_pred_list = []  
             
-            self.y_true_list = []
-            self.y_pred_list = []  
 
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
@@ -130,10 +127,11 @@ class Pipeline:
             X = {key: value for key, value in X.items() if key != self.y}
 
         # Train the model
-        if self.model._supervised: 
-            self.model.learn_one(x=X, y=y)
-        else:
-            self.model.learn_one(x=X)
+        if hasattr(self.model , 'learn_one' ): 
+            if self.model._supervised: 
+                self.model.learn_one(x=X, y=y)
+            else:
+                self.model.learn_one(x=X)
 
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None): 
             #print('heee')
@@ -147,17 +145,20 @@ class Pipeline:
         #TODO: Simplify these if statements
         output = {**X}
         if self.y:
-            self.y_true_list.append(y) 
-            self.y_true_list.append(y) 
+            if y_predicted is not None: 
+                self.y_true_list.append(y) 
+            
             output['y_true'] = y
         if y_predicted_proba is not None:
-            output['y_predicted_probabilities'] = y_predicted_proba
+            output['y_predicted_probabilities'] = {str(k): v for k, v in y_predicted_proba.items()}
         if y_predicted is not None:
             self.y_pred_list.append(y_predicted)
-            self.y_pred_list.append(y_predicted)
+            
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
             output['metrics'] = latest_metrics
+
+        output = _convert_numpy_types(output)
 
         return output
 
@@ -175,7 +176,7 @@ class Pipeline:
 
     def _predict(self, X) -> Union[float, List[float]]:
         """
-        The are 3 main cases: 
+        The are 4 main cases: 
 
         1. The model has a predict_one method 
 
@@ -201,7 +202,12 @@ class Pipeline:
         2 models are of type forecast: HoltWinters and SNARIMAX. The models use different variables 
         for seasonality : seasonality and m. Because we need this value, if new models occur, this will 
         raise an error if the variable name is different for the seasonal pattern. 
-
+        
+        4. The model has an update method
+        
+        This is for drift detection algorithms. Because there is no y_predicted we return the index of the value that
+        drift was detected and we plot it on a scatter plot. 
+        
         """
         
         y_predicted, y_predicted_proba = None, None
@@ -211,7 +217,7 @@ class Pipeline:
             #print(y_predicted)
             #print(y_predicted)
             # For probabilistic metrics
-            if self.metrics['probabilistic'] is not None:
+            if self.metrics_list and self.metrics['probabilistic'] is not None:
                 y_predicted_proba = self.model.predict_proba_one(X)
 
         elif hasattr(self.model, "score_one"):
@@ -227,6 +233,13 @@ class Pipeline:
             if self.passed_seasonality > seasonal_pattern:
                 y_predicted = self.model.forecast(horizon=1)[0]
                 #print(y_predicted)
+                
+        elif hasattr(self.model, "update"):
+            value = next(iter(X.values()))
+            self.model.update(value) 
+            if self.model.drift_detected: 
+                y_predicted = next(iter(X))
+                
         else : 
             raise NotImplementedError(f"{self.model.__class__.__name__} is not supported by beaver. Please create an issue on github.")
         
@@ -286,16 +299,16 @@ class Pipeline:
             Column index of the subplot.
         """
         #print(self.metrics_values)
-        
-        for metric_name, values in self.metrics_values.items():
-            
-            fig.add_trace(go.Scatter(
-                y=values,
-                mode="lines",
-                name=f"{self.name} - {metric_name}",
-                #hoverinfo="y+name",
-                hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
-            ), row=row, col=col)
+        if self.metrics_list is not None: 
+            for metric_name, values in self.metrics_values.items():
+                
+                fig.add_trace(go.Scatter(
+                    y=values,
+                    mode="lines",
+                    name=f"{self.name} - {metric_name}",
+                    #hoverinfo="y+name",
+                    hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
+                ), row=row, col=col)
             
     def add_stats_traces(self,traces): #fig, row=1, col=1) : 
         if type(self.model) == RiverPipeline:
@@ -354,6 +367,50 @@ class Pipeline:
                 ),
                 #row=row, col=col
             )
+        elif issubclass(type(model_instance), base.Clusterer):
+            # Count occurrences of each cluster label in y_pred_list
+            cluster_counts = Counter(self.y_pred_list)
+            print(self.y_pred_list)
+            clusters = list(cluster_counts.keys())
+            #print(cluster_counts)
+            counts = list(cluster_counts.values())
+
+            traces.append(
+                go.Bar(
+                    x=clusters,
+                    y=counts,
+                    name=f"{self.name} Cluster Counts",
+                    #marker=dict(color='orange'),
+                    hovertemplate='Cluster: %{x}<br>Count: %{y}<extra></extra>'
+                )
+            )
+        elif issubclass(type(model_instance), base.DriftDetector):  
+            
+            traces.append(
+                go.Scatter(
+                    x=self.y_pred_list,
+                    mode='markers',
+                    #marker=dict(color='red', size=10, symbol='x'),
+                    name='Drift Detected',
+                    hovertemplate='Drift detected at index: %{x}<extra></extra>'
+                )
+            )
             
         else : 
             StatisticsWarning()
+            
+
+
+def _convert_numpy_types(obj):
+    if isinstance(obj, dict):
+        return {k: _convert_numpy_types(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_convert_numpy_types(v) for v in obj]
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    else:
+        return obj
