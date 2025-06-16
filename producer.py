@@ -95,17 +95,17 @@ if __name__ == "__main__":
 
         #drift 
         #sample_dict = { str(idx): int(row[0])}
-        # bananas , CreditCard , facto
-        #sample_dict = {**row[0], 'class': row[1]}
+        # bananas , CreditCard , facto , Agrawal
+        sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
         #TRump , airline, List dataset 
-        json_message = row.to_json()
+        #json_message = row.to_json()
         
         #Chinese Beijing
         #sample_dict = {'value' : row[0], 'class': row[1]}
         
         #json_message = json.dumps({str(idx): int(row[0])})
-        #json_message = json.dumps(sample_dict)
+        json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(
