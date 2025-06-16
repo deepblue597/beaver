@@ -1,0 +1,29 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'neighbours_models'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <KNNRegressor> knn 
+
+
+
+metric <RMSE> rmse
+
+
+data TrumpApproval { 
+
+    input_topic = "TrumpApproval"         
+    features: 
+        target_feature = five_thirty_eight
+
+}
+
+
+pipeline knnPipeline { 
+    output_topic = 'knnPipeline' 
+    data = TrumpApproval
+    algorithm = knn
+    metrics = rmse
+}

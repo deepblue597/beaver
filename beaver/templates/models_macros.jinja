@@ -52,6 +52,13 @@ from river import {{ class_name }}
         "{{ item.name }}" : {{ paramameter_types_generation(item.value) }}{%- if not loop.last %},{% endif %}
     {%- endfor -%}
 }
+
+{%- elif param.__class__.__name__ == "Tuple" -%}
+(
+    {%- for item in param.items -%}
+        {{ paramameter_types_generation(item) }}{%- if not loop.last %},{% endif %}
+    {%- endfor -%}
+)
 {%- else -%}
 {{ param }}
 {%- endif -%}

@@ -8,7 +8,9 @@ AlgoGroup :
                 facto                       | 
                 imblearn                    | 
                 multiclass                  | 
-                multioutput                 | 
+                multioutput                 |
+                model_selection             |
+                bandit                      | 
                 naive_bayes                 | 
                 neighbors                   | 
                 neural_net                  |   
@@ -24,7 +26,12 @@ AlgoGroup :
                 treeSplitter                | 
                 misc                         
  
-; 
+;
+
+FeatureGroup :  feature_extraction | 
+                feature_selection
+
+;
 
 OptimGroup :    optim                       | 
                 optimizersBase              | 
@@ -484,3 +491,56 @@ ComposersNames : "Discard"                      |
                  "TransformerUnion"             | 
                  "learn_during_predict"
 ;
+
+
+feature_extraction : 
+    name = FeatureExtractionNames
+;
+
+FeatureExtractionNames :   "Agg"    |
+                            "BagOfWords" |
+                            "PolynomialExtender" |
+                            "RBFSampler" |
+                            "TFIDF" |
+                            "TargetAgg" 
+;
+
+feature_selection  : 
+    name = FeatureSelectionNames
+;
+
+
+FeatureSelectionNames :     "PoissonInclusion" |
+                            "SelectKBest" |
+                            "VarianceThreshold"
+;
+
+model_selection  : 
+    name = modelSelectionNames 
+
+; 
+
+modelSelectionNames :   "BanditClassifier" |
+                        "BanditRegressor"  |
+                        "GreedyRegressor"
+                        "SuccessiveHalvingClassifier" |
+                        "SuccessiveHalvingRegressor"
+;
+
+bandit : 
+    name = banditNames
+; 
+
+
+
+banditNames :   "BayesUCB" |
+                "EpsilonGreedy" |
+                "Exp3" |
+                "LinUCBDisjoint" |
+                "RandomPolicy" |
+                "ThompsonSampling" |
+                "UCB" |
+                "evaluate_offline" |
+                "evaluate"
+;
+    

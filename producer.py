@@ -23,11 +23,11 @@ if __name__ == "__main__":
     #dataset = datasets.ImageSegments()
     #dataset = datasets.CreditCard()
     # print("Path to dataset files:", path)
-    # gen = synth.Agrawal(classification_function=0, seed=42)
+    gen = synth.Agrawal(classification_function=0, seed=42)
     # gen = synth.ConceptDriftStream(stream=synth.SEA(seed=42, variant=0),
     #                                drift_stream=synth.SEA(seed=42, variant=1),
     #                                seed=1, position=500, width=50)
-    # dataset = iter(gen.take(1000))
+    dataset = iter(gen.take(1000))
     # dataset = synth.ConceptDriftStream(
     #    seed=42,
     #    position=500,
@@ -46,8 +46,26 @@ if __name__ == "__main__":
     # ]
     #dataset = datasets.AirlinePassengers()
     
-    rng = random.Random(12345)
-    dataset = rng.choices([0, 1], k=1000) + rng.choices(range(4, 8), k=1000)
+    #rng = random.Random(12345)
+    #dataset = rng.choices([0, 1], k=1000) + rng.choices(range(4, 8), k=1000)
+    #dataset = synth.Logical(seed=42, n_tiles=100)
+#     dataset = [
+#     ("Chinese Beijing Chinese", "yes"),
+#     ("Chinese Chinese Shanghai", "yes"),
+#     ("Chinese Macao", "yes"),
+#     ("Tokyo Japan Chinese", "no")
+# ]
+    # dataset = (
+    #     ({'user': 'Alice', 'item': 'Superman', 'time': .12}, True),
+    #     ({'user': 'Alice', 'item': 'Terminator', 'time': .13}, True),
+    #     ({'user': 'Alice', 'item': 'Star Wars', 'time': .14}, True),
+    #     ({'user': 'Alice', 'item': 'Notting Hill', 'time': .15}, False),
+    #     ({'user': 'Alice', 'item': 'Harry Potter ', 'time': .16}, True),
+    #     ({'user': 'Bob', 'item': 'Superman', 'time': .13}, True),
+    #     ({'user': 'Bob', 'item': 'Terminator', 'time': .12}, True),
+    #     ({'user': 'Bob', 'item': 'Star Wars', 'time': .16}, True),
+    #     ({'user': 'Bob', 'item': 'Notting Hill', 'time': .10}, False)
+    # )
 # %%
     dataset
 
@@ -64,9 +82,10 @@ if __name__ == "__main__":
 
 # for idx, row in df.iterrows():
 #     #json_message = row.to_json()
-#     sample_dict = { str(idx): int(row[0])}
+#     #sample_dict = { str(idx): int(row[0])}
 #     #json_message = json.dumps({str(idx): row[0]})
 #     #sample_dict = {**row[0].isoformat(), 'passengers': row[1]}
+#     sample_dict = {**row[0], 'class': row[1]}
 #     print(sample_dict)
 # %%
     print('Messages are being published to Kafka topic')
@@ -75,15 +94,18 @@ if __name__ == "__main__":
     for idx, row in df.iterrows():
 
         #drift 
-        sample_dict = { str(idx): int(row[0])}
-        # bananas , CreditCard
+        #sample_dict = { str(idx): int(row[0])}
+        # bananas , CreditCard , facto
         #sample_dict = {**row[0], 'class': row[1]}
         # convert to json format
         #TRump , airline, List dataset 
-        #json_message = row.to_json()
+        json_message = row.to_json()
+        
+        #Chinese Beijing
+        #sample_dict = {'value' : row[0], 'class': row[1]}
         
         #json_message = json.dumps({str(idx): int(row[0])})
-        json_message = json.dumps(sample_dict)
+        #json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

@@ -33,8 +33,19 @@ CommentLine: /\/\/.*?$/;
 
 CommentBlock: /\/\*(.|\n)*?\*\//;
 
-Model : Composer | Preprocessor | Algorithm | Optimizer | Metric ; 
-DataModel : Composer | Preprocessor ; 
+Model : Composer | Preprocessor | Feature | Algorithm | Optimizer | Metric ; 
+DataModel : Composer | Preprocessor | Feature ; 
+
+
+
+Feature:
+    'feature' '<' type = FeatureGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+;
+
+
 
 Composer:
     'composer' '<' type = ComposeGroup '>'  name=ID 

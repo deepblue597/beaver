@@ -158,6 +158,8 @@ class Pipeline:
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
             output['metrics'] = latest_metrics
 
+        output = _convert_numpy_types(output)
+
         return output
 
     def metrics_plot(self):
@@ -201,7 +203,10 @@ class Pipeline:
         for seasonality : seasonality and m. Because we need this value, if new models occur, this will 
         raise an error if the variable name is different for the seasonal pattern. 
         
-        4. The model has a update method
+        4. The model has an update method
+        
+        This is for drift detection algorithms. Because there is no y_predicted we return the index of the value that
+        drift was detected and we plot it on a scatter plot. 
         
         """
         
@@ -394,3 +399,18 @@ class Pipeline:
         else : 
             StatisticsWarning()
             
+
+
+def _convert_numpy_types(obj):
+    if isinstance(obj, dict):
+        return {k: _convert_numpy_types(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_convert_numpy_types(v) for v in obj]
+    elif isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    else:
+        return obj

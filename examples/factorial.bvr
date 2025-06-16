@@ -1,0 +1,28 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'factorial_models'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <FFMClassifier> ffm 
+    params : 
+            n_factors=10,
+            intercept=.5,
+            seed=42
+
+
+data factorial { 
+
+    input_topic = "factorial"         
+    features: 
+        target_feature = class
+
+}
+
+
+pipeline ffmPipeline { 
+    output_topic = 'ffmPipeline' 
+    data = factorial
+    algorithm = ffm
+}

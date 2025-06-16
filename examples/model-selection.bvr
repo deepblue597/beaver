@@ -1,0 +1,64 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'model_selection_models'
+        auto_offset_reset = "earliest"
+}
+
+optimizer <SGD> sgd1 
+    params: 
+        lr= 0.0001
+
+optimizer <SGD> sgd2 
+    params: 
+        lr= 1e-05
+
+algorithm <LogisticRegression> log1 
+    params: 
+        optimizer =sgd1 
+
+algorithm <LogisticRegression> log2 
+    params: 
+        optimizer =sgd2 
+
+preprocessor <StandardScaler> scaler 
+
+metric <Accuracy> acc
+
+algorithm <EpsilonGreedy> epsilon
+    params: 
+        epsilon=0.1,
+        decay=0.001,
+        burn_in=20,
+        seed=42
+
+
+algorithm <BanditClassifier> bandit 
+    params: 
+        models = [log1 , log2],
+        metric = acc, 
+        policy = epsilon
+
+
+
+data Phishing { 
+
+    input_topic = "Phishing"         
+    features: 
+        target_feature = is_phishing
+    preprocessors = scaler
+}
+
+
+pipeline banditPipeline { 
+    output_topic = 'banditPipeline' 
+    data = Phishing
+    algorithm = bandit
+    metrics = acc
+}
+
+
+
+
+
+
