@@ -1,6 +1,6 @@
 AlgoGroup :     
                 anomaly                     |
-                linear_model                  
+                linear_model                | 
                 forest                      | 
                 cluster                     | 
                 drift                       | 
