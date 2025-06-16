@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque , Counter
 from typing import List, Optional, Union
 
 import dill
@@ -87,7 +87,7 @@ class Pipeline:
                     if self.metrics['probabilistic'] is None:
                         try:
                             # Check if model.predict_proba_one() is implemented
-                            model.predict_proba_one()
+                            model.predict_proba_one({})  # Test with an empty dict
                         except NotImplementedError as exc:
                             raise NotImplementedError(
                                 f"{model.__class__.__name__} does not support probabilistic metrics."
@@ -105,11 +105,9 @@ class Pipeline:
 
                 self.metrics_values[metric.__class__.__name__] = []
             
-            self.y_true_list = []
-            self.y_pred_list = []  
+        self.y_true_list = []
+        self.y_pred_list = []  
             
-            self.y_true_list = []
-            self.y_pred_list = []  
 
     def __str__(self):
         return f"Pipeline: {self.name}, Model: {self.model}, Metrics: {self.metrics}, Output Topic: {self.output_topic}"
@@ -129,10 +127,11 @@ class Pipeline:
             X = {key: value for key, value in X.items() if key != self.y}
 
         # Train the model
-        if self.model._supervised: 
-            self.model.learn_one(x=X, y=y)
-        else:
-            self.model.learn_one(x=X)
+        if hasattr(self.model , 'learn_one' ): 
+            if self.model._supervised: 
+                self.model.learn_one(x=X, y=y)
+            else:
+                self.model.learn_one(x=X)
 
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None): 
             #print('heee')
@@ -146,14 +145,15 @@ class Pipeline:
         #TODO: Simplify these if statements
         output = {**X}
         if self.y:
-            self.y_true_list.append(y) 
-            self.y_true_list.append(y) 
+            if y_predicted is not None: 
+                self.y_true_list.append(y) 
+            
             output['y_true'] = y
         if y_predicted_proba is not None:
-            output['y_predicted_probabilities'] = y_predicted_proba
+            output['y_predicted_probabilities'] = {str(k): v for k, v in y_predicted_proba.items()}
         if y_predicted is not None:
             self.y_pred_list.append(y_predicted)
-            self.y_pred_list.append(y_predicted)
+            
             output['y_predicted'] = y_predicted
         if self.metrics_list is not None and (y_predicted is not None or y_predicted_proba is not None) :
             output['metrics'] = latest_metrics
@@ -174,7 +174,7 @@ class Pipeline:
 
     def _predict(self, X) -> Union[float, List[float]]:
         """
-        The are 3 main cases: 
+        The are 4 main cases: 
 
         1. The model has a predict_one method 
 
@@ -200,7 +200,9 @@ class Pipeline:
         2 models are of type forecast: HoltWinters and SNARIMAX. The models use different variables 
         for seasonality : seasonality and m. Because we need this value, if new models occur, this will 
         raise an error if the variable name is different for the seasonal pattern. 
-
+        
+        4. The model has a update method
+        
         """
         
         y_predicted, y_predicted_proba = None, None
@@ -210,7 +212,7 @@ class Pipeline:
             #print(y_predicted)
             #print(y_predicted)
             # For probabilistic metrics
-            if self.metrics['probabilistic'] is not None:
+            if self.metrics_list and self.metrics['probabilistic'] is not None:
                 y_predicted_proba = self.model.predict_proba_one(X)
 
         elif hasattr(self.model, "score_one"):
@@ -226,6 +228,13 @@ class Pipeline:
             if self.passed_seasonality > seasonal_pattern:
                 y_predicted = self.model.forecast(horizon=1)[0]
                 #print(y_predicted)
+                
+        elif hasattr(self.model, "update"):
+            value = next(iter(X.values()))
+            self.model.update(value) 
+            if self.model.drift_detected: 
+                y_predicted = next(iter(X))
+                
         else : 
             raise NotImplementedError(f"{self.model.__class__.__name__} is not supported by beaver. Please create an issue on github.")
         
@@ -285,16 +294,16 @@ class Pipeline:
             Column index of the subplot.
         """
         #print(self.metrics_values)
-        
-        for metric_name, values in self.metrics_values.items():
-            
-            fig.add_trace(go.Scatter(
-                y=values,
-                mode="lines",
-                name=f"{self.name} - {metric_name}",
-                #hoverinfo="y+name",
-                hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
-            ), row=row, col=col)
+        if self.metrics_list is not None: 
+            for metric_name, values in self.metrics_values.items():
+                
+                fig.add_trace(go.Scatter(
+                    y=values,
+                    mode="lines",
+                    name=f"{self.name} - {metric_name}",
+                    #hoverinfo="y+name",
+                    hovertemplate=f"{self.name} - {metric_name}"+"<br>Value:%{y}<br>Iteration:%{x}<extra></extra>"
+                ), row=row, col=col)
             
     def add_stats_traces(self,traces): #fig, row=1, col=1) : 
         if type(self.model) == RiverPipeline:
@@ -353,6 +362,35 @@ class Pipeline:
                 ),
                 #row=row, col=col
             )
+        elif issubclass(type(model_instance), base.Clusterer):
+            # Count occurrences of each cluster label in y_pred_list
+            cluster_counts = Counter(self.y_pred_list)
+            print(self.y_pred_list)
+            clusters = list(cluster_counts.keys())
+            #print(cluster_counts)
+            counts = list(cluster_counts.values())
+
+            traces.append(
+                go.Bar(
+                    x=clusters,
+                    y=counts,
+                    name=f"{self.name} Cluster Counts",
+                    #marker=dict(color='orange'),
+                    hovertemplate='Cluster: %{x}<br>Count: %{y}<extra></extra>'
+                )
+            )
+        elif issubclass(type(model_instance), base.DriftDetector):  
+            
+            traces.append(
+                go.Scatter(
+                    x=self.y_pred_list,
+                    mode='markers',
+                    #marker=dict(color='red', size=10, symbol='x'),
+                    name='Drift Detected',
+                    hovertemplate='Drift detected at index: %{x}<extra></extra>'
+                )
+            )
             
         else : 
             StatisticsWarning()
+            

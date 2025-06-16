@@ -1,4 +1,6 @@
-AlgoGroup :    linear_model                 | 
+AlgoGroup :     
+                anomaly                     |
+                linear_model                  
                 forest                      | 
                 cluster                     | 
                 drift                       | 
@@ -67,7 +69,7 @@ ForestNames : "AMFClassifier" |
               "OXTRegressor"
 ;
 
-Anomaly:
+anomaly:
     name = AnomalyNames
 ;
 

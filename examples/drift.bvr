@@ -1,0 +1,21 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'drift'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <ADWIN> adwin 
+
+
+data drift { 
+
+    input_topic = "drift"         
+}
+
+pipeline adwinPipeline { 
+    output_topic = 'adwinPipeline' 
+    data = drift
+    algorithm = adwin
+
+}

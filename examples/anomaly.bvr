@@ -1,0 +1,26 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'anomaly'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <LocalOutlierFactor> outlier 
+    params: 
+        n_neighbors=20
+
+metric <Recall> rec
+
+data CreditCard { 
+
+    input_topic = "CreditCard"         
+    features: 
+        target_feature = class
+}
+
+pipeline outlierPipeline { 
+    output_topic = 'outlierPipeline' 
+    data = CreditCard
+    algorithm = outlier
+    metrics = rec
+}

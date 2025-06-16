@@ -109,7 +109,7 @@ sdf_LinearRegressionPipeline = sdf_TrumpApproval.apply(LinearRegressionPipeline.
 def run_dash():
     dash_app = Dash(__name__)
     dash_app.layout = html.Div([
-         html.H2("Pipelines' Plots" , style={
+        html.H2("Pipelines' Plots" , style={
         'textAlign': 'center',  # Center the text
 
         'fontFamily': 'sans-serif',  # Change the font family

@@ -1,26 +1,26 @@
-from setuptools import setup, find_packages
-
-
-with open("requirements.txt") as f:
-    requirements = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-
+from setuptools import setup
 
 setup(
     name='beaver',
     version='1.0.0',
-    packages=find_packages(),  # Automatically find packages in subdirectories
-    install_requires=requirements,
+    packages=['beaver'],  # Automatically find packages in subdirectories
     author='Iasonas Kakandris',
     description='Beaver is a DSL for machine learning in live data',
-    package_data={
-        "beaver": [
-            "grammar/*.tx",
-            "templates/*.jinja",
-        ],
-    },
+    author_email = 'ikakandris@gmail.com' , 
     install_requires=[
-        "textx",
-        "jinja2",
+        "textx",        # For DSL parsing
+        "jinja2",       # For templating
+        "river",        # For online machine learning
+        "quixstreams",  # For streaming/Kafka integration
+        "plotly",       # For plotting/visualization
+        "dash",         # For dashboards
+        "numpy",        # For numerical operations
+        "pandas",       # For data manipulation (if used)
+        "scikit-learn", # For metrics or models (if used)
+        "dill",         # For object serialization
+        "matplotlib",   # For plotting (pyplot, animation)
+        "kagglehub", 
+        "sseclient"
 
     ],
 )
