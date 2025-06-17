@@ -33,8 +33,17 @@ CommentLine: /\/\/.*?$/;
 
 CommentBlock: /\/\*(.|\n)*?\*\//;
 
-Model : Composer | Preprocessor | Feature | Algorithm | Optimizer | Metric ; 
-DataModel : Composer | Preprocessor | Feature ; 
+Model : Composer | 
+        Preprocessor | 
+        Feature | 
+        Algorithm | 
+        Optimizer | 
+        Metric 
+; 
+
+DataModel : Composer | 
+            Preprocessor | 
+            Feature ; 
 
 
 
