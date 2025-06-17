@@ -317,7 +317,7 @@ class Pipeline:
             model_instance = self.model
         
         if issubclass(type(model_instance), base.Classifier):
-            print(model_instance)
+            #print(model_instance)
             y_true = np.array(self.y_true_list)
             y_pred = np.array(self.y_pred_list)
             # Get unique labels for axes
