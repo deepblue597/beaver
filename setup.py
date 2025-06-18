@@ -21,7 +21,7 @@ setup(
         "matplotlib",   # For plotting (pyplot, animation)
         "kagglehub", 
         "sseclient",
-        'flatten_dict'
+        "flatten_dict"
 
 
     ],
