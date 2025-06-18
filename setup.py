@@ -20,7 +20,9 @@ setup(
         "dill",         # For object serialization
         "matplotlib",   # For plotting (pyplot, animation)
         "kagglehub", 
-        "sseclient"
+        "sseclient",
+        'flatten_dict'
+
 
     ],
 )

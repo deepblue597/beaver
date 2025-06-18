@@ -18,16 +18,16 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    #dataset = datasets.Phishing()
+    dataset = datasets.Phishing()
     #dataset = datasets.TrumpApproval()
     #dataset = datasets.ImageSegments()
     #dataset = datasets.CreditCard()
     # print("Path to dataset files:", path)
-    gen = synth.Agrawal(classification_function=0, seed=42)
+    #gen = synth.Agrawal(classification_function=0, seed=42)
     # gen = synth.ConceptDriftStream(stream=synth.SEA(seed=42, variant=0),
     #                                drift_stream=synth.SEA(seed=42, variant=1),
     #                                seed=1, position=500, width=50)
-    dataset = iter(gen.take(1000))
+    #dataset = iter(gen.take(1000))
     # dataset = synth.ConceptDriftStream(
     #    seed=42,
     #    position=500,
@@ -72,20 +72,21 @@ if __name__ == "__main__":
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval , Airline , Phising
-    #df = pd.read_csv(dataset.path)
+    df = pd.read_csv(dataset.path)
     # Bananas, Clustering , CreditCard
-    df = pd.DataFrame(dataset)
+    #df = pd.DataFrame(dataset)
 # %%
     df
     
 #%% 
 
 # for idx, row in df.iterrows():
-#     #json_message = row.to_json()
+#     json_message = row.to_json()
 #     #sample_dict = { str(idx): int(row[0])}
 #     #json_message = json.dumps({str(idx): row[0]})
 #     #sample_dict = {**row[0].isoformat(), 'passengers': row[1]}
-#     sample_dict = {**row[0], 'class': row[1]}
+#     #sample_dict = {'data': **row[0], 'class': row[1]}
+#     sample_dict = {'data' : json_message}
 #     print(sample_dict)
 # %%
     print('Messages are being published to Kafka topic')
@@ -96,11 +97,11 @@ if __name__ == "__main__":
         #drift 
         #sample_dict = { str(idx): int(row[0])}
         # bananas , CreditCard , facto , Agrawal
-        sample_dict = {**row[0], 'class': row[1]}
+        #sample_dict = {'x' : {**row[0]}, 'class': row[1]}
         # convert to json format
         #TRump , airline, List dataset 
-        #json_message = row.to_json()
-        
+        json_message = row.to_json()
+        sample_dict = {'data': json.loads(json_message)}
         #Chinese Beijing
         #sample_dict = {'value' : row[0], 'class': row[1]}
         
