@@ -13,6 +13,7 @@ from river import base, utils
 from sklearn.metrics import confusion_matrix
 import numpy as np
 from river.compose.pipeline import Pipeline as RiverPipeline
+from flatten_dict import flatten
 
 __all__ = ['Pipeline']
 
@@ -118,6 +119,7 @@ class Pipeline:
         Add the values of metrics into a list and return a dict containing the 
         input data the prediction and the metrics values.
         """
+        X = flatten(X, reducer='underscore')
         
         y_predicted, y_predicted_proba = self._predict(X)
         #print('hi')
