@@ -119,7 +119,7 @@ class Pipeline:
         Add the values of metrics into a list and return a dict containing the 
         input data the prediction and the metrics values.
         """
-        X = flatten(X, reducer='dot')
+        X = flatten(X, reducer='underscore')
         
         y_predicted, y_predicted_proba = self._predict(X)
         #print('hi')
