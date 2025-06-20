@@ -91,11 +91,11 @@ A visual representation of the process that will be built is displayed below:
 ```mermaid
 graph TD
     A[User writes .bvr file] --> B[TextX parses .bvr file]
-    B --> C[Python code generation (Jinja)]
+    B --> C[Python code generation Jinja]
     C --> D[Generated pipeline script with Quix + River]
     D --> E[Kafka topics for input/output]
     E --> F[Quix Streams processes live data]
-    F --> G[Model training & prediction (River)]
+    F --> G[Model training & prediction River]
     G --> H[Metrics & predictions published to Kafka]
     H --> I[Live visualization in Dash dashboard]
 ```
