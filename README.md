@@ -97,7 +97,7 @@ graph TD
     E --> F[Quix Streams processes live data]
     F --> G[Model training & prediction River]
     G --> H[Metrics & predictions published to Kafka]
-    H --> I[Live visualization in Dash dashboard]
+    G --> I[Live visualization in Dash dashboard]
 ```
 
 ## 🤝 Affiliations
