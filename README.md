@@ -13,7 +13,7 @@ Beaver is DSL for Machine Learning in live data. It's purpose is to simplify the
 
 ## Documentation
 
-You can find full description of the language as well as examples and FAQ in the documentation page
+You can find full description of the language as well as examples and FAQ in the [documentation page](https://deepblue597.github.io/beaver-doc/)
 
 ## Quickstart
 
@@ -56,7 +56,7 @@ pip install -e .
 ```
 
 Open a Text Editor of your choice and create a `.bvr` file.
-If you are unsure how to structure a `.bvr` you can check the docs or use one of the examples that are provided in the `examples` folder.
+If you are unsure how to structure a `.bvr` you can check the [docs](https://deepblue597.github.io/beaver-doc/) or use one of the examples that are provided in the `examples` folder.
 
 When you have added the necessary entities and constructed your pipeline:
 
