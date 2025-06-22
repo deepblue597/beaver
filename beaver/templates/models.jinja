@@ -46,11 +46,11 @@ from plotly.subplots import make_subplots
 {%for data in file.data-%}
 {%if data.preprocessors%}
 preprocessor_{{data.name}} = 
-{%-for preprocessors in data.preprocessors-%}
-{%-for model in preprocessors.items-%}
-{{model.name}}{%- if not loop.last %}|{%- endif -%}
+{%-for preprocessors in data.preprocessors-%}{%- if loop.first %}({%- endif -%}
+{%-for model in preprocessors.items-%}{%- if loop.first %}({%- endif -%}
+{{model.name}}{%- if not loop.last %}|{%-else-%}){%- endif -%}
 {%-endfor%}
-{%- if not loop.last %}+{%- endif -%}
+{%- if not loop.last %}+{%-else-%}){%- endif -%}
 {%-endfor%}
 {%endif%}
 {%endfor%}

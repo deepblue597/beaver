@@ -98,6 +98,8 @@ class Pipeline:
                     # Handle other metric types using the mapping
                     for metric_class, category in metric_type_mapping.items():
                         if isinstance(metric, metric_class):
+                            print(type(metric) , category)
+                            print(self.metrics[category])
                             self._add_metric(metric, category)
                             break
                     else:
@@ -121,13 +123,13 @@ class Pipeline:
         """
         X = flatten(X, reducer='underscore')
         
-        y_predicted, y_predicted_proba = self._predict(X)
         #print('hi')
         # If y exists we need to seperate it from the data
         if self.y:
             y = X[self.y]
             X = {key: value for key, value in X.items() if key != self.y}
-
+            
+        y_predicted, y_predicted_proba = self._predict(X)
         # Train the model
         if hasattr(self.model , 'learn_one' ): 
             if self.model._supervised: 
@@ -205,16 +207,14 @@ class Pipeline:
         for seasonality : seasonality and m. Because we need this value, if new models occur, this will 
         raise an error if the variable name is different for the seasonal pattern. 
         
-        4. The model has an update method
-        
-        This is for drift detection algorithms. Because there is no y_predicted we return the index of the value that
-        drift was detected and we plot it on a scatter plot. 
+        4. The model has a update method
         
         """
         
         y_predicted, y_predicted_proba = None, None
         
         if hasattr(self.model, "predict_one"):
+            #print('hio')
             y_predicted = self.model.predict_one(X)
             #print(y_predicted)
             #print(y_predicted)
@@ -282,11 +282,14 @@ class Pipeline:
 
     def _add_metric(self, metric, category):
         """Helper function to add a metric to the appropriate category."""
+        #print(metric)
         if self.metrics[category] is None:
             self.metrics[category] = metric
         else:
-            self.metrics[category] += metric
-
+            self.metrics[category] = metrics.base.Metrics(self.metrics[category]+ metric)
+            #print('type' , self.metrics[category]  )
+            
+        
     def add_metrics_traces(self, fig, row=1, col=1):
         """
         Add line plot traces for each metric into the given figure.
@@ -319,7 +322,7 @@ class Pipeline:
             model_instance = self.model
         
         if issubclass(type(model_instance), base.Classifier):
-            #print(model_instance)
+            print(model_instance)
             y_true = np.array(self.y_true_list)
             y_pred = np.array(self.y_pred_list)
             # Get unique labels for axes

@@ -18,8 +18,8 @@ if __name__ == "__main__":
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
-    dataset = datasets.Phishing()
-    #dataset = datasets.TrumpApproval()
+    #dataset = datasets.Phishing()
+    dataset = datasets.TrumpApproval()
     #dataset = datasets.ImageSegments()
     #dataset = datasets.CreditCard()
     # print("Path to dataset files:", path)
@@ -66,13 +66,17 @@ if __name__ == "__main__":
     #     ({'user': 'Bob', 'item': 'Star Wars', 'time': .16}, True),
     #     ({'user': 'Bob', 'item': 'Notting Hill', 'time': .10}, False)
     # )
+    #path = kagglehub.dataset_download("fedesoriano/heart-failure-prediction")
+    #path = kagglehub.dataset_download("unsdsn/world-happiness")
+    #print("Path to dataset files:", path)
 # %%
-    dataset
+#    dataset
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval , Airline , Phising
     df = pd.read_csv(dataset.path)
+    # df = pd.read_csv(path+'/2019.csv')
     # Bananas, Clustering , CreditCard
     #df = pd.DataFrame(dataset)
 # %%
@@ -85,7 +89,12 @@ if __name__ == "__main__":
 #     #sample_dict = { str(idx): int(row[0])}
 #     #json_message = json.dumps({str(idx): row[0]})
 #     #sample_dict = {**row[0].isoformat(), 'passengers': row[1]}
-#     #sample_dict = {'data': **row[0], 'class': row[1]}
+#     #sample_dictimport kagglehub
+
+# Download latest version
+#path = kagglehub.dataset_download("fedesoriano/heart-failure-prediction")
+
+#print("Path to dataset files:", path) = {'data': **row[0], 'class': row[1]}
 #     sample_dict = {'data' : json_message}
 #     print(sample_dict)
 # %%
@@ -101,12 +110,12 @@ if __name__ == "__main__":
         # convert to json format
         #TRump , airline, List dataset 
         json_message = row.to_json()
-        sample_dict = {'data': json.loads(json_message)}
+        #sample_dict = {'data': json.loads(json_message)}
         #Chinese Beijing
         #sample_dict = {'value' : row[0], 'class': row[1]}
         
         #json_message = json.dumps({str(idx): int(row[0])})
-        json_message = json.dumps(sample_dict)
+        #json_message = json.dumps(sample_dict)
 
         # Produce the message to kafka
         producer.produce(

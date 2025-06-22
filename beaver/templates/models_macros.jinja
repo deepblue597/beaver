@@ -21,13 +21,15 @@ from river import {{ class_name }}
         {%- if class_name in custom_import_map %}
 {{model.name}} = {{ custom_model_init[class_name] }}.{{ model.type.name }}(
     {%- for param in model.params %}
-    {{ param.name }} = {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
+    {%- if param.name %}
+    {{ param.name }} ={%- endif %} {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
     {% endfor %}
 )
         {%- else %}
 {{model.name}} = {{ class_name }}.{{ model.type.name }}(
     {%- for param in model.params %}
-    {{ param.name }} = {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
+    {%- if param.name %}
+    {{ param.name }} = {%- endif %}{{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
     {% endfor %}
 )
         {%- endif %}
@@ -38,6 +40,8 @@ from river import {{ class_name }}
 {% macro paramameter_types_generation(param) %}
 {%- if param.__class__.__name__ == 'ModelRef' -%}
 {{ param.value.name }}
+{%- elif param.__class__.__name__ == "TypeRef" -%}
+{{ param.value }}
 {%- elif param.__class__.__name__ == "str" -%}
 '{{ param }}'
 {%- elif param.__class__.__name__ == "List" -%}

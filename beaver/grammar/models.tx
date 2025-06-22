@@ -483,8 +483,9 @@ ComposersNames : "Discard"                      |
                  "Pipeline"                     | 
                  "Prefixer"                     | 
                  "Renamer"                      | 
+                 "SelectType" | 
                  "Select"                       | 
-                 "SelectType"                   | 
+                                   
                  "Suffixer"                     | 
                  "TargetTransformRegressor"     | 
                  "TransformerProduct"           | 
