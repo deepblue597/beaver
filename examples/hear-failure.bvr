@@ -8,10 +8,12 @@ connector {
 algorithm <KNNClassifier> knn 
 
 
-algorithm <ARFClassifier> arf 
+algorithm <AMFClassifier> amf 
     params: 
-       seed=8, 
-       leaf_prediction="mc"
+        n_estimators=10,
+        use_aggregation=True,
+        dirichlet=0.5,
+        seed=1
 
 optimizer <SGD> sgd 
     params: 
@@ -34,7 +36,7 @@ metric <Accuracy> accuracy
 
 metric <Recall> recall
 
-metric <CohenKappa> f1
+metric <ROCAUC> roc
 
 preprocessor <OneHotEncoder> encoder 
 preprocessor <StandardScaler> scaler 
@@ -47,31 +49,25 @@ data Heart_Failure_Prediction {
     preprocessors = select | scaler + selectstr | encoder
 
 }
-data Phishing { 
 
-    input_topic = "Phishing"         
-    features: 
-        target_feature = is_phishing
-    preprocessors = scaler
-}
 
 pipeline KNNClassifierPipeline { 
     output_topic = 'KNNClassifierPipeline' 
     data = Heart_Failure_Prediction
     algorithm = knn
-    metrics = accuracy , recall , f1
+    metrics = accuracy , recall , roc
 }
 
-pipeline ARFClassifierPipeline { 
-    output_topic = 'ARFClassifierPipeline' 
+pipeline amfClassifierPipeline { 
+    output_topic = 'amfClassifierPipeline' 
     data = Heart_Failure_Prediction
-    algorithm = arf
-    metrics = accuracy , recall , f1
+    algorithm = amf
+    metrics = accuracy , recall , roc
 }
 
 pipeline logisticPipeline { 
     output_topic = 'logisticPipeline' 
     data = Heart_Failure_Prediction
     algorithm = logistic
-    metrics = accuracy , recall , f1
+    metrics = accuracy , recall , roc
 }

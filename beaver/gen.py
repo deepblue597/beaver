@@ -3,7 +3,7 @@ from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
 import argparse
 from calc import * 
-
+from textx.export import metamodel_export, PlantUmlRenderer
 
 # %%
 
@@ -35,12 +35,12 @@ if __name__ == "__main__":
 
     # Load the DSL grammar
     ml_mm = metamodel_from_file('grammar/pipeline.tx')
-
+    
     ml_mm.register_obj_processors(processors)
 
     # Parse the DSL configuration file
     config = ml_mm.model_from_file(args.metamodel)
-
+    #metamodel_export(ml_mm, 'metamodel.pu', renderer=PlantUmlRenderer())    
     # %%
     #Load Jinja2 template
     env = Environment(loader=FileSystemLoader('.'))

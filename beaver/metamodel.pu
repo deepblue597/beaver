@@ -1,0 +1,208 @@
+@startuml
+set namespaceSeparator .
+
+
+
+class pipeline.BeaverModel  {
+}
+
+
+class pipeline.Pipeline  {
+  name : ID
+  output_topic : STRING
+}
+
+
+class components.Data  {
+  name : ID
+  input_topic : STRING
+}
+
+
+class components.ProcList  {
+}
+
+
+class components.Features  {
+  keep_features : list[ID]
+  drop_features : list[ID]
+  target_feature : ID
+}
+
+
+class components.Assignment  {
+  variable : ID
+}
+
+
+class components.Expression  {
+  operators : optional<list[PlusOrMinus]>
+}
+
+
+class components.Term  {
+  operators : optional<list[MulOrDiv]>
+}
+
+
+class components.Factor  {
+  sign : PlusOrMinus
+}
+
+
+class components.Operand  {
+  op_num : NUMBER
+  op_id : ID
+}
+
+
+class connections.Connector  {
+  bootstrap_servers : STRING
+  security_protocol : STRING
+  sasl_username : STRING
+  sasl_password : STRING
+  quix_sdk_token : STRING
+  consumer_group : STRING
+  auto_offset_reset : STRING
+  commit_interval : FLOAT
+  commit_every : INT
+  consumer_poll_timeout : FLOAT
+  producer_poll_timeout : FLOAT
+  loglevel : STRING
+  auto_create_topics : BOOL
+  use_changelog_topics : BOOL
+  quix_config_builder : STRING
+  topic_manager : STRING
+  request_timeout : FLOAT
+  topic_create_timeout : FLOAT
+  processing_guarantee : STRING
+}
+
+
+class types.List  {
+}
+
+
+class types.Tuple  {
+}
+
+
+class types.Dict  {
+}
+
+
+class types.DictItem  {
+  name : STRING
+}
+
+
+class types.ModelRef  {
+}
+
+
+class types.TypeRef  {
+  value : ID
+}
+
+
+class types.Param  {
+  name : ID
+}
+
+
+class types.ParamValue <<abstract>> {
+}
+
+
+class types.Model <<abstract>> {
+}
+
+
+class types.DataModel <<abstract>> {
+}
+
+
+class types.Feature  {
+  name : ID
+}
+
+
+class types.Composer  {
+  name : ID
+}
+
+
+class types.Preprocessor  {
+  name : ID
+}
+
+
+class types.Algorithm  {
+  name : ID
+}
+
+
+class types.Optimizer  {
+  name : ID
+}
+
+
+class types.Metric  {
+  name : ID
+}
+
+
+pipeline.BeaverModel *-->  connections.Connector: connector
+pipeline.BeaverModel *--> "1..*" types.Model: models
+pipeline.BeaverModel *--> "1..*" components.Data: data
+pipeline.BeaverModel *--> "1..*" pipeline.Pipeline: pipelines
+pipeline.Pipeline -->  components.Data: data
+pipeline.Pipeline -->  types.Algorithm: algorithm
+pipeline.Pipeline --> "1..*" types.Metric: metrics
+components.Data *-->  components.Features: features
+components.Data *--> "1..*" components.ProcList: preprocessors
+components.ProcList --> "1..*" types.DataModel: items
+components.Features *--> "0..*" components.Assignment: assignments
+components.Assignment *-->  components.Expression: expression
+components.Expression *--> "0..*" components.Term: operands
+components.Term *--> "0..*" components.Factor: operands
+components.Factor *-->  components.Operand: op
+components.Operand *-->  components.Expression: op_expr
+types.List *--> "0..*" types.ParamValue: items
+types.Tuple *--> "0..*" types.ParamValue: items
+types.Dict *--> "0..*" types.DictItem: items
+types.DictItem *-->  types.ParamValue: value
+types.ModelRef -->  types.Model: value
+types.Param *-->  types.ParamValue: value
+types.ParamValue <|-- types.TypeRef
+types.ParamValue <|-- types.Tuple
+types.ParamValue <|-- types.List
+types.ParamValue <|-- types.Dict
+types.ParamValue <|-- types.ModelRef
+types.Model <|-- types.Composer
+types.Model <|-- types.Preprocessor
+types.Model <|-- types.Feature
+types.Model <|-- types.Algorithm
+types.Model <|-- types.Optimizer
+types.Model <|-- types.Metric
+types.DataModel <|-- types.Composer
+types.DataModel <|-- types.Preprocessor
+types.DataModel <|-- types.Feature
+types.Feature *--> "1..*" types.Param: params
+types.Composer *--> "1..*" types.Param: params
+types.Preprocessor *--> "1..*" types.Param: params
+types.Algorithm *--> "1..*" types.Param: params
+types.Optimizer *--> "1..*" types.Param: params
+types.Metric *--> "1..*" types.Param: params
+
+legend
+  Match rules:
+  |= Name  |= Rule details |
+  | Comment |  |
+  | CommentLine | \\/\\/.*\?$ |
+  | CommentBlock | \\/\\*(.\|\\n)*\?\\*\\/ |
+  | PlusOrMinus | +\|- |
+  | MulOrDiv | *\|/ |
+end legend
+
+@enduml

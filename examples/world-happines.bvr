@@ -1,0 +1,69 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'world-happiness'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <LinearRegression> linearReg 
+    params: 
+        intercept_lr=0.1
+
+algorithm <HoeffdingAdaptiveTreeRegressor> hoeffTree 
+    params: 
+        grace_period=50,
+        model_selector_decay=0.3,
+        seed=0
+
+algorithm <KNNRegressor> knnReg 
+
+composer <SelectType> select
+    params: 
+        (int , float)
+
+composer <SelectType> selectstr
+    params: 
+        str
+
+
+preprocessor <OneHotEncoder> encoder 
+
+preprocessor <StandardScaler> scaler 
+
+metric <MAE> mae
+
+metric <MSE> mse
+
+metric <R2> r2
+
+data World_Happiness_Report { 
+
+    input_topic = "World_Happiness_Report"         
+    features: 
+        drop_features = overall_rank
+        target_feature = score
+    preprocessors = select | scaler + selectstr | encoder
+
+}
+
+
+pipeline linearRegPipeline { 
+    output_topic = 'linearRegPipeline' 
+    data = World_Happiness_Report
+    algorithm = linearReg
+    metrics = mae , mse , r2
+}
+
+pipeline hoeffTreePipeline { 
+    output_topic = 'hoeffTreePipeline' 
+    data = World_Happiness_Report
+    algorithm = hoeffTree
+    metrics = mae , mse , r2
+}
+
+pipeline knnRegPipeline { 
+    output_topic = 'knnRegPipeline' 
+    data = World_Happiness_Report
+    algorithm = knnReg
+    metrics = mae , mse , r2
+}

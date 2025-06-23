@@ -9,6 +9,21 @@ import random
 from kafka_proj.producer_v2 import parse_command_line_arguments, create_kafka_producer, delivery_callback
 import os
 # %%
+
+def convert_keys_to_underscores(data):
+    """
+    Recursively converts all dictionary keys by replacing spaces with underscores.
+    """
+    if isinstance(data, dict):
+        return {
+            key.replace(" ", "_").lower(): convert_keys_to_underscores(value)
+            for key, value in data.items()
+        }
+    elif isinstance(data, list):
+        return [convert_keys_to_underscores(item) for item in data]
+    else:
+        return data
+
 if __name__ == "__main__":
 
     args = parse_command_line_arguments()
@@ -19,7 +34,7 @@ if __name__ == "__main__":
 # %%
     # path = kagglehub.dataset_download("fedesoriano/the-boston-houseprice-data")
     #dataset = datasets.Phishing()
-    dataset = datasets.TrumpApproval()
+    #dataset = datasets.TrumpApproval()
     #dataset = datasets.ImageSegments()
     #dataset = datasets.CreditCard()
     # print("Path to dataset files:", path)
@@ -67,7 +82,7 @@ if __name__ == "__main__":
     #     ({'user': 'Bob', 'item': 'Notting Hill', 'time': .10}, False)
     # )
     #path = kagglehub.dataset_download("fedesoriano/heart-failure-prediction")
-    #path = kagglehub.dataset_download("unsdsn/world-happiness")
+    path = kagglehub.dataset_download("unsdsn/world-happiness")
     #print("Path to dataset files:", path)
 # %%
 #    dataset
@@ -75,8 +90,8 @@ if __name__ == "__main__":
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval , Airline , Phising
-    df = pd.read_csv(dataset.path)
-    # df = pd.read_csv(path+'/2019.csv')
+    #df = pd.read_csv(dataset.path)
+    df = pd.read_csv(path+'/2019.csv')
     # Bananas, Clustering , CreditCard
     #df = pd.DataFrame(dataset)
 # %%
@@ -109,14 +124,17 @@ if __name__ == "__main__":
         #sample_dict = {'x' : {**row[0]}, 'class': row[1]}
         # convert to json format
         #TRump , airline, List dataset 
-        json_message = row.to_json()
+        #json_message = row.to_json()
         #sample_dict = {'data': json.loads(json_message)}
         #Chinese Beijing
         #sample_dict = {'value' : row[0], 'class': row[1]}
-        
+        #json_message = convert_keys_to_underscores(json_message)
         #json_message = json.dumps({str(idx): int(row[0])})
         #json_message = json.dumps(sample_dict)
-
+        #print(json_message)
+        row_dict = row.to_dict()
+        row_dict_converted = convert_keys_to_underscores(row_dict)
+        json_message = json.dumps(row_dict_converted)
         # Produce the message to kafka
         producer.produce(
             args.topic_name, value=json_message, key=str(idx), callback=delivery_callback)
