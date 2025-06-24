@@ -14,6 +14,8 @@ from sklearn.metrics import confusion_matrix
 import numpy as np
 from river.compose.pipeline import Pipeline as RiverPipeline
 from flatten_dict import flatten
+from river import anomaly
+from sklearn.preprocessing import LabelEncoder
 
 __all__ = ['Pipeline']
 
@@ -57,7 +59,7 @@ class Pipeline:
         self.output_topic = output_topic
         self.name = name
         self.metrics_list = metrics_list
-        
+        self.iteration = 0
         self.passed_seasonality = 0
         """
         Best Practices
@@ -89,17 +91,17 @@ class Pipeline:
                         try:
                             # Check if model.predict_proba_one() is implemented
                             model.predict_proba_one({})  # Test with an empty dict
-                        except NotImplementedError as exc:
-                            raise NotImplementedError(
-                                f"{model.__class__.__name__} does not support probabilistic metrics."
+                        except AttributeError as exc:
+                            raise AttributeError(
+                                f"{self.model_name} does not support probabilistic metrics. Probabilistic metric: {metric}."
                             ) from exc
                     self._add_metric(metric, 'probabilistic')
                 else:
                     # Handle other metric types using the mapping
                     for metric_class, category in metric_type_mapping.items():
                         if isinstance(metric, metric_class):
-                            print(type(metric) , category)
-                            print(self.metrics[category])
+                            #print(type(metric) , category)
+                            #print(self.metrics[category])
                             self._add_metric(metric, category)
                             break
                     else:
@@ -110,6 +112,7 @@ class Pipeline:
             
         self.y_true_list = []
         self.y_pred_list = []  
+        self.label_encoder = LabelEncoder()
             
 
     def __str__(self):
@@ -129,7 +132,7 @@ class Pipeline:
             y = X[self.y]
             X = {key: value for key, value in X.items() if key != self.y}
             
-        y_predicted, y_predicted_proba = self._predict(X)
+        y_predicted, y_predicted_proba = self._predict(X , y if 'y' in locals() else None)
         # Train the model
         if hasattr(self.model , 'learn_one' ): 
             if self.model._supervised: 
@@ -178,7 +181,7 @@ class Pipeline:
         plt.legend()
         plt.show()
 
-    def _predict(self, X) -> Union[float, List[float]]:
+    def _predict(self, X , y = None) -> Union[float, List[float]]:
         """
         The are 4 main cases: 
 
@@ -210,10 +213,14 @@ class Pipeline:
         4. The model has a update method
         
         """
+        if type(self.model) == RiverPipeline:
+            model_instance = self.model[self.model_name]
+        else:
+            model_instance = self.model
         
         y_predicted, y_predicted_proba = None, None
         
-        if hasattr(self.model, "predict_one"):
+        if hasattr(model_instance, "predict_one"):
             #print('hio')
             y_predicted = self.model.predict_one(X)
             #print(y_predicted)
@@ -222,10 +229,15 @@ class Pipeline:
             if self.metrics_list and self.metrics['probabilistic'] is not None:
                 y_predicted_proba = self.model.predict_proba_one(X)
 
-        elif hasattr(self.model, "score_one"):
-            y_predicted = self.model.score_one(X)
+        elif hasattr(model_instance, "score_one"):
+            if model_instance._supervised: 
+                #print(model_instance)
+                #print(X)
+                y_predicted = self.model.score_one(X, y=y)
+            else: 
+                y_predicted = self.model.score_one(X)
         
-        elif hasattr(self.model, "forecast"):
+        elif hasattr(model_instance, "forecast"):
             try:
                 seasonal_pattern = self.model.seasonality if hasattr(
                     self.model, "seasonality") else self.model.m
@@ -236,7 +248,8 @@ class Pipeline:
                 y_predicted = self.model.forecast(horizon=1)[0]
                 #print(y_predicted)
                 
-        elif hasattr(self.model, "update"):
+        elif hasattr(model_instance, "update"):
+            #self.iteration += 1 future addition for index of drift
             value = next(iter(X.values()))
             self.model.update(value) 
             if self.model.drift_detected: 
@@ -261,13 +274,14 @@ class Pipeline:
                 if metric_group == 'probabilistic':
                     # Update the probabilistic metrics
                     metrics_in_group.update(y, y_predicted_proba)
+                    #print(metrics_in_group)
                 else:  # Update the metrics
                     #print(y , y_predicted)
                     
                     #print(y , y_predicted)
                     
                     metrics_in_group.update(y, y_predicted)
-                    #print(metrics_in_group.update(y, y_predicted))
+                    #print(metrics_in_group)
                     #print(metrics_in_group.update(y, y_predicted))
 
         # Store the metrics values
@@ -322,9 +336,18 @@ class Pipeline:
             model_instance = self.model
         
         if issubclass(type(model_instance), base.Classifier):
-            print(model_instance)
-            y_true = np.array(self.y_true_list)
-            y_pred = np.array(self.y_pred_list)
+            #print(model_instance)
+            if isinstance(self.y_true_list[0], str) or isinstance(self.y_pred_list[0], str):
+                all_labels = list(set(self.y_true_list + self.y_pred_list))
+                self.label_encoder.fit(all_labels)
+
+                y_true = self.label_encoder.transform(self.y_true_list)
+                y_pred = self.label_encoder.transform(self.y_pred_list)
+            else:
+                y_true = np.array(self.y_true_list).astype(int)
+                y_pred = np.array(self.y_pred_list).astype(int)
+
+            #print(y_true , y_pred)
             # Get unique labels for axes
             labels = sorted(set(y_true) | set(y_pred))
             cm = confusion_matrix(self.y_true_list, self.y_pred_list)
@@ -399,6 +422,17 @@ class Pipeline:
                     name='Drift Detected',
                     hovertemplate='Drift detected at index: %{x}<extra></extra>'
                 )
+            )
+        
+        elif issubclass(type(model_instance), anomaly.base.AnomalyDetector) or issubclass(type(model_instance), anomaly.base.SupervisedAnomalyDetector): 
+            traces.append(go.Scatter(
+                x=list(range(len(self.y_pred_list))),
+                y=self.y_pred_list,
+                mode='markers',
+                #marker=dict(color='blue', size=6, opacity=0.7),
+                name=f"{self.name} anomaly scores",
+                hovertemplate='Index: %{x}<br>Score: %{y}<extra></extra>'
+                )#, row=row, col=col
             )
             
         else : 
