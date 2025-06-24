@@ -19,7 +19,8 @@ from plotly.subplots import make_subplots
     'probaBase': 'proba',
     'recoBase': 'reco',
     'treeBase': 'treeBase',
-    'treeSplitter': 'tree'
+    'treeSplitter': 'tree',
+    'driftBinary': 'drift'
 } %}
 {%- set custom_model_init = {
     'neuralNetworksActivations': 'neural_net.activations',
@@ -31,7 +32,8 @@ from plotly.subplots import make_subplots
     'probaBase': 'proba.base',
     'recoBase': 'reco.base',
     'treeBase': 'tree.base',
-    'treeSplitter': 'tree.splitter'
+    'treeSplitter': 'tree.splitter',
+    'driftBinary' : 'drift.binary'
 } %}
 
 {{models_macros.generate_imports(file.models ,custom_import_map )}}

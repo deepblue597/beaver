@@ -82,16 +82,20 @@ if __name__ == "__main__":
     #     ({'user': 'Bob', 'item': 'Notting Hill', 'time': .10}, False)
     # )
     #path = kagglehub.dataset_download("fedesoriano/heart-failure-prediction")
-    path = kagglehub.dataset_download("unsdsn/world-happiness")
+    #path = kagglehub.dataset_download("unsdsn/world-happiness")
     #print("Path to dataset files:", path)
+    
+    #dataset = datasets.Elec2()
+    path = kagglehub.dataset_download("vstacknocopyright/electricity")
 # %%
-#    dataset
+    path
 
 # %%
     # csv_path = os.path.join(path, "boston.csv")
     # Trump approval , Airline , Phising
     #df = pd.read_csv(dataset.path)
-    df = pd.read_csv(path+'/2019.csv')
+    #df = pd.read_csv(path+'/2019.csv')
+    df = pd.read_csv(path+'/electricity-normalized.csv')
     # Bananas, Clustering , CreditCard
     #df = pd.DataFrame(dataset)
 # %%
@@ -124,7 +128,7 @@ if __name__ == "__main__":
         #sample_dict = {'x' : {**row[0]}, 'class': row[1]}
         # convert to json format
         #TRump , airline, List dataset 
-        #json_message = row.to_json()
+        json_message = row.to_json()
         #sample_dict = {'data': json.loads(json_message)}
         #Chinese Beijing
         #sample_dict = {'value' : row[0], 'class': row[1]}
@@ -132,9 +136,9 @@ if __name__ == "__main__":
         #json_message = json.dumps({str(idx): int(row[0])})
         #json_message = json.dumps(sample_dict)
         #print(json_message)
-        row_dict = row.to_dict()
-        row_dict_converted = convert_keys_to_underscores(row_dict)
-        json_message = json.dumps(row_dict_converted)
+        #row_dict = row.to_dict()
+        #row_dict_converted = convert_keys_to_underscores(row_dict)
+        #json_message = json.dumps(row_dict_converted)
         # Produce the message to kafka
         producer.produce(
             args.topic_name, value=json_message, key=str(idx), callback=delivery_callback)

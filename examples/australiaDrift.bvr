@@ -1,0 +1,35 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'electricityDrift'
+        auto_offset_reset = "earliest"
+}
+
+
+algorithm <DDM> ddm 
+
+algorithm <HoeffdingTreeClassifier> hoeffTree 
+
+algorithm <DriftRetrainingClassifier > driftRetrain 
+    params: 
+        model=hoeffTree, 
+        drift_detector=ddm
+
+metric <Accuracy> acc
+
+data driftAustralia { 
+
+    input_topic = "Australia" 
+    features: 
+        target_feature = class     
+
+}
+
+pipeline driftRetrainPipeline { 
+    output_topic = 'driftRetrainPipeline' 
+    data = driftAustralia
+    algorithm = driftRetrain
+    metrics = acc
+
+}
+

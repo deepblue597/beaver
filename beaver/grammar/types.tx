@@ -40,7 +40,8 @@ Model : Composer |
         Feature | 
         Algorithm | 
         Optimizer | 
-        Metric 
+        Metric |
+        Stat
 ; 
 
 DataModel : Composer | 
@@ -48,6 +49,12 @@ DataModel : Composer |
             Feature ; 
 
 
+Stat:
+    'stat' '<' type = StatsGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+; 
 
 Feature:
     'feature' '<' type = FeatureGroup '>'  name=ID 
