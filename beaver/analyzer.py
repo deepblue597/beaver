@@ -115,9 +115,9 @@ class ModelAnalyzer:
     def _analyze_model(self, model) -> dict:
         """Analyze a single model definition."""
         model_info = {
-            'name': model.name,
-            'type': model.type.__class__.__name__,
-            'model_class': model.type.name,
+            'name': getattr(model, 'name', 'unknown'),
+            'type': getattr(model.type, '__class__', type(None)).__name__ if hasattr(model, 'type') else 'unknown',
+            'model_class': getattr(model.type, 'name', 'unknown') if hasattr(model, 'type') and hasattr(model.type, 'name') else 'unknown',
             'parameter_count': 0,
             'has_parameters': False,
             'parameters': []
@@ -129,8 +129,8 @@ class ModelAnalyzer:
             
             for param in model.params:
                 param_info = {
-                    'name': param.name if hasattr(param, 'name') else 'unnamed',
-                    'type': param.value.__class__.__name__ if hasattr(param, 'value') else 'unknown'
+                    'name': getattr(param, 'name', 'unnamed') if hasattr(param, 'name') else 'unnamed',
+                    'type': getattr(param.value, '__class__', type(None)).__name__ if hasattr(param, 'value') else 'unknown'
                 }
                 model_info['parameters'].append(param_info)
         
@@ -139,8 +139,8 @@ class ModelAnalyzer:
     def _analyze_data_source(self, data) -> dict:
         """Analyze a data source definition."""
         data_info = {
-            'name': data.name,
-            'input_topic': data.input_topic if hasattr(data, 'input_topic') else None,
+            'name': getattr(data, 'name', 'unknown'),
+            'input_topic': getattr(data, 'input_topic', None),
             'has_features': False,
             'has_preprocessors': False,
             'feature_engineering': False
@@ -160,12 +160,19 @@ class ModelAnalyzer:
     def _analyze_pipeline(self, pipeline) -> dict:
         """Analyze a pipeline definition."""
         pipeline_info = {
-            'name': pipeline.name,
-            'has_output_topic': hasattr(pipeline, 'output_topic') and pipeline.output_topic,
-            'has_data': hasattr(pipeline, 'data') and pipeline.data,
-            'has_algorithm': hasattr(pipeline, 'algorithm') and pipeline.algorithm,
-            'has_metrics': hasattr(pipeline, 'metrics') and pipeline.metrics
+            'name': getattr(pipeline, 'name', 'unknown'),
+            'has_output_topic': hasattr(pipeline, 'output_topic') and getattr(pipeline, 'output_topic', None) is not None,
+            'has_data': hasattr(pipeline, 'data') and getattr(pipeline, 'data', None) is not None,
+            'has_algorithm': hasattr(pipeline, 'algorithm') and getattr(pipeline, 'algorithm', None) is not None,
+            'has_metrics': hasattr(pipeline, 'metrics') and getattr(pipeline, 'metrics', None) is not None
         }
+        
+        # Add more detailed info if available
+        if hasattr(pipeline, 'data') and pipeline.data:
+            pipeline_info['data_name'] = getattr(pipeline.data, 'name', 'unknown') if hasattr(pipeline.data, 'name') else str(pipeline.data)
+        
+        if hasattr(pipeline, 'algorithm') and pipeline.algorithm:
+            pipeline_info['algorithm_name'] = getattr(pipeline.algorithm, 'name', 'unknown') if hasattr(pipeline.algorithm, 'name') else str(pipeline.algorithm)
         
         return pipeline_info
     

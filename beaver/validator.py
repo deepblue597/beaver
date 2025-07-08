@@ -35,18 +35,23 @@ class ModelValidator:
     def _load_river_modules(self) -> Dict[str, Any]:
         """Load available River modules and their classes."""
         modules = {}
+        # Complete list of actual River modules (verified)
         river_submodules = [
             'linear_model', 'tree', 'ensemble', 'forest', 'cluster', 
             'preprocessing', 'metrics', 'anomaly', 'drift', 'optim',
-            'neural_net', 'proba', 'reco', 'bandit', 'model_selection'
+            'neural_net', 'proba', 'reco', 'bandit', 'model_selection',
+            'compose', 'neighbors', 'naive_bayes', 'time_series', 'rules',
+            'multiclass', 'multioutput', 'imblearn', 'facto', 'stats',
+            'feature_extraction', 'feature_selection', 'misc'
         ]
         
         for module_name in river_submodules:
             try:
                 module = importlib.import_module(f'river.{module_name}')
                 modules[module_name] = module
-            except ImportError:
-                pass
+            except ImportError as e:
+                # Some modules might not be available in all River versions
+                print(f"Warning: Could not import river.{module_name}: {e}")
                 
         return modules
     
@@ -76,29 +81,70 @@ class ModelValidator:
     
     def _validate_model_exists(self, class_name: str, type_name: str, model_name: str) -> bool:
         """Check if the specified model class exists in River."""
-        # Handle special mappings
+        # Handle special mappings from grammar/models.tx
         custom_import_map = {
-            'neuralNetworksActivations': 'neural_net',
-            'multioutputMetrics': 'metrics',
-            'optimizersBase': 'optim',
-            'optimInitializers': 'optim',
-            'optimLosses': 'optim',
-            'optimSchedulers': 'optim',
-            'probaBase': 'proba',
-            'recoBase': 'reco',
-            'treeBase': 'tree',
-            'treeSplitter': 'tree',
-            'driftBinary': 'drift'
+            'neuralNetworksActivations': 'neural_net.activations',
+            'multioutputMetrics': 'metrics.multioutput',
+            'optimizersBase': 'optim.base',
+            'optimInitializers': 'optim.initializers',
+            'optimLosses': 'optim.losses',
+            'optimSchedulers': 'optim.schedulers',
+            'probaBase': 'proba.base',
+            'recoBase': 'reco.base',
+            'treeBase': 'tree.base',
+            'treeSplitter': 'tree.splitter',
+            'driftBinary': 'drift.binary',
+            # Additional mappings for complete coverage
+            'naive_bayes': 'naive_bayes',
+            'neighbors': 'neighbors', 
+            'time_series': 'time_series',
+            'multiclass': 'multiclass',
+            'multioutput': 'multioutput',
+            'feature_extraction': 'feature_extraction',
+            'feature_selection': 'feature_selection',
+            'FeatureGroup': 'feature_extraction',  # Default for feature groups
         }
         
         mapped_class = custom_import_map.get(class_name, class_name.lower())
         
+        # Handle submodule paths (e.g., 'neural_net.activations')
+        if '.' in mapped_class:
+            module_parts = mapped_class.split('.')
+            try:
+                # Import the submodule
+                import importlib
+                full_module_path = f"river.{mapped_class}"
+                submodule = importlib.import_module(full_module_path)
+                
+                # Check if the specific class exists in the submodule
+                if not hasattr(submodule, type_name):
+                    available_classes = [name for name in dir(submodule) 
+                                       if not name.startswith('_') and inspect.isclass(getattr(submodule, name))]
+                    self.issues.append(ValidationIssue(
+                        level=ValidationLevel.ERROR,
+                        message=f"Class '{type_name}' not found in module 'river.{mapped_class}'",
+                        model_name=model_name,
+                        suggestion=f"Available classes in {mapped_class}: {', '.join(available_classes[:10])}"
+                    ))
+                    return False
+                return True
+                
+            except ImportError:
+                self.issues.append(ValidationIssue(
+                    level=ValidationLevel.ERROR,
+                    message=f"Module 'river.{mapped_class}' not found",
+                    model_name=model_name,
+                    suggestion=f"Check if the module path is correct"
+                ))
+                return False
+        
+        # Handle regular modules
         if mapped_class not in self.river_modules:
             self.issues.append(ValidationIssue(
                 level=ValidationLevel.ERROR,
                 message=f"Module '{mapped_class}' not found in River library",
                 model_name=model_name,
-                suggestion=f"Available modules: {', '.join(self.river_modules.keys())}"
+                suggestion=f"Available modules: {', '.join(sorted(self.river_modules.keys()))}"
             ))
             return False
             
