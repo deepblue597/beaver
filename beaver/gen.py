@@ -50,7 +50,7 @@ if __name__ == "__main__":
     #print(flattened_dict)
     generated_code = template.render(
         file=config , assignments=flattened_dict)
-
+    
     # Save the generated code to a file
     with open(args.generated_file_name, 'w') as f:
         f.write(generated_code)

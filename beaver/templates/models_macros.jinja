@@ -22,7 +22,7 @@ from river import {{ class_name }}
 {{model.name}} = {{ custom_model_init[class_name] }}.{{ model.type.name }}(
     {%- for param in model.params %}
     {%- if param.name %}
-    {{ param.name }} ={%- endif %} {{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
+    {{ param.name }} = {%- endif %}{{ paramameter_types_generation(param.value) }}{%- if not loop.last -%},{%- endif -%}
     {% endfor %}
 )
         {%- else %}
@@ -56,7 +56,6 @@ from river import {{ class_name }}
         "{{ item.name }}" : {{ paramameter_types_generation(item.value) }}{%- if not loop.last %},{% endif %}
     {%- endfor -%}
 }
-
 {%- elif param.__class__.__name__ == "Tuple" -%}
 (
     {%- for item in param.items -%}

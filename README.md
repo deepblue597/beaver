@@ -11,6 +11,15 @@ Beaver is DSL for Machine Learning in live data. It's purpose is to simplify the
 - TextX
 - Jinja
 
+## ✨ New Features
+
+- 🔍 **Static Model Validation**: Validate your `.bvr` files before code generation
+- 📊 **Model Analysis**: Get insights and suggestions for improving your models
+- 🛠️ **Enhanced CLI**: Unified command-line interface for all operations
+- ✅ **Syntax Checking**: Validate generated Python code syntax and compilation
+- 📈 **Comprehensive Algorithm Support**: Full support for all River algorithm types
+- 🔧 **Detailed Error Reporting**: Clear error messages with suggestions for fixes
+
 ## Documentation
 
 You can find full description of the language as well as examples and FAQ in the [documentation page](https://deepblue597.github.io/beaver-doc/)
@@ -58,20 +67,68 @@ pip install -e .
 Open a Text Editor of your choice and create a `.bvr` file.
 If you are unsure how to structure a `.bvr` you can check the [docs](https://deepblue597.github.io/beaver-doc/) or use one of the examples that are provided in the `examples` folder.
 
-When you have added the necessary entities and constructed your pipeline:
+## 🚀 Using Beaver CLI
 
-1. Open a terminal
-2. Run
+Beaver now includes a powerful CLI with validation, analysis, and code generation features:
+
+### See Available Examples
 
 ```bash
-python3 gen.py --metamodel <PATH-TO-YOUR-METAMODEL> --generated_file_name <PATH-TO-THE-GENERATED-FILE>
+python beaver_cli.py examples
 ```
 
-**Note**: Instead of `python3` you may need to run `python` depending on the installment of python in your machine
+### Validate Your Model (Recommended First Step)
 
-3. If there are no errors, your python file will have been generated at `<PATH-TO-THE-GENERATED-FILE>`
+```bash
+python beaver_cli.py validate --input examples/linear.bvr --verbose
+```
 
-4. Run your python file `python3 <PATH-TO-THE-GENERATED-FILE>`
+### Generate Python Code
+
+```bash
+# Basic generation with validation
+python beaver_cli.py generate --input examples/linear.bvr --output my_pipeline.py
+
+# Generation with comprehensive checking
+python beaver_cli.py generate --input examples/linear.bvr --output my_pipeline.py --check-syntax --verbose
+
+# Preview without creating files
+python beaver_cli.py generate --input examples/linear.bvr --dry-run
+```
+
+### Analyze Your Models
+
+```bash
+# Analyze a specific file
+python beaver_cli.py analyze --input examples/linear.bvr
+
+# Analyze all examples
+python beaver_cli.py analyze --directory examples
+```
+
+### Help and Documentation
+
+```bash
+# Show extended help with examples
+python beaver_cli.py help
+
+# Get help for specific commands
+python beaver_cli.py generate --help
+```
+
+## 🔧 Alternative: Direct Generator Usage
+
+You can still use the original generator directly:
+
+```bash
+python beaver/gen_enhanced.py --metamodel <PATH-TO-YOUR-METAMODEL> --generated_file_name <PATH-TO-THE-GENERATED-FILE> --check-syntax --verbose
+```
+
+**Recommended Workflow:**
+
+1. **Validate first**: `python beaver_cli.py validate --input your_model.bvr`
+2. **Generate code**: `python beaver_cli.py generate --input your_model.bvr --check-syntax`
+3. **Run your pipeline**: `python generated_pipeline.py`
 
 ## Kafka setup
 
@@ -97,6 +154,7 @@ graph TD
     E --> F[Quix Streams processes live data]
     F --> G[Model training & prediction River]
     G --> H[Metrics & predictions published to Kafka]
+    G --> J[Model saved on pickle file]
     G --> I[Live visualization in Dash dashboard]
 ```
 
