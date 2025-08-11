@@ -61,7 +61,9 @@ class ModelAnalyzer:
             }
             
             # Analyze models
+            # Checks if models exist and are valid
             if hasattr(config, 'models') and config.models:
+                # Count models and analyze each
                 analysis['metrics']['total_models'] = len(config.models)
                 
                 for model in config.models:
@@ -70,8 +72,10 @@ class ModelAnalyzer:
                     
                     # Validate model
                     self.validator.clear_issues()
+                    # uses validator to validate the model
                     self.validator.validate_model(model)
                     
+                    # adds the validation issues to the analysis
                     for issue in self.validator.issues:
                         analysis['validation_issues'].append({
                             'model': model.name,
@@ -127,6 +131,7 @@ class ModelAnalyzer:
             model_info['has_parameters'] = True
             model_info['parameter_count'] = len(model.params)
             
+            # name and type of each parameter
             for param in model.params:
                 param_info = {
                     'name': getattr(param, 'name', 'unnamed') if hasattr(param, 'name') else 'unnamed',
@@ -146,6 +151,7 @@ class ModelAnalyzer:
             'feature_engineering': False
         }
         
+        # Check if data has features and preprocessors
         if hasattr(data, 'features') and data.features:
             data_info['has_features'] = True
             
@@ -218,6 +224,7 @@ class ModelAnalyzer:
             suggestions.append("Consider adding preprocessing steps for better model performance.")
         
         # Check for parameter usage
+        # if params are used in less than half of the models, suggest tuning
         models_without_params = [m for m in analysis['models'] if not m['has_parameters']]
         if len(models_without_params) > len(analysis['models']) / 2:
             suggestions.append("Many models use default parameters. Consider tuning parameters for better performance.")

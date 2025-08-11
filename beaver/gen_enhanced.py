@@ -38,7 +38,12 @@ def parse_command_line_arguments():
 
 def validate_generated_syntax(code: str) -> tuple[bool, str]:
     """
-    Validate the syntax of generated Python code.
+    What it does:
+
+    ast.parse(code): Converts Python code string into an Abstract Syntax Tree
+    If successful: Code has valid Python syntax
+    If SyntaxError: Code has syntax problems (missing parentheses, indentation errors, etc.)
+    Returns: Success boolean + descriptive message
     
     Args:
         code: Generated Python code as string
@@ -58,7 +63,12 @@ def validate_generated_syntax(code: str) -> tuple[bool, str]:
 def test_generated_code(code: str, file_path: str) -> tuple[bool, str]:
     """
     Test if the generated code can be imported and basic functionality works.
-    
+    What it does:
+
+    Creates temporary file: Writes generated code to a temp .py file
+    Compilation test: Uses py_compile to check if Python can compile it
+    Cleanup: Removes temporary file
+    Returns: Success boolean + message
     Args:
         code: Generated Python code
         file_path: Path where the code would be saved
@@ -80,8 +90,10 @@ def test_generated_code(code: str, file_path: str) -> tuple[bool, str]:
         )
         
         # Clean up
+        # Remove the temporary file
         Path(temp_file_path).unlink()
         
+        # If compilation was successful, return True
         if result.returncode == 0:
             return True, "Code compilation successful"
         else:
@@ -128,6 +140,7 @@ def generate_code_with_validation(args):
             if args.verbose:
                 print("🔍 Performing static validation...")
             
+            # Use the ModelValidator for validating the Model 
             is_valid, validation_report = validate_beaver_model(config)
             
             print("\n" + validation_report)
@@ -152,12 +165,15 @@ def generate_code_with_validation(args):
         template = env.get_template('beaver/templates/models.jinja')
         
         # Prepare template data
+        # If DSL has feature engineering like:
+        # outpout gets populated during parsing:
         flattened_dict = dict_flatten(outpout) if 'outpout' in globals() else {}
         
         # Generate code
         if args.verbose:
             print("⚙️ Generating Python code...")
         
+        #  creates Python code using Jinja syntax:  
         generated_code = template.render(
             file=config,
             assignments=flattened_dict
@@ -243,3 +259,18 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+❓ Why isn't the Analyzer used here?
+Different purposes:
+
+gen_enhanced.py: Code generation with validation
+
+Validates input → Generates Python code → Validates output
+Focus: "Can I generate working Python code?"
+analyzer.py: Analysis and suggestions
+
+Analyzes complexity, best practices, provides improvement suggestions
+Focus: "How can I improve my Beaver configuration?"
+"""

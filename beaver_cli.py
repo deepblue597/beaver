@@ -18,6 +18,7 @@ def run_generator(args):
         '--generated_file_name', args.output
     ]
     
+    # Add optional arguments based on user input
     if args.validate_only:
         cmd.append('--validate-only')
     if args.skip_validation:
@@ -29,6 +30,7 @@ def run_generator(args):
     if args.verbose:
         cmd.append('--verbose')
     
+    # Run the command and return the result
     return subprocess.run(cmd)
 
 

@@ -15,7 +15,7 @@ class ValidationLevel(Enum):
     WARNING = "warning"
     INFO = "info"
 
-
+# Custom validation issue class to store validation results
 @dataclass
 class ValidationIssue:
     level: ValidationLevel
@@ -47,12 +47,13 @@ class ModelValidator:
         
         for module_name in river_submodules:
             try:
+                # Import the module dynamically
                 module = importlib.import_module(f'river.{module_name}')
                 modules[module_name] = module
             except ImportError as e:
                 # Some modules might not be available in all River versions
                 print(f"Warning: Could not import river.{module_name}: {e}")
-                
+        # Return the dictionary of modules        
         return modules
     
     def validate_model(self, model_def) -> bool:
@@ -112,11 +113,25 @@ class ModelValidator:
             module_parts = mapped_class.split('.')
             try:
                 # Import the submodule
-                import importlib
+                #import importlib
+                # Import the full module path dynamically
                 full_module_path = f"river.{mapped_class}"
                 submodule = importlib.import_module(full_module_path)
                 
                 # Check if the specific class exists in the submodule
+                # Real-World Example
+                # Let's say you have a DSL file with:
+                # model1 = neuralNetworksActivations.WrongActivation()
+                # What happens:
+
+                # mapped_class becomes "neural_net.activations"
+                # submodule becomes the river.neural_net.activations module
+                # type_name is "WrongActivation"
+                # hasattr(submodule, "WrongActivation") returns False
+                # The code discovers available classes: ["ReLU", "Tanh", "Sigmoid", "LeakyReLU", ...]
+                # Creates a validation error:
+                # "Class 'WrongActivation' not found in module 'river.neural_net.activations'"\
+                # 💡 Available classes in neural_net.activations: ReLU, Tanh, Sigmoid, LeakyReLU, ELU, SELU, GELU, Swish, Mish, SoftPlus
                 if not hasattr(submodule, type_name):
                     available_classes = [name for name in dir(submodule) 
                                        if not name.startswith('_') and inspect.isclass(getattr(submodule, name))]
@@ -182,19 +197,26 @@ class ModelValidator:
                 'driftBinary': 'drift'
             }
             
+            #  gets the class name from the custom import map or defaults to the class name provided to lower case 
+            # This allows for custom mappings like 'neuralNetworksActivations' to 'neural_net.activations'
             mapped_class = custom_import_map.get(class_name, class_name.lower())
             module = self.river_modules[mapped_class]
+            # Get the class from the module
             model_class = getattr(module, type_name)
             
             # Get the __init__ signature
             sig = inspect.signature(model_class.__init__)
+            # Get valid parameters excluding 'self'
             valid_params = set(sig.parameters.keys()) - {'self'}
             
             # Check each parameter
             for param in params:
+                # Get the parameter name 
                 param_name = param.name if hasattr(param, 'name') and param.name else None
                 
+                # Check if the parameter is valid
                 if param_name and param_name not in valid_params:
+                    # If the parameter is not valid, log an error
                     self.issues.append(ValidationIssue(
                         level=ValidationLevel.ERROR,
                         message=f"Parameter '{param_name}' not valid for {type_name}",
@@ -204,6 +226,7 @@ class ModelValidator:
                     
                 # Validate parameter types
                 if param_name and param_name in sig.parameters:
+                    # Validate the parameter type
                     self._validate_parameter_type(param, sig.parameters[param_name], model_name)
                     
         except Exception as e:
@@ -227,6 +250,9 @@ class ModelValidator:
                 annotation = param_spec.annotation
                 
                 # Basic type checking
+                # int check. If the annotation is int and the value is not an int, log a warning
+                # __class__ is used to get the class of the value
+                # __class__.__name__ is used to get the class name of the value
                 if annotation == int and hasattr(value, '__class__') and value.__class__.__name__ not in ['int', 'TypeRef']:
                     self.issues.append(ValidationIssue(
                         level=ValidationLevel.WARNING,
@@ -267,7 +293,7 @@ class ModelValidator:
         
         # Check for common pipeline issues
         self._check_pipeline_order(pipeline_models)
-        
+        # Return True if no errors found
         return len([issue for issue in self.issues if issue.level == ValidationLevel.ERROR]) == 0
     
     def _is_preprocessing_model(self, class_lower: str, type_lower: str) -> bool:
@@ -403,14 +429,18 @@ class ModelValidator:
         
         return 'optim' in class_lower or any(x in type_lower for x in optimizer_keywords)
     
+
     def _check_pipeline_order(self, pipeline_models: List[Tuple[str, str, str, str]]):
-        """Check if pipeline model order makes sense."""
+        """
+        This function for now is checking if the pipeline has at least one algorithm model.
+        It can be extended to check for more complex pipeline structures in the future.
+        """
         has_preprocessor = any(model_type == 'preprocessor' for model_type, _, _, _ in pipeline_models)
         has_algorithm = any(model_type == 'algorithm' for model_type, _, _, _ in pipeline_models)
         
         if not has_algorithm:
             self.issues.append(ValidationIssue(
-                level=ValidationLevel.WARNING,
+                level=ValidationLevel.ERROR,
                 message="No algorithm model found in pipeline",
                 model_name="pipeline",
                 suggestion="Add at least one classifier, regressor, or clustering algorithm"
