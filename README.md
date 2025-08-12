@@ -11,7 +11,7 @@ Beaver is DSL for Machine Learning in live data. It's purpose is to simplify the
 - TextX
 - Jinja
 
-## ✨ New Features
+## ✨ Features
 
 - 🔍 **Static Model Validation**: Validate your `.bvr` files before code generation
 - 📊 **Model Analysis**: Get insights and suggestions for improving your models
