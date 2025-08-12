@@ -3,6 +3,7 @@ AlgoGroup :
                 linear_model                | 
                 forest                      | 
                 cluster                     | 
+                driftBinary                 |
                 drift                       | 
                 ensemble                    | 
                 facto                       | 
@@ -48,6 +49,9 @@ MetricGroup :   metrics                     |
 ;
 
 ComposeGroup :  compose
+;
+
+StatsGroup : stats 
 ;
 
 linear_model:
@@ -101,6 +105,17 @@ ClusteringNames : "CluStream" |
                   "ODAC" | 
                   "STREAMKMeans" | 
                   "TextClust"
+;
+
+driftBinary :
+    name = DriftBinaryNames 
+; 
+
+DriftBinaryNames :  "DDM" |
+                    "EDDM" |
+                    "FHDDM" |
+                    "HDDM_A" |
+                    "HDDM_W" 
 ;
 
 drift :
@@ -483,8 +498,9 @@ ComposersNames : "Discard"                      |
                  "Pipeline"                     | 
                  "Prefixer"                     | 
                  "Renamer"                      | 
+                 "SelectType" | 
                  "Select"                       | 
-                 "SelectType"                   | 
+                                   
                  "Suffixer"                     | 
                  "TargetTransformRegressor"     | 
                  "TransformerProduct"           | 
@@ -544,3 +560,43 @@ banditNames :   "BayesUCB" |
                 "evaluate"
 ;
     
+
+stats : 
+    name = statsNames
+; 
+
+statsNames :   
+    "AbsMax"                |
+    "AutoCorr"              |
+    "BayesianMean"          |
+    "Count"                 |
+    "Cov"                   |
+    "EWMean"                |
+    "EWVar"                 |
+    "Entropy"               |
+    "IQR"                   |
+    "KolmogorovSmirnov"     |
+    "Kurtosis"              |
+    "Link"                  |
+    "MAD"                   |
+    "Max"                   |
+    "Mean"                  |
+    "Min"                   |
+    "Mode"                  |
+    "NUnique"               |
+    "PeakToPeak"            |
+    "PearsonCorr"           |
+    "Quantile"              |
+    "RollingAbsMax"         |
+    "RollingIQR"            |
+    "RollingMax"            |
+    "RollingMin"            |
+    "RollingMode"           |
+    "RollingPeakToPeak"     |
+    "RollingQuantile"       |
+    "SEM"                   |
+    "Shift"                 |
+    "Skew"                  |
+    "Sum"                   |
+    "Var"
+;

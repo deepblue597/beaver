@@ -19,11 +19,13 @@ DictItem:
 
 ModelRef : value = [Model];
 
+TypeRef : value = ID;
+
 Param:
-    name = ID '=' value = ParamValue;
+    (name = ID '=')? value = ParamValue;
 
 ParamValue:
-    NUMBER | STRING | BOOL  | Tuple | List | Dict | ModelRef;
+    TypeRef | NUMBER | STRING | BOOL  | Tuple | List | Dict | ModelRef;
 
 
 // Special rule for comments. Comments start with //
@@ -38,7 +40,8 @@ Model : Composer |
         Feature | 
         Algorithm | 
         Optimizer | 
-        Metric 
+        Metric |
+        Stat
 ; 
 
 DataModel : Composer | 
@@ -46,6 +49,12 @@ DataModel : Composer |
             Feature ; 
 
 
+Stat:
+    'stat' '<' type = StatsGroup '>'  name=ID 
+    ('params' ':'
+        params += Param[',']
+    )?     
+; 
 
 Feature:
     'feature' '<' type = FeatureGroup '>'  name=ID 

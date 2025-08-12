@@ -5,10 +5,15 @@ connector {
         auto_offset_reset = "earliest"
 }
 
+composer <SelectType> select
+    params: 
+        types = (int, float)
+
 algorithm <AMFRegressor> amf 
 
 
 metric <MAE> mae
+
 
 
 data TrumpApproval { 

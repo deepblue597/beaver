@@ -18,7 +18,7 @@ from river import metrics
 
 
 outlier = anomaly.LocalOutlierFactor(
-    n_neighbors = 20
+    n_neighbors =20
 )
 rec = metrics.Recall(
 )
@@ -64,7 +64,7 @@ outlierPipeline_pipeline =outlier
 outlierPipeline_metrics = [rec]
 
 
-outlierPipeline = Pipeline(model = outlierPipeline_pipeline, model_name ='LocalOutlierFactor'  , metrics_list = outlierPipeline_metrics , name = "outlierPipeline",y="Class",output_topic="outlierPipeline")
+outlierPipeline = Pipeline(model = outlierPipeline_pipeline, model_name ='LocalOutlierFactor'  , metrics_list = outlierPipeline_metrics , name = "outlierPipeline",y="class",output_topic="outlierPipeline")
 
 
 

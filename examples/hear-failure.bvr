@@ -1,0 +1,73 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'heart-failure'
+        auto_offset_reset = "earliest"
+}
+
+algorithm <KNNClassifier> knn 
+
+
+algorithm <AMFClassifier> amf 
+    params: 
+        n_estimators=10,
+        use_aggregation=True,
+        dirichlet=0.5,
+        seed=1
+
+optimizer <SGD> sgd 
+    params: 
+        lr = 0.1
+
+algorithm <LogisticRegression> logistic 
+    params: 
+        optimizer = sgd     
+
+composer <SelectType> select
+    params: 
+        (int , float)
+
+composer <SelectType> selectstr
+    params: 
+        str
+
+
+metric <Accuracy> accuracy 
+
+metric <Recall> recall
+
+metric <ROCAUC> roc
+
+preprocessor <OneHotEncoder> encoder 
+preprocessor <StandardScaler> scaler 
+
+data Heart_Failure_Prediction { 
+
+    input_topic = "Heart_Failure_Prediction"         
+    features: 
+        target_feature = HeartDisease
+    preprocessors = select | scaler + selectstr | encoder
+
+}
+
+
+pipeline KNNClassifierPipeline { 
+    output_topic = 'KNNClassifierPipeline' 
+    data = Heart_Failure_Prediction
+    algorithm = knn
+    metrics = accuracy , recall , roc
+}
+
+pipeline amfClassifierPipeline { 
+    output_topic = 'amfClassifierPipeline' 
+    data = Heart_Failure_Prediction
+    algorithm = amf
+    metrics = accuracy , recall , roc
+}
+
+pipeline logisticPipeline { 
+    output_topic = 'logisticPipeline' 
+    data = Heart_Failure_Prediction
+    algorithm = logistic
+    metrics = accuracy , recall , roc
+}

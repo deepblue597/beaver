@@ -1,0 +1,65 @@
+connector {
+        bootstrap_servers = "localhost:39092"
+        security_protocol = "plaintext"
+        consumer_group = 'creditCard'
+        auto_offset_reset = "earliest"
+}
+
+stat <Mean> mean
+
+algorithm <HalfSpaceTrees> halfspace
+        params: 
+                n_trees=5,
+                height=3,
+                window_size=3,
+                seed=42
+
+algorithm <StandardAbsoluteDeviation> deviation 
+        params: 
+                sub_stat= mean
+
+algorithm <OneClassSVM> svm
+        params: 
+                nu=0.2
+
+algorithm <QuantileFilter> quantile 
+        params: 
+                anomaly_detector=svm,
+                q=0.995
+
+preprocessor <StandardScaler> scaler
+
+metric <Precision> precision 
+
+metric <ROCAUC> rocauc 
+
+metric <Recall> recall 
+
+data CreditCard { 
+
+    input_topic = "CreditCard"         
+    features: 
+        target_feature = Class
+    preprocessors = scaler
+}
+
+pipeline halfspacePipeline { 
+    output_topic = 'halfspacePipeline' 
+    data = CreditCard
+    algorithm = halfspace
+    metrics = precision  , recall
+}
+
+pipeline deviationPipeline { 
+    output_topic = 'deviationPipeline' 
+    data = CreditCard
+    algorithm = deviation
+    metrics = precision  , recall
+}
+
+pipeline quantilePipeline { 
+    output_topic = 'quantilePipeline' 
+    data = CreditCard
+    algorithm = quantile
+    metrics = precision  , recall
+}

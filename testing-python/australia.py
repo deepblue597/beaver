@@ -11,16 +11,23 @@ import threading
 from plotly.subplots import make_subplots
 
 
-from river import anomaly
+    
+from river import drift
+from river import tree
 from river import metrics
 
 
 
 
-outlier = anomaly.LocalOutlierFactor(
-    n_neighbors = 20
+ddm = drift.binary.DDM(
 )
-rec = metrics.Recall(
+hoeffTree = tree.HoeffdingTreeClassifier(
+)
+driftRetrain = drift.DriftRetrainingClassifier(
+    model =hoeffTree,
+    drift_detector =ddm
+)
+acc = metrics.Accuracy(
 )
 
 
@@ -34,17 +41,17 @@ connectionConfig = ConnectionConfig(
 #Connection to Kafka
 app = Application( 
     broker_address = connectionConfig,
-    consumer_group = 'anomaly',
+    consumer_group = 'electricityDrift',
     auto_offset_reset = 'earliest',
 )
 
 #Input topics 
 
-input_topic_CreditCard = app.topic("CreditCard", value_deserializer="json")
+input_topic_driftAustralia = app.topic("Australia", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
-sdf_CreditCard = app.dataframe(topic=input_topic_CreditCard)
+sdf_driftAustralia = app.dataframe(topic=input_topic_driftAustralia)
 
 #Drop Features
 
@@ -60,17 +67,17 @@ sdf_CreditCard = app.dataframe(topic=input_topic_CreditCard)
 
 #Pipeline definition 
 
-outlierPipeline_pipeline =outlier
-outlierPipeline_metrics = [rec]
+driftRetrainPipeline_pipeline =driftRetrain
+driftRetrainPipeline_metrics = [acc]
 
 
-outlierPipeline = Pipeline(model = outlierPipeline_pipeline, model_name ='LocalOutlierFactor'  , metrics_list = outlierPipeline_metrics , name = "outlierPipeline",y="Class",output_topic="outlierPipeline")
+driftRetrainPipeline = Pipeline(model = driftRetrainPipeline_pipeline, model_name ='DriftRetrainingClassifier'  , metrics_list = driftRetrainPipeline_metrics , name = "driftRetrainPipeline",y="class",output_topic="driftRetrainPipeline")
 
 
 
 # Output topics initialization
 
-output_topic_outlierPipeline = app.topic(outlierPipeline.output_topic, value_deserializer="json")
+output_topic_driftRetrainPipeline = app.topic(driftRetrainPipeline.output_topic, value_deserializer="json")
 
 
 
@@ -78,7 +85,7 @@ output_topic_outlierPipeline = app.topic(outlierPipeline.output_topic, value_des
 #Train and predict method calls for each pipeline
 #If the pipeline has an output topic then we call it 
 
-sdf_outlierPipeline = sdf_CreditCard.apply(outlierPipeline.train_and_predict).to_topic(output_topic_outlierPipeline)
+sdf_driftRetrainPipeline = sdf_driftAustralia.apply(driftRetrainPipeline.train_and_predict).to_topic(output_topic_driftRetrainPipeline)
 
 
 # ---------- DASHBOARD SETUP ----------
@@ -98,7 +105,7 @@ def run_dash():
             children=[
                 
                 dcc.Graph(
-                    id='live-stats-outlierPipeline',
+                    id='live-stats-driftRetrainPipeline',
                     #style={'margin': 'auto', 'display': 'block', 'width':'70%'}
                 )
             ]
@@ -113,7 +120,7 @@ def run_dash():
         fig = make_subplots(rows=1, cols=1 , vertical_spacing=0.1)
 
         
-        outlierPipeline.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
+        driftRetrainPipeline.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
         
 
         fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
@@ -123,7 +130,7 @@ def run_dash():
     
     @dash_app.callback(
         Output(
-            component_id='live-stats-outlierPipeline', 
+            component_id='live-stats-driftRetrainPipeline', 
             component_property='figure'
         ), 
         Input(
@@ -133,11 +140,11 @@ def run_dash():
     )
 
       
-    def update_stats_outlierPipeline(n):
+    def update_stats_driftRetrainPipeline(n):
         
         traces = []  
         
-        outlierPipeline.add_stats_traces(traces) 
+        driftRetrainPipeline.add_stats_traces(traces) 
               
 
         
@@ -145,7 +152,7 @@ def run_dash():
             fig = go.Figure(
                     data=traces, 
                     layout= go.Layout(
-                        title='outlierPipeline Statistics'
+                        title='driftRetrainPipeline Statistics'
                     )
             )
             return fig    

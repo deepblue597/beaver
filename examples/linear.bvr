@@ -1,7 +1,7 @@
 connector {
         bootstrap_servers = "localhost:39092"
         security_protocol = "plaintext"
-        consumer_group = 'linear_models_complex'
+        consumer_group = 'linear_models'
         auto_offset_reset = "earliest"
 }
 
@@ -18,9 +18,9 @@ metric <Accuracy> acc
 
 data Phishing { 
 
-    input_topic = "phishing-complex"         
+    input_topic = "Phishing"         
     features: 
-        target_feature = data_is_phishing
+        target_feature = is_phishing
     preprocessors = scaler
 }
 
