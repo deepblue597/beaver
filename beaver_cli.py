@@ -29,6 +29,8 @@ def run_generator(args):
         cmd.append('--dry-run')
     if args.verbose:
         cmd.append('--verbose')
+    if args.strict_analysis:
+        cmd.append('--strict-analysis')
     
     # Run the command and return the result
     return subprocess.run(cmd)
@@ -95,36 +97,36 @@ def show_help():
 🦫 Beaver CLI - Machine Learning Pipeline Generator
 
 QUICK START:
-   beaver generate --input examples/model.bvr          # Generate code from example
-   beaver validate --input examples/model.bvr          # Validate model definitions
-   beaver analyze --directory examples                 # Analyze all examples
+   python beaver-cli.py generate --input examples/model.bvr          # Generate code from example
+   python beaver-cli.py validate --input examples/model.bvr          # Validate model definitions
+   python beaver-cli.py analyze --directory examples                 # Analyze all examples
 
 WORKFLOWS:
    1. Validation-first workflow:
-      beaver validate --input mymodel.bvr
-      beaver generate --input mymodel.bvr --check-syntax
+      python beaver-cli.py validate --input mymodel.bvr
+      python beaver-cli.py generate --input mymodel.bvr --check-syntax
    
    2. Analysis and improvement:
-      beaver analyze --input mymodel.bvr
+      python beaver-cli.py analyze --input mymodel.bvr
       # Make improvements based on suggestions
-      beaver generate --input mymodel.bvr
+      python beaver-cli.py generate --input mymodel.bvr
    
    3. Safe generation:
-      beaver generate --input mymodel.bvr --dry-run --verbose
-      beaver generate --input mymodel.bvr --check-syntax
+      python beaver-cli.py generate --input mymodel.bvr --dry-run --verbose
+      python beaver-cli.py generate --input mymodel.bvr --output model.py --check-syntax
 
 EXAMPLES:
    # Generate with full validation and syntax checking
-   beaver generate --input examples/model.bvr --check-syntax --verbose
+   python beaver-cli.py generate --input examples/model.bvr --output model.py --check-syntax --verbose
    
    # Validate only (no code generation)
-   beaver validate --input examples/linear.bvr --verbose
+   python beaver-cli.py validate --input examples/linear.bvr --verbose
    
    # Analyze all examples and get JSON output
-   beaver analyze --directory examples --output json
+   python beaver-cli.py analyze --directory examples --output json
    
    # Quick test run without writing files
-   beaver generate --input examples/model.bvr --dry-run
+   python beaver-cli.py generate --input examples/model.bvr --dry-run
 
 MORE INFO:
    Each command supports --help for detailed options
@@ -151,7 +153,7 @@ def main():
     gen_parser.add_argument('--check-syntax', action='store_true', help='Check generated code syntax')
     gen_parser.add_argument('--dry-run', action='store_true', help='Show preview without writing files')
     gen_parser.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
-    
+    gen_parser.add_argument('--strict-analysis', action='store_true', help='Enable strict static analysis')
     # Validate command
     val_parser = subparsers.add_parser('validate', help='Validate Beaver DSL file')
     val_parser.add_argument('--input', '-i', required=True, help='Input .bvr file to validate')

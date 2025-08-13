@@ -6,13 +6,16 @@ This script generates Python code from Beaver DSL files and performs comprehensi
 import argparse
 import ast
 import sys
+import os
 from pathlib import Path
 from textx import metamodel_from_file
 from jinja2 import Environment, FileSystemLoader
-from beaver.calc import *
-from beaver.validator import validate_beaver_model, ModelValidator
 import subprocess
 import tempfile
+
+# Add parent directory to path for imports
+from calc import *
+from validator import validate_beaver_model, ModelValidator
 
 
 def parse_command_line_arguments():
@@ -28,6 +31,10 @@ def parse_command_line_arguments():
                        help='Skip static validation and generate code directly')
     parser.add_argument('--check-syntax', action='store_true',
                        help='Check Python syntax of generated code')
+    parser.add_argument('--strict-analysis', action='store_true',
+                       help='Use strict mode for static analysis (errors fail generation)')
+    parser.add_argument('--skip-static-analysis', action='store_true',
+                       help='Skip static analysis (only syntax and compilation)')
     parser.add_argument('--dry-run', action='store_true',
                        help='Show what would be generated without writing files')
     parser.add_argument('--verbose', '-v', action='store_true',
@@ -60,47 +67,116 @@ def validate_generated_syntax(code: str) -> tuple[bool, str]:
         return False, f"Validation error: {str(e)}"
 
 
-def test_generated_code(code: str, file_path: str) -> tuple[bool, str]:
+def test_generated_code(code: str, file_path: str, enable_static_analysis: bool = True, strict_mode: bool = False) -> tuple[bool, str]:
     """
-    Test if the generated code can be imported and basic functionality works.
-    What it does:
-
-    Creates temporary file: Writes generated code to a temp .py file
-    Compilation test: Uses py_compile to check if Python can compile it
-    Cleanup: Removes temporary file
-    Returns: Success boolean + message
+    Enhanced test of generated code with comprehensive validation.
+    
+    Performs multiple validation layers:
+    1. Syntax validation (AST parsing)
+    2. Compilation validation (py_compile)  
+    3. Static analysis validation (forward references, unused variables)
+    
     Args:
         code: Generated Python code
         file_path: Path where the code would be saved
+        enable_static_analysis: Whether to perform static analysis (default: True)
+        strict_mode: If True, static analysis errors will fail the test (default: False)
         
     Returns:
-        Tuple[bool, str]: (success, message)
+        Tuple[bool, str]: (success, detailed_message)
     """
     try:
-        # Create a temporary file to test imports
+        messages = []
+        
+        # 1. Syntax validation using AST
+        try:
+            ast.parse(code)
+            messages.append("✅ Syntax validation passed")
+        except SyntaxError as e:
+            return False, f"❌ Syntax error at line {e.lineno}: {e.msg}"
+        
+        # 2. Compilation validation using py_compile
         with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as temp_file:
             temp_file.write(code)
             temp_file_path = temp_file.name
         
-        # Try to compile the file
-        result = subprocess.run(
-            [sys.executable, '-m', 'py_compile', temp_file_path],
-            capture_output=True,
-            text=True
-        )
-        
-        # Clean up
-        # Remove the temporary file
-        Path(temp_file_path).unlink()
-        
-        # If compilation was successful, return True
-        if result.returncode == 0:
-            return True, "Code compilation successful"
-        else:
-            return False, f"Compilation failed: {result.stderr}"
+        try:
+            result = subprocess.run(
+                [sys.executable, '-m', 'py_compile', temp_file_path],
+                capture_output=True,
+                text=True
+            )
             
+            if result.returncode == 0:
+                messages.append("✅ Compilation validation passed")
+            else:
+                return False, f"❌ Compilation failed: {result.stderr}"
+        finally:
+            # Clean up temp file
+            Path(temp_file_path).unlink()
+        
+        # 3. Static analysis validation (if enabled)
+        if enable_static_analysis:
+            try:
+                # Import the static analyzer (adjust path for current location)
+                import os
+                current_dir = Path(__file__).parent
+                parent_dir = current_dir.parent
+                sys.path.insert(0, str(parent_dir))
+                
+                # Try multiple possible locations for the analyzer
+                analyzer_imported = False
+                try:
+                    from beaver_static_analyzer import analyze_code_string
+                    analyzer_imported = True
+                except ImportError:
+                    # Try from parent directory
+                    analyzer_path = parent_dir / "beaver_static_analyzer.py"
+                    if analyzer_path.exists():
+                        import importlib.util
+                        spec = importlib.util.spec_from_file_location("beaver_static_analyzer", analyzer_path)
+                        analyzer_module = importlib.util.module_from_spec(spec)
+                        spec.loader.exec_module(analyzer_module)
+                        analyze_code_string = analyzer_module.analyze_code_string
+                        analyzer_imported = True
+                
+                if not analyzer_imported:
+                    raise ImportError("Could not import static analyzer")
+                
+                static_results = analyze_code_string(code)
+                
+                # Process static analysis results
+                error_count = len(static_results.get('errors', []))
+                warning_count = len(static_results.get('warnings', []))
+                
+                if error_count > 0:
+                    error_msg = f"❌ Static analysis found {error_count} error(s):\n"
+                    for error in static_results['errors'][:3]:  # Show first 3 errors
+                        error_msg += f"   • {error}\n"
+                    if error_count > 3:
+                        error_msg += f"   • ... and {error_count - 3} more errors\n"
+                    
+                    if strict_mode:
+                        return False, error_msg
+                    else:
+                        messages.append(f"⚠️ Static analysis: {error_count} errors (lenient mode)")
+                else:
+                    messages.append("✅ Static analysis passed")
+                
+                if warning_count > 0:
+                    messages.append(f"💡 Static analysis: {warning_count} warning(s) found")
+                    
+            except ImportError:
+                messages.append("⚠️ Static analyzer not available - skipping advanced validation")
+            except Exception as e:
+                messages.append(f"⚠️ Static analysis failed: {str(e)}")
+        
+        # All validations passed
+        summary = "; ".join(messages)
+        return True, summary
+        
     except Exception as e:
-        return False, f"Testing failed: {str(e)}"
+        return False, f"❌ Testing failed: {str(e)}"
 
 
 def generate_code_with_validation(args):
@@ -161,8 +237,10 @@ def generate_code_with_validation(args):
         if args.verbose:
             print("🔧 Loading Jinja2 template...")
         
-        env = Environment(loader=FileSystemLoader('.'))
-        template = env.get_template('beaver/templates/models.jinja')
+        # Set template loader to look in both current directory and parent
+        template_paths = ['.', str(Path(__file__).parent)]
+        env = Environment(loader=FileSystemLoader(template_paths))
+        template = env.get_template('templates/models.jinja')
         
         # Prepare template data
         # If DSL has feature engineering like:
@@ -192,15 +270,26 @@ def generate_code_with_validation(args):
             else:
                 print(f"✅ {syntax_message}")
         
-        # Test code compilation
+        # Test code compilation and static analysis
         if args.check_syntax:
             if args.verbose:
-                print("🧪 Testing code compilation...")
+                if not args.skip_static_analysis:
+                    print("🧪 Testing code with enhanced validation (syntax + compilation + static analysis)...")
+                else:
+                    print("🧪 Testing code compilation...")
             
-            compile_success, compile_message = test_generated_code(generated_code, args.generated_file_name)
+            # Use enhanced validation
+            compile_success, compile_message = test_generated_code(
+                generated_code, 
+                args.generated_file_name,
+                enable_static_analysis=not args.skip_static_analysis,
+                strict_mode=args.strict_analysis
+            )
             
             if not compile_success:
                 print(f"❌ {compile_message}")
+                if args.strict_analysis:
+                    print("💡 Use --skip-static-analysis to ignore static analysis errors")
                 return False
             else:
                 print(f"✅ {compile_message}")
