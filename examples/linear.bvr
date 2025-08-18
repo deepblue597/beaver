@@ -7,13 +7,8 @@ connector {
 
 algorithm <ALMAClassifier> alma 
 
-algorithm <LinearRegression> linear 
-    params: 
-        intercept_lr=0.1
-
 preprocessor <StandardScaler> scaler 
 
-metric <MAE> mae
 metric <Accuracy> acc
 
 data Phishing { 
@@ -24,24 +19,10 @@ data Phishing {
     preprocessors = scaler
 }
 
-data TrumpApproval { 
-
-    input_topic = "TrumpApproval"         
-    features: 
-        target_feature = five_thirty_eight
-    preprocessors = scaler
-}
 
 pipeline almaPipeline { 
     output_topic = 'almaPipeline' 
     data = Phishing
     algorithm = alma
     metrics = acc
-}
-
-pipeline LinearRegressionPipeline { 
-    output_topic = 'LinearRegressionPipeline' 
-    data = TrumpApproval
-    algorithm = linear
-    metrics = mae
 }
