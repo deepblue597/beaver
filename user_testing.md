@@ -15,7 +15,7 @@ You will be using Beaver to achieve 3 tasks:
 ## Instructions
 
 1. **Install Beaver**: Follow the installation instructions in the [README](README.md) to set up Beaver on your machine.
-2. **Deploy the Kafka setup**: If you don't have a Kafka setup, follow the instructions in the [Kafka setup](README.md) section.
+2. **Deploy the Kafka setup**: If you don't have a Kafka setup, follow the instructions in the [Kafka setup](README.md) section of README.
 3. **Produce the data**: Use the provided scripts to produce the data needed for the tasks. You will use the `producer.py` script to produce the data. Make sure to run it before starting the tasks. To produce the data, run the following command:
 
    ```bash
@@ -25,7 +25,7 @@ You will be using Beaver to achieve 3 tasks:
    For example for the phishing dataset, you can run:
 
    ```bash
-   python producer.py --topic_name Pishing
+   python producer.py --topic_name Phishing
    ```
 
 4. **Complete the tasks**: Follow the instructions for each task below. You can use the provided examples and [documentation](https://deepblue597.github.io/beaver-doc/) to help you.

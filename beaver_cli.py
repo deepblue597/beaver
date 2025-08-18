@@ -95,40 +95,40 @@ def show_help():
 🦫 Beaver CLI - Machine Learning Pipeline Generator
 
 QUICK START:
-   python beaver-cli.py generate --input examples/model.bvr          # Generate code from example
-   python beaver-cli.py validate --input examples/model.bvr          # Validate model definitions
-   python beaver-cli.py analyze --directory examples                 # Analyze all examples
+   python beaver_cli.py generate --input examples/model.bvr          # Generate code from example
+   python beaver_cli.py validate --input examples/model.bvr          # Validate model definitions
+   python beaver_cli.py analyze --directory examples                 # Analyze all examples
 
 WORKFLOWS:
    1. Validation-first workflow:
-      python beaver-cli.py validate --input mymodel.bvr
-      python beaver-cli.py generate --input mymodel.bvr --check-syntax
+      python beaver_cli.py validate --input mymodel.bvr
+      python beaver_cli.py generate --input mymodel.bvr --check-syntax
    
    2. Analysis and improvement:
-      python beaver-cli.py analyze --input mymodel.bvr
+      python beaver_cli.py analyze --input mymodel.bvr
       # Make improvements based on suggestions
-      python beaver-cli.py generate --input mymodel.bvr
+      python beaver_cli.py generate --input mymodel.bvr
    
    3. Safe generation:
-      python beaver-cli.py generate --input mymodel.bvr --dry-run --verbose
-      python beaver-cli.py generate --input mymodel.bvr --output model.py --check-syntax
+      python beaver_cli.py generate --input mymodel.bvr --dry-run --verbose
+      python beaver_cli.py generate --input mymodel.bvr --output model.py --check-syntax
 
 EXAMPLES:
    # Generate with full validation and syntax checking
-   python beaver-cli.py generate --input examples/model.bvr --output model.py --check-syntax --verbose
+   python beaver_cli.py generate --input examples/model.bvr --output model.py --check-syntax --verbose
    
    # Validate only (no code generation)
-   python beaver-cli.py validate --input examples/linear.bvr --verbose
+   python beaver_cli.py validate --input examples/linear.bvr --verbose
    
    # Analyze all examples and get JSON output
-   python beaver-cli.py analyze --directory examples --output json
+   python beaver_cli.py analyze --directory examples --output json
    
    # Quick test run without writing files
-   python beaver-cli.py generate --input examples/model.bvr --dry-run
+   python beaver_cli.py generate --input examples/model.bvr --dry-run
 
 MORE INFO:
    Each command supports --help for detailed options
-   Example: python beaver-cli.py generate --help
+   Example: python beaver_cli.py generate --help
     """
     print(help_text)
 
