@@ -48,14 +48,15 @@ Activate the environment
 
 Depending on your shell:
 
+Bash: 
 ```bash
-<YOUR-VENV-NAME>\Scripts\activate
+source <YOUR-VENV-NAME>\bin\activate
 ```
 
 PowerShell:
 
 ```bash
-<YOUR-VENV-NAME>\Scripts\Activate.ps1
+<YOUR-VENV-NAME>\Scripts\activate
 ```
 
 To download all the necessary libraries run:
