@@ -48,7 +48,8 @@ Activate the environment
 
 Depending on your shell:
 
-Bash: 
+Bash:
+
 ```bash
 source <YOUR-VENV-NAME>\bin\activate
 ```
@@ -105,6 +106,14 @@ python beaver_cli.py analyze --input examples/linear.bvr
 
 # Analyze all examples
 python beaver_cli.py analyze --directory examples
+```
+
+### Run Your Model
+
+When you have generated your pipeline, you can run it using:
+
+```bash
+python my_pipeline.py
 ```
 
 ### Help and Documentation
