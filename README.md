@@ -29,13 +29,13 @@ You can find full description of the language as well as examples and FAQ in the
 To download the project run :
 
 ```bash
-git clone https://github.com/deepblue597/thesis.git
+git clone https://github.com/deepblue597/beaver.git
 ```
 
 When you finished downloading go to the repository by running
 
 ```bash
-cd thesis
+cd beaver
 ```
 
 Create a new virutal environment:
