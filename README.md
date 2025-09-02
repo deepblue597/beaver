@@ -168,6 +168,19 @@ graph TD
     G --> I[Live visualization in Dash dashboard]
 ```
 
+## 💬 Citation
+
+If Beaver has been useful to you, and you would like to cite it in a scientific publication, please refer to the thesis:
+
+```bibtex
+@mastersthesis{kakandris2025beaver,
+  title={Design and implementation of a textual domain language to produce machine learning applications on data streams},
+  author={Kakandris, Iasonas},
+  year={2025},
+  school={Aristotle University of Thessaloniki}
+}
+```
+
 ## 🤝 Affiliations
 
 ![auth_logo](logos/auth_logo.png)
