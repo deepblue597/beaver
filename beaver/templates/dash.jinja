@@ -2,41 +2,226 @@
 
 def run_dash():
     dash_app = Dash(__name__)
+    
+    # Enhanced CSS styling for better appearance
     dash_app.layout = html.Div([
-         html.H2("Pipelines' Plots" , style={
-        'textAlign': 'center',  # Center the text
-
-        'fontFamily': 'sans-serif',  # Change the font family
-        'font-weight': 'normal',  # Make the text bold
+        # Header Section
+        html.Div([
+            html.Div([
+                html.H1("🦫 Beaver ML Pipeline Dashboard", 
+                       style={
+                           'textAlign': 'center',
+                           'color': '#2E86AB',
+                           'fontFamily': 'Arial, sans-serif',
+                           'fontWeight': 'bold',
+                           'margin': '20px 0',
+                           'fontSize': '2.5em'
+                       }),
+                html.P("Real-time monitoring of your streaming ML pipelines",
+                      style={
+                          'textAlign': 'center',
+                          'color': '#666',
+                          'fontFamily': 'Arial, sans-serif',
+                          'fontSize': '1.2em',
+                          'marginBottom': '30px'
+                      })
+            ])
+        ], style={
+            'backgroundColor': '#f8f9fa',
+            'padding': '20px',
+            'borderBottom': '3px solid #2E86AB',
+            'marginBottom': '20px'
         }),
-        dcc.Interval(id='interval', n_intervals=0),
-        dcc.Graph(id='live-graph'), 
-        html.Div(
-            children=[
+        
+        # Control Panel
+        html.Div([
+            html.H3("Dashboard Controls", 
+                   style={'color': '#2E86AB', 'fontFamily': 'Arial, sans-serif'}),
+            html.Div([
+                html.Label("Update Interval (seconds):", 
+                          style={'fontWeight': 'bold', 'marginRight': '10px'}),
+                dcc.Slider(
+                    id='interval-slider',
+                    min=1, max=10, step=1, value=2,
+                    marks={i: str(i) for i in range(1, 11)},
+                    tooltip={"placement": "bottom", "always_visible": True}
+                )
+            ], style={'marginBottom': '20px'}),
+            
+            html.Div([
+                html.Label("Auto-refresh:", 
+                          style={'fontWeight': 'bold', 'marginRight': '10px'}),
+                dcc.Checklist(
+                    id='auto-refresh-toggle',
+                    options=[{'label': ' Enable auto-refresh', 'value': 'auto'}],
+                    value=['auto'],
+                    style={'display': 'inline-block'}
+                )
+            ])
+        ], style={
+            'backgroundColor': '#ffffff',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'boxShadow': '0 2px 10px rgba(0,0,0,0.1)',
+            'margin': '0 20px 20px 20px'
+        }),
+        
+        # Pipeline Status Cards
+        html.Div([
+            html.H3("Pipeline Status", 
+                   style={'color': '#2E86AB', 'fontFamily': 'Arial, sans-serif', 'marginBottom': '20px'}),
+            html.Div([
                 {% for pipeline in file.pipelines %}
-                dcc.Graph(
-                    id='live-stats-{{pipeline.name}}',
-                    #style={'margin': 'auto', 'display': 'block', 'width':'70%'}
-                ){%- if not loop.last %},{%- endif -%} 
+                html.Div([
+                    html.Div([
+                        html.H4("{{pipeline.name}}", 
+                               style={'margin': '0', 'color': '#2E86AB'}),
+                        html.P("{{pipeline.model_name}}", 
+                              style={'margin': '5px 0', 'color': '#666', 'fontSize': '0.9em'}),
+                        html.Div(id='status-{{pipeline.name}}', 
+                                children="🟢 Active",
+                                style={'fontWeight': 'bold', 'color': '#28a745'})
+                    ], style={
+                        'backgroundColor': '#ffffff',
+                        'padding': '15px',
+                        'borderRadius': '8px',
+                        'boxShadow': '0 2px 8px rgba(0,0,0,0.1)',
+                        'border': '1px solid #e9ecef',
+                        'textAlign': 'center'
+                    })
+                ], style={
+                    'width': '{{ (100 // file.pipelines|length - 2) }}%',
+                    'display': 'inline-block',
+                    'margin': '0 1%',
+                    'verticalAlign': 'top'
+                }){%- if not loop.last %},{%- endif -%}
                 {% endfor %}
-            ]
-        )
-    ])
+            ], style={'marginBottom': '30px'})
+        ], style={
+            'backgroundColor': '#ffffff',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'boxShadow': '0 2px 10px rgba(0,0,0,0.1)',
+            'margin': '0 20px 20px 20px'
+        }),
+        
+        # Main Metrics Dashboard
+        html.Div([
+            html.H3("Live Performance Metrics", 
+                   style={'color': '#2E86AB', 'fontFamily': 'Arial, sans-serif', 'marginBottom': '20px'}),
+            dcc.Graph(
+                id='live-graph',
+                style={'height': '600px', 'border': '1px solid #e9ecef', 'borderRadius': '8px'}
+            )
+        ], style={
+            'backgroundColor': '#ffffff',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'boxShadow': '0 2px 10px rgba(0,0,0,0.1)',
+            'margin': '0 20px 20px 20px'
+        }),
+        
+        # Individual Pipeline Statistics
+        html.Div([
+            html.H3("Individual Pipeline Statistics", 
+                   style={'color': '#2E86AB', 'fontFamily': 'Arial, sans-serif', 'marginBottom': '20px'}),
+            html.Div([
+                {% for pipeline in file.pipelines %}
+                html.Div([
+                    html.H4("{{pipeline.name}} Detailed Stats", 
+                           style={'color': '#2E86AB', 'textAlign': 'center', 'marginBottom': '15px'}),
+                    dcc.Graph(
+                        id='live-stats-{{pipeline.name}}',
+                        style={'height': '400px', 'border': '1px solid #e9ecef', 'borderRadius': '8px'}
+                    )
+                ], style={
+                    'backgroundColor': '#ffffff',
+                    'padding': '15px',
+                    'borderRadius': '8px',
+                    'boxShadow': '0 2px 8px rgba(0,0,0,0.1)',
+                    'margin': '10px 0'
+                }){%- if not loop.last %},{%- endif -%}
+                {% endfor %}
+            ])
+        ], style={
+            'backgroundColor': '#ffffff',
+            'padding': '20px',
+            'borderRadius': '10px',
+            'boxShadow': '0 2px 10px rgba(0,0,0,0.1)',
+            'margin': '0 20px 20px 20px'
+        }),
+        
+        # Footer
+        html.Div([
+            html.P("Powered by Beaver DSL 🦫 | Built with Plotly Dash",
+                  style={
+                      'textAlign': 'center',
+                      'color': '#666',
+                      'fontFamily': 'Arial, sans-serif',
+                      'margin': '0'
+                  })
+        ], style={
+            'backgroundColor': '#f8f9fa',
+            'padding': '15px',
+            'borderTop': '1px solid #e9ecef',
+            'marginTop': '20px'
+        }),
+        
+        # Hidden interval component (controlled by slider)
+        dcc.Interval(id='interval', n_intervals=0, interval=2000, disabled=False)
+    ], style={
+        'backgroundColor': '#f5f5f5',
+        'minHeight': '100vh',
+        'fontFamily': 'Arial, sans-serif'
+    })
+
+    # Callback to update interval based on slider
+    @dash_app.callback(
+        [Output('interval', 'interval'),
+         Output('interval', 'disabled')],
+        [Input('interval-slider', 'value'),
+         Input('auto-refresh-toggle', 'value')]
+    )
+    def update_interval(slider_value, auto_refresh):
+        interval = slider_value * 1000  # Convert to milliseconds
+        disabled = 'auto' not in auto_refresh
+        return interval, disabled
 
     @dash_app.callback(
         Output('live-graph', 'figure'),
         Input('interval', 'n_intervals')
     )
     def update_graph(n):
-        fig = make_subplots(rows={{ file.pipelines | length }}, cols=1 , vertical_spacing=0.1)
+        fig = make_subplots(
+            rows={{ file.pipelines | length }}, 
+            cols=1,
+            vertical_spacing=0.08,
+            subplot_titles=[{% for pipeline in file.pipelines %}"{{pipeline.name}} ({{pipeline.model_name}})"{% if not loop.last %}, {% endif %}{% endfor %}]
+        )
 
         {% for pipeline in file.pipelines %}
         {{pipeline.name}}.add_metrics_traces(fig = fig , row = {{ loop.index }}, col = 1 ) 
         {% endfor %}
 
-        fig.update_layout(height=600, title="Live Metrics", margin=dict(t=40, b=40), showlegend=True )
+        fig.update_layout(
+            height=600,
+            title={
+                'text': "Live Pipeline Performance Metrics",
+                'x': 0.5,
+                'xanchor': 'center',
+                'font': {'size': 20, 'color': '#2E86AB'}
+            },
+            margin=dict(t=80, b=40, l=60, r=60),
+            showlegend=True,
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font={'family': 'Arial, sans-serif'}
+        )
+        
+        # Update subplot title styling
+        fig.update_annotations(font_size=14, font_color='#2E86AB')
+        
         return fig
-
 
     {% for pipeline in file.pipelines %}
     @dash_app.callback(
@@ -49,25 +234,52 @@ def run_dash():
             component_property='n_intervals'
         )
     )
-
-      
     def update_stats_{{pipeline.name}}(n):
-        
         traces = []  
-        
         {{pipeline.name}}.add_stats_traces(traces) 
-              
-
         
         if traces:
             fig = go.Figure(
-                    data=traces, 
-                    layout= go.Layout(
-                        title='{{pipeline.name}} Statistics'
-                    )
+                data=traces, 
+                layout=go.Layout(
+                    title={
+                        'text': '{{pipeline.name}} Detailed Statistics',
+                        'x': 0.5,
+                        'xanchor': 'center',
+                        'font': {'size': 16, 'color': '#2E86AB'}
+                    },
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font={'family': 'Arial, sans-serif'},
+                    margin=dict(t=60, b=40, l=60, r=60)
+                )
             )
             return fig    
     
-        return go.Figure()
+        # Return empty figure with message
+        return go.Figure().add_annotation(
+            x=0.5, y=0.5,
+            text="No data available yet...",
+            showarrow=False,
+            font={'size': 16, 'color': '#666'}
+        ).update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            xaxis={'visible': False},
+            yaxis={'visible': False}
+        )
+    
+    {% for pipeline in file.pipelines %}
+    @dash_app.callback(
+        Output('status-{{pipeline.name}}', 'children'),
+        Input('interval', 'n_intervals')
+    )
+    def update_status_{{pipeline.name}}(n):
+        # You can add logic here to check actual pipeline status
+        # For now, we'll show active status
+        return "🟢 Active"
+    
     {% endfor %}
-    dash_app.run(debug=False, use_reloader=False)
+    {% endfor %}
+    
+    dash_app.run(debug=False, use_reloader=False, host='0.0.0.0', port=8050)
