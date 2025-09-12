@@ -29,10 +29,10 @@ if __name__ == "__main__":
 # %%
     #  For more datasets refer to https://riverml.xyz/latest/api/overview/#datasets_1
     # Task 1: Phishing dataset 
-    dataset = datasets.Phishing()
+    #dataset = datasets.Phishing()
     
     # Task 3: Trump Approval dataset
-    #dataset = datasets.TrumpApproval()
+    dataset = datasets.TrumpApproval()
 
 # %%
     # Trump approval , Airline , Phishing
