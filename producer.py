@@ -3,6 +3,8 @@ import pandas as pd
 from river import datasets
 import pandas as pd
 from kafka_proj.producer_v2 import parse_command_line_arguments, create_kafka_producer, delivery_callback
+import kagglehub
+import json
 # %%
 
 def convert_keys_to_underscores(data):
@@ -26,17 +28,27 @@ if __name__ == "__main__":
     # init producer
     producer = create_kafka_producer(
         bootstrap_server=args.bootstrap_server, acks='all',  compression_type='snappy')
+
+#%% 
+    # Download Heart Failure Prediction dataset from Kaggle
+    # path = kagglehub.dataset_download("fedesoriano/heart-failure-prediction")
+
+    # Download World Happiness Report dataset from Kaggle
+    path = kagglehub.dataset_download("unsdsn/world-happiness")
+
+    print("Path to dataset files:", path)
 # %%
     #  For more datasets refer to https://riverml.xyz/latest/api/overview/#datasets_1
     # Task 1: Phishing dataset 
     #dataset = datasets.Phishing()
     
     # Task 3: Trump Approval dataset
-    dataset = datasets.TrumpApproval()
+    #dataset = datasets.TrumpApproval()
 
 # %%
     # Trump approval , Airline , Phishing
-    df = pd.read_csv(dataset.path)
+    #df = pd.read_csv(dataset.path)
+    df = pd.read_csv(path + '/2019.csv') 
 # %%
     df
 
@@ -47,13 +59,16 @@ if __name__ == "__main__":
     for idx, row in df.iterrows():
 
         
+        
         # convert to json format
         #Trump Approval dataset 
-        json_message = row.to_json()
-
+        row_dict = row.to_dict()
+        json_message = convert_keys_to_underscores(row_dict)
+        # Serialize to JSON string
+        json_string = json.dumps(json_message)
         # Produce the message to kafka
         producer.produce(
-            args.topic_name, value=json_message, key=str(idx), callback=delivery_callback)
+            args.topic_name, value=json_string, key=str(idx), callback=delivery_callback)
 
         # Polling to handle responses
         producer.poll(0)
@@ -62,3 +77,4 @@ if __name__ == "__main__":
 
     # Flush to ensure all messages are sent before exit
     producer.flush()
+# %%

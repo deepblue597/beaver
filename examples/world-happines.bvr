@@ -27,13 +27,10 @@ composer <SelectType> selectstr
 
 
 preprocessor <OneHotEncoder> encoder 
-
 preprocessor <StandardScaler> scaler 
 
 metric <MAE> mae
-
 metric <MSE> mse
-
 metric <R2> r2
 
 data World_Happiness_Report { 

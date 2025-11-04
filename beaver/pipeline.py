@@ -213,7 +213,7 @@ class Pipeline:
         4. The model has a update method
         
         """
-        if type(self.model) == RiverPipeline:
+        if isinstance(self.model, RiverPipeline):
             model_instance = self.model[self.model_name]
         else:
             model_instance = self.model
@@ -330,71 +330,87 @@ class Pipeline:
                 ), row=row, col=col)
             
     def add_stats_traces(self,traces): #fig, row=1, col=1) : 
-        if type(self.model) == RiverPipeline:
+        if isinstance(self.model, RiverPipeline):
             model_instance = self.model[self.model_name]
         else:
             model_instance = self.model
         
+        layout_updates = {}
+        
         if issubclass(type(model_instance), base.Classifier):
             #print(model_instance)
-            if isinstance(self.y_true_list[0], str) or isinstance(self.y_pred_list[0], str):
-                all_labels = list(set(self.y_true_list + self.y_pred_list))
-                self.label_encoder.fit(all_labels)
-
-                y_true = self.label_encoder.transform(self.y_true_list)
-                y_pred = self.label_encoder.transform(self.y_pred_list)
-            else:
-                y_true = np.array(self.y_true_list).astype(int)
-                y_pred = np.array(self.y_pred_list).astype(int)
-
-            #print(y_true , y_pred)
-            # Get unique labels for axes
-            labels = sorted(set(y_true) | set(y_pred))
-            cm = confusion_matrix(self.y_true_list, self.y_pred_list)
-            traces.append(go.Heatmap(
-                        z = cm,
-                        x=labels,  # predicted
-                        y=labels,  # true
-                        colorscale='Viridis',
-                        name=f"{self.name} Predictions",
-                        colorbar=dict(
-                            title='Count',
-                            #len=0.5,  # 50% of the plot height
-                            #xanchor='left'
-                            ),
-                        hovertemplate='True: %{y}<br>Predicted: %{x}<br>Count: %{z}<extra></extra>'
-    
+            # Get unique labels from the actual predictions and true values
+            unique_labels = sorted(set(self.y_true_list + self.y_pred_list))
+            
+            # Only create confusion matrix if we have data
+            if unique_labels:
+                # Create confusion matrix with the actual labels
+                cm = confusion_matrix(self.y_true_list, self.y_pred_list, labels=unique_labels)
+                
+                traces.append(go.Heatmap(
+                            z = cm,
+                            x=unique_labels,  # predicted (x-axis)
+                            y=unique_labels,  # true (y-axis)
+                            colorscale='Viridis',
+                            name=f"{self.name} Confusion Matrix",
+                            colorbar=dict(
+                                title='Count',
+                                #len=0.5,  # 50% of the plot height
+                                #xanchor='left'
+                                ),
+                            hovertemplate='y_true: %{y}<br>y_predicted: %{x}<br>Count: %{z}<extra></extra>'
+                    )
                 )
-            )
+                
+                # Return layout updates to fix axis ticks
+                layout_updates = {
+                    'xaxis': {
+                        'tickmode': 'array',
+                        'tickvals': unique_labels,
+                        'ticktext': [str(label) for label in unique_labels]
+                    },
+                    'yaxis': {
+                        'tickmode': 'array',
+                        'tickvals': unique_labels,
+                        'ticktext': [str(label) for label in unique_labels]
+                    }
+                }
             
         elif issubclass(type(model_instance) , base.Regressor) : 
             #print(model_instance)
             #print(self.y_true_list)
             #print(self.y_pred_list)
-            traces.append(go.Scatter(
-                        x=self.y_true_list,
-                        y=self.y_pred_list,
-                        mode='markers',
-                        #marker=dict(color='blue', size=6, opacity=0.7),
-                        name=f"{self.name} Predictions",
-                        hovertemplate='True: %{x}<br>Predicted: %{y}<extra></extra>'
-                )#, row=row, col=col
-            )
-            # Optionally, add a y=x reference line
-            min_val = min(np.min(self.y_true_list), np.min(self.y_pred_list))
-            max_val = max(np.max(self.y_true_list), np.max(self.y_pred_list))
-            #print(min_val)
-            traces.append(
-                go.Scatter(
-                    x=[min_val, max_val],
-                    y=[min_val, max_val],
-                    mode='lines',
-                    line=dict(color='red', dash='dash'),
-                    name='Ideal: y = x',
-                    showlegend=True
-                ),
-                #row=row, col=col
-            )
+            if self.y_true_list and self.y_pred_list:
+                traces.append(go.Scatter(
+                            x=self.y_true_list,
+                            y=self.y_pred_list,
+                            mode='markers',
+                            #marker=dict(color='blue', size=6, opacity=0.7),
+                            name=f"{self.name} Predictions",
+                            hovertemplate='y_true: %{x}<br>y_predicted: %{y}<extra></extra>'
+                    )#, row=row, col=col
+                )
+                # Optionally, add a y=x reference line
+                min_val = min(np.min(self.y_true_list), np.min(self.y_pred_list))
+                max_val = max(np.max(self.y_true_list), np.max(self.y_pred_list))
+                #print(min_val)
+                traces.append(
+                    go.Scatter(
+                        x=[min_val, max_val],
+                        y=[min_val, max_val],
+                        mode='lines',
+                        line=dict(color='red', dash='dash'),
+                        name='Ideal: y = x',
+                        showlegend=True
+                    ),
+                    #row=row, col=col
+                )
+                
+                # Add axis titles for regressor
+                layout_updates = {
+                    'xaxis': {'title': 'y_true'},
+                    'yaxis': {'title': 'y_predicted'}
+                }
         elif issubclass(type(model_instance), base.Clusterer):
             # Count occurrences of each cluster label in y_pred_list
             cluster_counts = Counter(self.y_pred_list)
@@ -437,6 +453,8 @@ class Pipeline:
             
         else : 
             StatisticsWarning()
+        
+        return layout_updates
             
 
 

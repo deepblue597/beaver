@@ -236,24 +236,38 @@ def run_dash():
     )
     def update_stats_{{pipeline.name}}(n):
         traces = []  
-        {{pipeline.name}}.add_stats_traces(traces) 
+        layout_updates = {{pipeline.name}}.add_stats_traces(traces) 
         
         if traces:
-            fig = go.Figure(
-                data=traces, 
-                layout=go.Layout(
-                    title={
-                        'text': '{{pipeline.name}} Detailed Statistics',
-                        'x': 0.5,
-                        'xanchor': 'center',
-                        'font': {'size': 16, 'color': '#2E86AB'}
-                    },
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    font={'family': 'Arial, sans-serif'},
-                    margin=dict(t=60, b=40, l=60, r=60)
-                )
-            )
+            # Merge layout updates with base layout
+            base_layout = {
+                'title': {
+                    
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'font': {'size': 16, 'color': '#2E86AB'}
+                },
+                'plot_bgcolor': 'rgba(0,0,0,0)',
+                'paper_bgcolor': 'rgba(0,0,0,0)',
+                'font': {'family': 'Arial, sans-serif'},
+                'margin': dict(t=60, b=40, l=60, r=60)
+            }
+            
+            # Add axis titles and update with layout_updates
+            if 'xaxis' not in layout_updates:
+                layout_updates['xaxis'] = {}
+            if 'yaxis' not in layout_updates:
+                layout_updates['yaxis'] = {}
+            
+            # Only set titles if they don't already exist (don't override pipeline's titles)
+            if 'title' not in layout_updates['xaxis']:
+                layout_updates['xaxis']['title'] = 'x-axis'
+            if 'title' not in layout_updates['yaxis']:
+                layout_updates['yaxis']['title'] = 'y-axis'
+            
+            base_layout.update(layout_updates)
+            
+            fig = go.Figure(data=traces, layout=go.Layout(**base_layout))
             return fig    
     
         # Return empty figure with message

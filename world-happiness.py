@@ -11,44 +11,39 @@ import threading
 from plotly.subplots import make_subplots
 
 
-from river import neighbors
-from river import forest
-from river import optim
 from river import linear_model
+from river import tree
+from river import neighbors
 from river import compose
-from river import metrics
 from river import preprocessing
+from river import metrics
 
 
 
 
-knn = neighbors.KNNClassifier(
+linearReg = linear_model.LinearRegression(
+    intercept_lr =0.1
 )
-amf = forest.AMFClassifier(
-    n_estimators =10,
-    use_aggregation =True,
-    dirichlet =0.5,
-    seed =1
+hoeffTree = tree.HoeffdingAdaptiveTreeRegressor(
+    grace_period =50,
+    model_selector_decay =0.3,
+    seed =0
 )
-sgd = optim.SGD(
-    lr =0.1
-)
-logistic = linear_model.LogisticRegression(
-    optimizer =sgd
+knnReg = neighbors.KNNRegressor(
 )
 select = compose.SelectType((int,float)
 )
 selectstr = compose.SelectType(str
 )
-accuracy = metrics.Accuracy(
-)
-recall = metrics.Recall(
-)
-roc = metrics.ROCAUC(
-)
 encoder = preprocessing.OneHotEncoder(
 )
 scaler = preprocessing.StandardScaler(
+)
+mae = metrics.MAE(
+)
+mse = metrics.MSE(
+)
+r2 = metrics.R2(
 )
 
 
@@ -62,19 +57,21 @@ connectionConfig = ConnectionConfig(
 #Connection to Kafka
 app = Application( 
     broker_address = connectionConfig,
-    consumer_group = 'heart-failure',
+    consumer_group = 'world-happiness',
     auto_offset_reset = 'earliest',
 )
 
 #Input topics 
 
-input_topic_Heart_Failure_Prediction = app.topic("Heart_Failure_Prediction", value_deserializer="json")
+input_topic_World_Happiness_Report = app.topic("World_Happiness_Report", value_deserializer="json")
 
 # Create Streaming DataFrames connected to the input Kafka topics
 
-sdf_Heart_Failure_Prediction = app.dataframe(topic=input_topic_Heart_Failure_Prediction)
+sdf_World_Happiness_Report = app.dataframe(topic=input_topic_World_Happiness_Report)
 
 #Drop Features
+
+sdf_World_Happiness_Report.drop(["overall_rank"])
 
 
 #Keep Features
@@ -84,39 +81,39 @@ sdf_Heart_Failure_Prediction = app.dataframe(topic=input_topic_Heart_Failure_Pre
 
 #Connect composers with preprocessors 
 
-preprocessor_Heart_Failure_Prediction =((select|scaler)+(selectstr|encoder))
+preprocessor_World_Happiness_Report =((select|scaler)+(selectstr|encoder))
 
 
 
 #Pipeline definition 
 
-KNNClassifierPipeline_pipeline = preprocessor_Heart_Failure_Prediction |knn
-KNNClassifierPipeline_metrics = [accuracy,recall,roc]
+linearRegPipeline_pipeline = preprocessor_World_Happiness_Report |linearReg
+linearRegPipeline_metrics = [mae,mse,r2]
 
 
-KNNClassifierPipeline = Pipeline(model = KNNClassifierPipeline_pipeline, model_name ='KNNClassifier'  , metrics_list = KNNClassifierPipeline_metrics , name = "KNNClassifierPipeline",y="HeartDisease",output_topic="KNNClassifierPipeline")
+linearRegPipeline = Pipeline(model = linearRegPipeline_pipeline, model_name ='LinearRegression'  , metrics_list = linearRegPipeline_metrics , name = "linearRegPipeline",y="score",output_topic="linearRegPipeline")
 
-amfClassifierPipeline_pipeline = preprocessor_Heart_Failure_Prediction |amf
-amfClassifierPipeline_metrics = [accuracy,recall,roc]
-
-
-amfClassifierPipeline = Pipeline(model = amfClassifierPipeline_pipeline, model_name ='AMFClassifier'  , metrics_list = amfClassifierPipeline_metrics , name = "amfClassifierPipeline",y="HeartDisease",output_topic="amfClassifierPipeline")
-
-logisticPipeline_pipeline = preprocessor_Heart_Failure_Prediction |logistic
-logisticPipeline_metrics = [accuracy,recall,roc]
+hoeffTreePipeline_pipeline = preprocessor_World_Happiness_Report |hoeffTree
+hoeffTreePipeline_metrics = [mae,mse,r2]
 
 
-logisticPipeline = Pipeline(model = logisticPipeline_pipeline, model_name ='LogisticRegression'  , metrics_list = logisticPipeline_metrics , name = "logisticPipeline",y="HeartDisease",output_topic="logisticPipeline")
+hoeffTreePipeline = Pipeline(model = hoeffTreePipeline_pipeline, model_name ='HoeffdingAdaptiveTreeRegressor'  , metrics_list = hoeffTreePipeline_metrics , name = "hoeffTreePipeline",y="score",output_topic="hoeffTreePipeline")
+
+knnRegPipeline_pipeline = preprocessor_World_Happiness_Report |knnReg
+knnRegPipeline_metrics = [mae,mse,r2]
+
+
+knnRegPipeline = Pipeline(model = knnRegPipeline_pipeline, model_name ='KNNRegressor'  , metrics_list = knnRegPipeline_metrics , name = "knnRegPipeline",y="score",output_topic="knnRegPipeline")
 
 
 
 # Output topics initialization
 
-output_topic_KNNClassifierPipeline = app.topic(KNNClassifierPipeline.output_topic, value_deserializer="json")
+output_topic_linearRegPipeline = app.topic(linearRegPipeline.output_topic, value_deserializer="json")
 
-output_topic_amfClassifierPipeline = app.topic(amfClassifierPipeline.output_topic, value_deserializer="json")
+output_topic_hoeffTreePipeline = app.topic(hoeffTreePipeline.output_topic, value_deserializer="json")
 
-output_topic_logisticPipeline = app.topic(logisticPipeline.output_topic, value_deserializer="json")
+output_topic_knnRegPipeline = app.topic(knnRegPipeline.output_topic, value_deserializer="json")
 
 
 
@@ -124,9 +121,9 @@ output_topic_logisticPipeline = app.topic(logisticPipeline.output_topic, value_d
 #Train and predict method calls for each pipeline
 #If the pipeline has an output topic then we call it 
 
-sdf_KNNClassifierPipeline = sdf_Heart_Failure_Prediction.apply(KNNClassifierPipeline.train_and_predict).to_topic(output_topic_KNNClassifierPipeline)
-sdf_amfClassifierPipeline = sdf_Heart_Failure_Prediction.apply(amfClassifierPipeline.train_and_predict).to_topic(output_topic_amfClassifierPipeline)
-sdf_logisticPipeline = sdf_Heart_Failure_Prediction.apply(logisticPipeline.train_and_predict).to_topic(output_topic_logisticPipeline)
+sdf_linearRegPipeline = sdf_World_Happiness_Report.apply(linearRegPipeline.train_and_predict).to_topic(output_topic_linearRegPipeline)
+sdf_hoeffTreePipeline = sdf_World_Happiness_Report.apply(hoeffTreePipeline.train_and_predict).to_topic(output_topic_hoeffTreePipeline)
+sdf_knnRegPipeline = sdf_World_Happiness_Report.apply(knnRegPipeline.train_and_predict).to_topic(output_topic_knnRegPipeline)
 
 
 # ---------- DASHBOARD SETUP ----------
@@ -205,11 +202,11 @@ def run_dash():
                 
                 html.Div([
                     html.Div([
-                        html.H4("KNNClassifierPipeline", 
+                        html.H4("linearRegPipeline", 
                                style={'margin': '0', 'color': '#2E86AB'}),
                         html.P("", 
                               style={'margin': '5px 0', 'color': '#666', 'fontSize': '0.9em'}),
-                        html.Div(id='status-KNNClassifierPipeline', 
+                        html.Div(id='status-linearRegPipeline', 
                                 children="🟢 Active",
                                 style={'fontWeight': 'bold', 'color': '#28a745'})
                     ], style={
@@ -228,11 +225,11 @@ def run_dash():
                 }),
                 html.Div([
                     html.Div([
-                        html.H4("amfClassifierPipeline", 
+                        html.H4("hoeffTreePipeline", 
                                style={'margin': '0', 'color': '#2E86AB'}),
                         html.P("", 
                               style={'margin': '5px 0', 'color': '#666', 'fontSize': '0.9em'}),
-                        html.Div(id='status-amfClassifierPipeline', 
+                        html.Div(id='status-hoeffTreePipeline', 
                                 children="🟢 Active",
                                 style={'fontWeight': 'bold', 'color': '#28a745'})
                     ], style={
@@ -251,11 +248,11 @@ def run_dash():
                 }),
                 html.Div([
                     html.Div([
-                        html.H4("logisticPipeline", 
+                        html.H4("knnRegPipeline", 
                                style={'margin': '0', 'color': '#2E86AB'}),
                         html.P("", 
                               style={'margin': '5px 0', 'color': '#666', 'fontSize': '0.9em'}),
-                        html.Div(id='status-logisticPipeline', 
+                        html.Div(id='status-knnRegPipeline', 
                                 children="🟢 Active",
                                 style={'fontWeight': 'bold', 'color': '#28a745'})
                     ], style={
@@ -304,10 +301,10 @@ def run_dash():
             html.Div([
                 
                 html.Div([
-                    html.H4("KNNClassifierPipeline Detailed Stats", 
+                    html.H4("linearRegPipeline Detailed Stats", 
                            style={'color': '#2E86AB', 'textAlign': 'center', 'marginBottom': '15px'}),
                     dcc.Graph(
-                        id='live-stats-KNNClassifierPipeline',
+                        id='live-stats-linearRegPipeline',
                         style={'height': '400px', 'border': '1px solid #e9ecef', 'borderRadius': '8px'}
                     )
                 ], style={
@@ -318,10 +315,10 @@ def run_dash():
                     'margin': '10px 0'
                 }),
                 html.Div([
-                    html.H4("amfClassifierPipeline Detailed Stats", 
+                    html.H4("hoeffTreePipeline Detailed Stats", 
                            style={'color': '#2E86AB', 'textAlign': 'center', 'marginBottom': '15px'}),
                     dcc.Graph(
-                        id='live-stats-amfClassifierPipeline',
+                        id='live-stats-hoeffTreePipeline',
                         style={'height': '400px', 'border': '1px solid #e9ecef', 'borderRadius': '8px'}
                     )
                 ], style={
@@ -332,10 +329,10 @@ def run_dash():
                     'margin': '10px 0'
                 }),
                 html.Div([
-                    html.H4("logisticPipeline Detailed Stats", 
+                    html.H4("knnRegPipeline Detailed Stats", 
                            style={'color': '#2E86AB', 'textAlign': 'center', 'marginBottom': '15px'}),
                     dcc.Graph(
-                        id='live-stats-logisticPipeline',
+                        id='live-stats-knnRegPipeline',
                         style={'height': '400px', 'border': '1px solid #e9ecef', 'borderRadius': '8px'}
                     )
                 ], style={
@@ -399,15 +396,15 @@ def run_dash():
             rows=3, 
             cols=1,
             vertical_spacing=0.08,
-            subplot_titles=["KNNClassifierPipeline ()", "amfClassifierPipeline ()", "logisticPipeline ()"]
+            subplot_titles=["linearRegPipeline ()", "hoeffTreePipeline ()", "knnRegPipeline ()"]
         )
 
         
-        KNNClassifierPipeline.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
+        linearRegPipeline.add_metrics_traces(fig = fig , row = 1, col = 1 ) 
         
-        amfClassifierPipeline.add_metrics_traces(fig = fig , row = 2, col = 1 ) 
+        hoeffTreePipeline.add_metrics_traces(fig = fig , row = 2, col = 1 ) 
         
-        logisticPipeline.add_metrics_traces(fig = fig , row = 3, col = 1 ) 
+        knnRegPipeline.add_metrics_traces(fig = fig , row = 3, col = 1 ) 
         
 
         fig.update_layout(
@@ -433,7 +430,7 @@ def run_dash():
     
     @dash_app.callback(
         Output(
-            component_id='live-stats-KNNClassifierPipeline', 
+            component_id='live-stats-linearRegPipeline', 
             component_property='figure'
         ), 
         Input(
@@ -441,9 +438,9 @@ def run_dash():
             component_property='n_intervals'
         )
     )
-    def update_stats_KNNClassifierPipeline(n):
+    def update_stats_linearRegPipeline(n):
         traces = []  
-        layout_updates = KNNClassifierPipeline.add_stats_traces(traces) 
+        layout_updates = linearRegPipeline.add_stats_traces(traces) 
         
         if traces:
             # Merge layout updates with base layout
@@ -466,8 +463,11 @@ def run_dash():
             if 'yaxis' not in layout_updates:
                 layout_updates['yaxis'] = {}
             
-            layout_updates['xaxis']['title'] = 'y_predicted'
-            layout_updates['yaxis']['title'] = 'y_true'
+            # Only set titles if they don't already exist (don't override pipeline's titles)
+            if 'title' not in layout_updates['xaxis']:
+                layout_updates['xaxis']['title'] = 'x-axis'
+            if 'title' not in layout_updates['yaxis']:
+                layout_updates['yaxis']['title'] = 'y-axis'
             
             base_layout.update(layout_updates)
             
@@ -490,7 +490,7 @@ def run_dash():
     
     @dash_app.callback(
         Output(
-            component_id='live-stats-amfClassifierPipeline', 
+            component_id='live-stats-hoeffTreePipeline', 
             component_property='figure'
         ), 
         Input(
@@ -498,9 +498,9 @@ def run_dash():
             component_property='n_intervals'
         )
     )
-    def update_stats_amfClassifierPipeline(n):
+    def update_stats_hoeffTreePipeline(n):
         traces = []  
-        layout_updates = amfClassifierPipeline.add_stats_traces(traces) 
+        layout_updates = hoeffTreePipeline.add_stats_traces(traces) 
         
         if traces:
             # Merge layout updates with base layout
@@ -523,8 +523,11 @@ def run_dash():
             if 'yaxis' not in layout_updates:
                 layout_updates['yaxis'] = {}
             
-            layout_updates['xaxis']['title'] = 'y_predicted'
-            layout_updates['yaxis']['title'] = 'y_true'
+            # Only set titles if they don't already exist (don't override pipeline's titles)
+            if 'title' not in layout_updates['xaxis']:
+                layout_updates['xaxis']['title'] = 'x-axis'
+            if 'title' not in layout_updates['yaxis']:
+                layout_updates['yaxis']['title'] = 'y-axis'
             
             base_layout.update(layout_updates)
             
@@ -547,7 +550,7 @@ def run_dash():
     
     @dash_app.callback(
         Output(
-            component_id='live-stats-logisticPipeline', 
+            component_id='live-stats-knnRegPipeline', 
             component_property='figure'
         ), 
         Input(
@@ -555,9 +558,9 @@ def run_dash():
             component_property='n_intervals'
         )
     )
-    def update_stats_logisticPipeline(n):
+    def update_stats_knnRegPipeline(n):
         traces = []  
-        layout_updates = logisticPipeline.add_stats_traces(traces) 
+        layout_updates = knnRegPipeline.add_stats_traces(traces) 
         
         if traces:
             # Merge layout updates with base layout
@@ -580,8 +583,11 @@ def run_dash():
             if 'yaxis' not in layout_updates:
                 layout_updates['yaxis'] = {}
             
-            layout_updates['xaxis']['title'] = 'y_predicted'
-            layout_updates['yaxis']['title'] = 'y_true'
+            # Only set titles if they don't already exist (don't override pipeline's titles)
+            if 'title' not in layout_updates['xaxis']:
+                layout_updates['xaxis']['title'] = 'x-axis'
+            if 'title' not in layout_updates['yaxis']:
+                layout_updates['yaxis']['title'] = 'y-axis'
             
             base_layout.update(layout_updates)
             
@@ -605,28 +611,28 @@ def run_dash():
 
     
     @dash_app.callback(
-        Output('status-KNNClassifierPipeline', 'children'),
+        Output('status-linearRegPipeline', 'children'),
         Input('interval', 'n_intervals')
     )
-    def update_status_KNNClassifierPipeline(n):
+    def update_status_linearRegPipeline(n):
         # You can add logic here to check actual pipeline status
         # For now, we'll show active status
         return "🟢 Active"
     
     @dash_app.callback(
-        Output('status-amfClassifierPipeline', 'children'),
+        Output('status-hoeffTreePipeline', 'children'),
         Input('interval', 'n_intervals')
     )
-    def update_status_amfClassifierPipeline(n):
+    def update_status_hoeffTreePipeline(n):
         # You can add logic here to check actual pipeline status
         # For now, we'll show active status
         return "🟢 Active"
     
     @dash_app.callback(
-        Output('status-logisticPipeline', 'children'),
+        Output('status-knnRegPipeline', 'children'),
         Input('interval', 'n_intervals')
     )
-    def update_status_logisticPipeline(n):
+    def update_status_knnRegPipeline(n):
         # You can add logic here to check actual pipeline status
         # For now, we'll show active status
         return "🟢 Active"
