@@ -9,3 +9,4 @@
 beaver.egg-info/
 build/
 dist/
+/beaver_env/
